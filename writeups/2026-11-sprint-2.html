@@ -1,0 +1,75 @@
+<!-- title: Sprint 2: a validator that scores corruption, and one prompt on two backends -->
+<!-- date: 2026-11-09 -->
+<!-- description: Skeleton for the Sprint 2 write-up of Airplane Mode Labs. Every result slot is empty until the product owner fills it at wrap-up from a named command. -->
+<h1>Sprint 2: a validator that scores corruption, and one prompt on two backends</h1>
+<p class="lede">
+  Sprint 2 (planned 23 November to 6 December 2026, started early on 9 November) had two
+  measurable goals: the glyphsift validator's score falls steadily as synthetic OCR noise rises,
+  and the same prompt is answered on WebGPU and on WebAssembly. This page is a skeleton. The
+  product owner finishes it at wrap-up from the tester reports; until a slot below is filled it
+  reads "to be filled by the PO at wrap-up" and quotes no figure.
+</p>
+<p class="muted">
+  Any figure that lands here was measured on an Apple-silicon development machine and is a
+  placeholder; the reference 8 GB Windows laptop without a GPU has not been measured yet.
+</p>
+
+<h2>The done-when, stated honestly</h2>
+<p data-slot="done-when">
+  Same prompt answered on WebGPU and on WebAssembly with the test model SmolLM2-135M-Instruct
+  (q4), in Chrome on an Apple-silicon Mac only. This is not the Hindi production model; Windows
+  and the 8 GB no-GPU laptop are not measured.
+</p>
+
+<h2>glyphsift: score versus noise</h2>
+<p>
+  Result: to be filled by the PO at wrap-up from
+  <code>cargo run -p glyphsift-cli --release -- bench --corpus bench/corpus/clean.txt --seeds 1,2,3 --csv docs/score-vs-noise.csv --svg docs/score-vs-noise.svg</code>.
+</p>
+<ul>
+  <li>Mixed-family mean falls at every step: to be filled by the PO at wrap-up from the bench command above.</li>
+  <li>Per-seed and per-family monotonicity: to be filled by the PO at wrap-up from the bench command above.</li>
+  <li>Families the validator cannot see directly: to be filled by the PO at wrap-up from the glyphsift README Limitations.</li>
+</ul>
+
+<h2>runtime: one prompt, two backends</h2>
+<p>
+  Result: to be filled by the PO at wrap-up from
+  <code>RUNTIME_MODEL=1 RUNTIME_REQUIRE_WEBGPU=1 npm run test:model</code>.
+</p>
+<ul>
+  <li>WebGPU leg (load time, prefill, decode, tokens per second): to be filled by the PO at wrap-up from the test:model command above.</li>
+  <li>WebAssembly leg (same fields): to be filled by the PO at wrap-up from the test:model command above.</li>
+  <li>Independent browser repeat and network log: to be filled by the PO at wrap-up from the T1 report.</li>
+</ul>
+
+<h2>The model decision</h2>
+<p data-slot="model-card">
+  Planned production model: Qwen3-1.7B (Apache-2.0), WebGPU q4f16 1.43 GB, WASM q8 1.74 GB.
+  Provisional until the Sprint 5 measurement on an 8 GB laptop; contingency Qwen3-0.6B.
+</p>
+<p>
+  The comparison table, the licence conditions and the Hindi evidence for each candidate are in
+  the runtime repository's <code>docs/model-choice.md</code>. Loaded once in a browser: a local, unscored WebGPU smoke run of five synthetic Hindi prompts on an Apple-silicon Mac, which needed ONNX Runtime graph optimisation turned off (evidence/sprint-2/D1/hindi-smoke.json). The decision stays provisional.
+</p>
+
+<h2>What else landed</h2>
+<ul>
+  <li>Backend adapter and model descriptor contracts: to be filled by the PO at wrap-up from the runtime spec changelog.</li>
+  <li>pagetriage determinism gate on Windows: configured, not yet executed; to be filled by the PO at wrap-up from the D2 report.</li>
+  <li>Demos refreshed: to be filled by the PO at wrap-up from the T1 report.</li>
+  <li>Security review: to be filled by the PO at wrap-up from the S1 report.</li>
+</ul>
+
+<h2>What did not pass</h2>
+<p>to be filled by the PO at wrap-up from the tester reports. Negative results get the same care as positive ones.</p>
+
+<h2>What is next</h2>
+<p>
+  Sprint 3 is the runtime alpha, including the WebLLM backend. Sprint 5 is the measurement on the
+  8 GB Windows laptop and the real Hindi pipeline in dockit. Until then every figure on this site
+  stays labelled as a placeholder.
+</p>
+<p class="muted">
+  Prose on this page is CC BY 4.0; attribute "Airplane Mode Labs" with a link.
+</p>

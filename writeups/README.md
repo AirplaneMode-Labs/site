@@ -30,3 +30,7 @@ The first write-up, `2026-11-sprint-1.html`, is written from the Sprint 1 tester
 (T1 browser proofs, T2 Rust and interop gates, T3 release gate, S1 security review) and from
 nothing else; a write-up is never written from the plan. If a retest changes a number, the
 write-up is updated from the retest report.
+
+The second, `2026-11-sprint-2.html`, is a skeleton: the product owner fills each slot from the
+named command or tester report at wrap-up, and a build test fails if any figure other than a
+date, sprint number, named command or model name appears before then.

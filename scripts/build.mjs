@@ -247,6 +247,13 @@ ${items.length ? `<ul class="writeup-list">\n${items.join('\n')}\n</ul>` : '<p c
   if (/@import|url\(\s*["']?https?:/i.test(css)) throw new Error('refusing to build: styles.css loads a remote resource');
   copyFileSync(join(srcDir, 'styles.css'), join(outDir, 'styles.css'));
   copyFileSync(join(srcDir, 'favicon.svg'), join(outDir, 'favicon.svg'));
+  // The header mark comes from brand/, the canonical logo folder every repo copies from.
+  // Test fixtures build from a synthetic root without brand/; the real site always has it.
+  const mark = join(root, 'brand', 'airplanemode-labs-mark.svg');
+  if (existsSync(mark)) {
+    mkdirSync(join(outDir, 'brand'), { recursive: true });
+    copyFileSync(mark, join(outDir, 'brand', 'mark.svg'));
+  }
   writeFileSync(join(outDir, '.nojekyll'), '');
   return { pages: outputs.length, papers: papers.length, writeups: writeups.length };
 }

@@ -25,7 +25,7 @@ function buildToTemp() {
 
 test('build produces the expected pages and .nojekyll', () => {
   const { out } = buildToTemp();
-  for (const f of ['index.html', 'demos/index.html', 'papers/index.html', 'benchmarks/index.html', 'writeups/index.html', 'styles.css', 'favicon.svg', '.nojekyll']) {
+  for (const f of ['index.html', 'demos/index.html', 'papers/index.html', 'benchmarks/index.html', 'writeups/index.html', 'styles.css', 'favicon.svg', 'brand/mark.svg', '.nojekyll']) {
     assert.ok(existsSync(join(out, f)), `${f} missing`);
   }
 });

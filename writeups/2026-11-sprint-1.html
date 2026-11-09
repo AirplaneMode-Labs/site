@@ -1,0 +1,288 @@
+<!-- title: Sprint 1: a 700 MB asset that survives a refresh -->
+<!-- date: 2026-11-09 -->
+<!-- description: What Sprint 1 of Airplane Mode Labs shipped, what the testers measured, what failed in round one and why pagetriage v1.0.0 was not tagged. -->
+<h1>Sprint 1: a 700 MB asset that survives a refresh</h1>
+<p class="lede">
+  Sprint 1 (9 to 22 November 2026) had one measurable goal: a 700 MB model asset downloads in
+  Chrome, survives a page refresh in the middle of the download, and is evicted cleanly when the
+  storage quota is hit. This note is written from the four tester reports (T1 browser proofs, T2
+  Rust and interop gates, T3 release gate, S1 security review) and quotes no figure that is not in
+  them.
+</p>
+<p class="muted">
+  Every number below was measured on an Apple-silicon development machine (18 cores, Google Chrome
+  157.0.8103.38 driven by Playwright 1.65.0, Node 22.22.3) and is a placeholder; the reference
+  8 GB Windows laptop without a GPU has not been measured yet.
+</p>
+
+<h2>What shipped</h2>
+<ul>
+  <li>
+    <strong>The five open contracts</strong> in <code>runtime/spec</code>: Manifest, Capability
+    profile, Event, Storage API and Backend adapter, each at 0.1.0 as JSON Schema 2020-12 plus
+    TypeScript, with examples and five shared canonicalisation vectors. T2 compared all 26 vector
+    files vendored into the control-plane crate with the runtime originals: all identical.
+  </li>
+  <li>
+    <strong>The runtime asset manager</strong>: verified manifests (Ed25519 over a restricted
+    RFC 8785 canonical form), chunked Range downloads into OPFS or IndexedDB, resume from a
+    persisted part record, full SHA-256 verification before any byte is readable, and quota-driven
+    eviction. The runtime unit suite passed 278 of 278 cases in T1's run of <code>npm run ci</code>.
+  </li>
+  <li>
+    <strong>localdata</strong>: a set/get/delete/list/usage/clear SDK over OPFS, IndexedDB and an
+    in-memory driver. The browser behavioural suite ran the same case list on OPFS and IndexedDB,
+    values persisted across <code>page.reload()</code> on both drivers, and <code>query()</code>
+    rejects with <code>not_implemented</code> naming Sprint 4 (T1, 8 of 8 browser cases).
+  </li>
+  <li>
+    <strong>pagetriage release preparation</strong>: formatting, clippy, 304 core unit tests plus
+    the golden, determinism and PDF suites, and the three-runtime determinism script (native,
+    Python wheel, WebAssembly) all green in T2's run; version stays 0.1.0 and no tag exists. The
+    release checklist in <code>docs/release.md</code> has one row per definition-of-done item.
+  </li>
+  <li>
+    <strong>glyphsift, tests first</strong>: 77 Devanagari cases in
+    <code>tests/cases/devanagari.toml</code> covering all 16 issue kinds, a harness wired to
+    <code>validate()</code> and marked ignored with a message naming Sprint 2, and a
+    <code>validate()</code> that returns an explicit "not implemented" error in Rust, WebAssembly,
+    the CLI (exit 3) and Python. Running the ignored harness fails on every case, as it should until
+    the validator lands.
+  </li>
+  <li>
+    <strong>cp-manifest and cp-sign</strong> (control-plane, private): the Rust half of the
+    manifest contract. <code>cp-sign sign</code> with the RFC 8032 test seed over the unsigned
+    example reproduced the signature in <code>runtime/spec/examples/manifest.signed.example.json</code>
+    byte for byte; the five canonical vectors and their signatures matched between TypeScript and
+    Rust; all ten negative vectors were rejected by both with the named reasons; keygen writes
+    <code>key.secret</code> with mode 0600 and refuses to overwrite (T2, 41 tests).
+  </li>
+  <li>
+    <strong>dockit</strong>: an installable PWA skeleton whose service worker hashes every precache
+    entry before storing it, with a strict content security policy and no document processing. T1
+    found the content security policy free of remote origins and unsafe directives, and proved that
+    a served copy with one precache hash flipped installs no worker and leaves no cache.
+  </li>
+  <li>
+    <strong>This site</strong>: 30 papers in the tracker, each with a status and an area, a
+    benchmarks scaffold whose every cell reads "not measured", and a build that refuses scripts,
+    inline styles and third-party resources (T1, 9 of 9 build tests).
+  </li>
+</ul>
+
+<h2>The 700 MB proofs</h2>
+<p>
+  T1 ran the runtime demo page against the repository's synthetic range server
+  (<code>test/browser/range-server.mjs</code>), which generates the asset bytes from a seeded
+  xorshift64* stream so no large file is stored anywhere. A separate Node script
+  (<code>test/tools/asset-digest.mjs big 734003200</code>) computed the expected SHA-256 of the same
+  stream independently of the browser code:
+  <code>0f0664c252212d3be1f6b783b42b8e3507ab9b218984dd25b52a2be561a9db35</code>, in 0.85 s.
+</p>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Scenario</th>
+        <th>Store</th>
+        <th>Result</th>
+        <th>Measurement (Apple-silicon placeholder)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Full download of 734,003,200 bytes, SHA-256 verified against the independent digest</td>
+        <td><span class="tag">OPFS</span></td>
+        <td>pass</td>
+        <td>4060 ms wall, 180.8 MB/s, peak JS heap 2,793,500 bytes</td>
+      </tr>
+      <tr>
+        <td>Same</td>
+        <td><span class="tag">IndexedDB</span></td>
+        <td>pass</td>
+        <td>2561 ms wall, 286.6 MB/s, peak JS heap 2,795,400 bytes</td>
+      </tr>
+      <tr>
+        <td>Reload the page mid-download, then call <code>ensure()</code> again</td>
+        <td><span class="tag">OPFS</span></td>
+        <td>pass</td>
+        <td>
+          276,824,064 bytes written at reload (37.7%); exactly one request after the reload,
+          <code>Range: bytes=276824064-</code> with <code>If-Range</code> carrying the server's
+          strong ETag, answered 206 with 457,179,136 bytes, which is the size minus the start; final
+          hash matches; no part file left
+        </td>
+      </tr>
+      <tr>
+        <td>Same</td>
+        <td><span class="tag">IndexedDB</span></td>
+        <td>pass</td>
+        <td>
+          285,212,672 bytes written at reload (38.9%); one request
+          <code>Range: bytes=285212672-</code>, 206, 448,790,528 bytes sent; resume leg 2805 ms
+          including the reload
+        </td>
+      </tr>
+      <tr>
+        <td>Server with <code>--corrupt-hash</code></td>
+        <td><span class="tag">OPFS</span></td>
+        <td>pass</td>
+        <td>
+          <code>ensure()</code> rejects with <code>hash_mismatch</code>, <code>asset.verify.failed</code>
+          emitted, no index row, no committed file, no part file; <code>getBlob()</code> rejects with
+          <code>not_verified</code>
+        </td>
+      </tr>
+      <tr>
+        <td>Server with <code>--ignore-range</code> on a resume</td>
+        <td><span class="tag">OPFS</span></td>
+        <td>pass</td>
+        <td>
+          one request answered 200 with all 734,003,200 bytes; <code>asset.download.restarted</code>
+          with reason <code>status-200</code>; final hash verified
+        </td>
+      </tr>
+      <tr>
+        <td>Committed file truncated by one byte</td>
+        <td><span class="tag">OPFS</span></td>
+        <td>pass</td>
+        <td>
+          <code>getBlob()</code> rejects with <code>not_verified</code>, the index row is removed,
+          <code>asset.verify.failed</code> reason <code>size_changed</code>
+        </td>
+      </tr>
+      <tr>
+        <td>Manifest entry pointing at another origin</td>
+        <td>both</td>
+        <td>pass</td>
+        <td>
+          blocked with <code>policy</code> and <code>asset.download.blocked</code> before any request;
+          the server log for it is empty
+        </td>
+      </tr>
+      <tr>
+        <td>Network egress across every scenario</td>
+        <td>both</td>
+        <td>pass</td>
+        <td>
+          the union of the page's requests and the server log contains only 127.0.0.1 URLs: the demo
+          page's own files, <code>/manifest.json</code> and <code>/assets/*</code>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p class="muted">
+  Peak JS heap stays near 2.8 MB because the manager streams 8 MiB chunks straight into the store;
+  the figure does not include the OPFS or IndexedDB buffers held by the browser process. The
+  capability probe (<code>detectCapabilities()</code>) resolved well inside the 2 s budget (147 ms
+  test wall time including the page round trip) and its details object carries only the
+  allow-listed keys.
+</p>
+
+<h2>What did not pass in round one</h2>
+<p>
+  The third clause of the sprint goal, "evicts cleanly when the storage quota is hit", failed in
+  T1's first run and is the reason the sprint was not closed on the first pass.
+</p>
+<ul>
+  <li>
+    <strong>OPFS commit at the quota edge.</strong> With the origin quota set to 1.5 GiB through
+    Chrome DevTools Protocol (<code>Storage.overrideQuotaForOrigin</code>), T1 downloaded A (700 MB)
+    then B (400 MB), read A, then downloaded C (500 MB). The manager evicted B with reason
+    <code>quota</code> as required, but C's commit then failed with <code>AssetError [store] commit
+    failed</code>: concatenating the chunk files into the final file needed a transient second copy
+    of the asset that the eviction had not reserved. Left behind were an orphan unverified file for
+    C and 65 part files; <code>reconcile()</code> removed the orphan but not the part, and every
+    later <code>ensure(C)</code> received 416 from the server and failed at commit again. The fix
+    round assigned this to the runtime lane as the sprint blocker: bound the transient to one chunk,
+    reserve it, evict and retry on <code>QuotaExceededError</code>, leave no orphan or stuck 416
+    state, and route every store write through one error-mapping helper. T1's retest of the same
+    scenario (OPFS, 1.5 GiB CDP origin quota, A 700 MB then B 400 MB, <code>getBlob(A)</code>, then
+    C 500 MB) evicted exactly B with reason <code>quota</code> (419,430,400 bytes), left A and C
+    verified, listed exactly A and C in <code>index.json</code>, left no <code>.part</code> file and
+    no orphan, and took 9582 ms wall for the whole sequence on the Apple-silicon development machine
+    (placeholder figure; evidence <code>T1/report.md</code>, fix-confirmation row T1-B1, and
+    <code>T1/retest1/t1-retest1-quota-opfs.json</code>). The commit-at-the-quota-edge blocker is
+    closed for OPFS.
+  </li>
+  <li>
+    <strong>IndexedDB quota behaviour was not provable with the CDP override.</strong> Chrome 157
+    accounted 1,053,040,640 bytes of IndexedDB usage for 1,677,721,600 bytes of stored chunks and
+    never threw <code>QuotaExceededError</code> under the 1.5 GiB override, while
+    <code>navigator.storage.estimate().quota</code> ignored the override entirely, so neither the
+    reactive nor the estimate-based eviction path fired and A, B and C all stayed stored. The fix
+    round switched the IndexedDB eviction proof to <code>quotaBytes</code> injection, and the
+    IndexedDB half did not evict in that retest either: with the 1.5 GiB <code>quotaBytes</code>
+    override active, <code>navigator.storage.estimate().usage</code> reported 723,398,656 bytes for
+    1,153,433,600 bytes of stored chunks after A and B (ratio 0.627), so the manager's
+    estimate-based accounting projected that C would fit, emitted no <code>asset.quota</code> and
+    no <code>asset.evict</code>, and A, B and C all ended verified
+    (<code>T1/retest1/t1-retest1-quota-indexeddb.json</code>). This is bug T1R-01, open against the
+    runtime lane at the time of writing: the asset manager needs its own byte accounting for the
+    IndexedDB store rather than trusting Chrome's estimate. T1's round-2 result is not yet in, and
+    this write-up does not claim the IndexedDB half closed. Real-quota IndexedDB eviction and
+    disk-pressure behaviour remain deferred to the Windows laptop.
+  </li>
+  <li>
+    <strong>The runtime browser suite as committed did not run.</strong> 9 of 12 Playwright cases
+    failed because the demo page called the asynchronous <code>list()</code> synchronously, the
+    IndexedDB part record was read from the wrong store, and the progress throttle of 250 ms skipped
+    the 38 to 42 percent reload window. T1 produced the proofs above on a copy of the demo with a
+    one-line fix; the fix round repairs the demo and helpers and adds them to the type check.
+  </li>
+  <li>
+    <strong>Smaller items.</strong> localdata's <code>npm run ci</code> failed on vendored-contract
+    drift (one union type re-wrapped by a formatter; the consumer-side fix is to re-run the sync
+    script before the contracts are committed); one
+    runtime unit test about abort-then-resume failed in T2's run; the glyphsift Python wheel did not
+    build because its <code>pyproject.toml</code> referenced files absent from the crate; dockit's
+    service worker served an unverified network response when the runtime re-verification of a
+    precached file failed after a cache miss (it now answers with the offline page or a 503); and
+    dockit had no repository test for the tampered-precache behaviour T1 had proved by hand (it now
+    has one).
+  </li>
+</ul>
+
+<h2>Security review</h2>
+<p>
+  S1 found no Critical or High issue, one Medium (the manifest schema's algorithm enumeration
+  leaves no room for agility) and twelve Low items, all assigned to the fix round, and wrote the
+  threat model, findings register and pre-pilot checklist under
+  <code>runtime/docs/security/</code>. The accepted risks are on the record with target sprints: no
+  key revocation, no transparency log, no Sigstore compatibility, a single-signature threshold, trust
+  in the browser clock for <code>expiresAt</code>, same-origin co-tenant trust for OPFS, and the
+  unmeasured IndexedDB fallback on the 8 GB laptop. T3's release gate found every CI action pinned
+  by full commit SHA and matching the published tag refs, per-job permissions everywhere, no
+  <code>pull_request_target</code>, no secrets, and zero hits in the clean-room sweep across all
+  seven repositories.
+</p>
+
+<h2>pagetriage v1.0.0 was not tagged</h2>
+<p>
+  The plan asked for pagetriage to be "release-ready for the v1.0 tag" this sprint. It is not, and
+  nobody tagged it. <code>docs/release.md</code> lists the seven definition-of-done items; T3
+  verified every row against the repository and found only row 3 (README limitations section)
+  Done. Rows 1 (tests first and CI green on Linux, macOS and Windows: the Windows job has never
+  run because nothing has been pushed to the organisation yet), 2 (benchmark on the 8 GB laptop),
+  4 (signed artefacts and manifest: no key exists), 5 (changelog and semver tag), 6 (installable
+  from a clean machine: nothing is on crates.io, PyPI or npm) and 7 (write-up) are Open. The
+  version stays 0.1.0, the 1.0.0 notes live under Unreleased in the changelog, and the owner has not
+  been handed a tag to approve. T3's recommendation was either to close rows 1, 2, 4, 6 and 7 and
+  then tag 1.0.0, or to tag an explicitly pre-release 0.9.0 whose notes name the Open rows.
+</p>
+
+<h2>What is next</h2>
+<p>
+  Sprint 2 brings the glyphsift Devanagari validator and its corruption benchmark, the first real
+  backend adapters behind the backend-adapter contract, and the deferred runtime hardening
+  (cross-tab orphan race, IndexedDB file-size trust, the acquire refcount gap). The 8 GB Windows
+  laptop measurements, the real-quota IndexedDB eviction behaviour and every Windows CI run wait
+  for the owner's first push and the laptop itself; until then every figure on this site stays
+  labelled as a placeholder.
+</p>
+<p class="muted">
+  Evidence for every statement above is in the tester reports and their artefacts (download and
+  resume JSON reports, Playwright traces, server request logs, gate logs). Prose on this page is
+  CC BY 4.0; attribute "Airplane Mode Labs" with a link.
+</p>

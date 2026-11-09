@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Build id in every page footer (`Built <date> · build <id>`): first 12 characters of
+  `GITHUB_SHA` only when it is 40-hex, else `local`; node tests cover unset, malformed and valid
+  values. (T1-S2-05)
+
+- Sprint 2 write-up skeleton `writeups/2026-11-sprint-2.html`: honest-claim done-when and model
+  wording verbatim, every result slot empty; test asserts no stray figures. (D5-04)
+- Two benchmark slots, both "not measured": glyphsift score versus noise and runtime same prompt
+  on WebGPU versus WASM (SmolLM2-135M q4), each with its reproduce command. (D5-05)
+- Test that every `demos.json` status carries a Sprint 2 date, and that no built page has a
+  script tag. (D5-05)
+
+### Changed
+
+- Added `.npmrc` with the five standard lines for consistency; site still has zero dependencies. (T3-S2-R1-04)
+
+- `demos.json` status lines rewritten to match T1's observations; Sprint 2 write-up uses the
+  exact Hindi smoke-run sentence instead of the conditional wording. (T1-S2-03, T1-S2-04)
+
+- All six `demos.json` status lines rewritten with a Sprint 2 date; keys and URLs unchanged. The
+  demos page derives its "written on" date from the data instead of hard-coding it. (D5-05)
+
 - Zero-dependency static site builder (`scripts/build.mjs`, Node 22): layout template,
   pages, paper tracker rendered from `data/papers.json`, benchmarks scaffold rendered from
   `data/benchmarks.json`, write-ups folder, `.nojekyll`.
@@ -40,3 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `@import` that references a host other than github.com, arxiv.org or doi.org, or any
   inline `style=` attribute. Every page carries a CSP meta that allows only same-origin
   styles and images.
+
+### Fixed
+
+- `demos.json` site status now says "three unmeasured Sprint 2 slots (two done-when rows and glyphsift throughput)", matching the benchmarks page. (T1-R1-01)
+- Write-up loaded-once sentence now ends with the evidence citation, as in runtime/README.md. (T3-S2-R1-02)

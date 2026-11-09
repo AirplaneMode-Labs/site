@@ -117,6 +117,13 @@ produced it on a named machine, and Apple-silicon figures are labelled placehold
 - Benchmarks are empty until measured; the paper tracker has no read papers yet.
 - The Sprint 1 write-up quotes Apple-silicon figures only, labelled as placeholders; its
   fix-round paragraph is updated from the retest report once that report exists.
+- The Sprint 2 write-up (`writeups/2026-11-sprint-2.html`) is a skeleton: every result slot reads
+  "to be filled by the PO at wrap-up from <named command>" and holds no figure until then.
+- The two Sprint 2 benchmark rows (glyphsift score versus noise; runtime same prompt on WebGPU
+  and WASM with the SmolLM2-135M q4 test model) read "not measured" until a value is copied from
+  that named command's output. The 8 GB Windows no-GPU column is "not measured" everywhere.
+- The Sprint 2 demo statuses are hand-written from what each lane reported landing, then corrected
+  to the tester's observations; they are not measured at the live URLs.
 - The CSP is delivered by a meta tag; GitHub Pages cannot set response headers, so
   `frame-ancestors` and the cross-origin isolation headers are not set.
 - Two paper entries (Howe 2011, LLM as Runtime Error Handler) are `citation to verify`: their

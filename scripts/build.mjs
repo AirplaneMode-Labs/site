@@ -113,6 +113,62 @@ ${rows}
 </div>`;
 }
 
+const GITHUB_ORG = 'https://github.com/AirplaneMode-Labs';
+const DEMO_URL = /^https:\/\/airplanemode-labs\.github\.io\/[a-z]+\/$/;
+
+/** Throws when demos.json is not exactly the six expected entries with consistent URLs. */
+export function checkDemos(demos) {
+  if (!Array.isArray(demos) || demos.length !== 6) throw new Error('demos.json must list exactly six demos');
+  const seen = new Set();
+  for (const d of demos) {
+    for (const k of ['repo', 'url', 'status', 'writtenOn']) {
+      if (typeof d[k] !== 'string' || d[k].length === 0) throw new Error(`demos.json: ${d.repo ?? '?'} lacks ${k}`);
+    }
+    if (seen.has(d.repo)) throw new Error(`demos.json: duplicate repo ${d.repo}`);
+    seen.add(d.repo);
+    if (!DEMO_URL.test(d.url) || d.url !== `https://airplanemode-labs.github.io/${d.repo}/`) {
+      throw new Error(`demos.json: ${d.repo} url must be https://airplanemode-labs.github.io/${d.repo}/`);
+    }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d.writtenOn)) throw new Error(`demos.json: ${d.repo} writtenOn is not a date`);
+  }
+}
+
+/** Shows an ISO date as "9 Nov 2026". */
+function humanDate(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${d} ${months[m - 1]} ${y}`;
+}
+
+function renderDemos(demos) {
+  const rows = demos
+    .map(
+      (d) =>
+        `<tr class="demo" data-repo="${esc(d.repo)}"><td><a href="${esc(`${GITHUB_ORG}/${d.repo}`)}" rel="noopener">${esc(d.repo)}</a></td><td><a href="${esc(d.url)}">${esc(d.url)}</a></td><td class="demo-status">${esc(d.status)}</td><td class="demo-date">${esc(humanDate(d.writtenOn))}</td></tr>`,
+    )
+    .join('\n');
+  return `<div class="table-wrap">
+<table class="demos">
+<thead><tr><th>Repo</th><th>Demo</th><th>Status</th><th>Status written on</th></tr></thead>
+<tbody>
+${rows}
+</tbody>
+</table>
+</div>`;
+}
+
+function renderDemosHome(demos) {
+  const dates = [...new Set(demos.map((d) => d.writtenOn))].map(humanDate).join(', ');
+  const items = demos
+    .map((d) => `  <li><a href="${esc(d.url)}">${esc(d.repo)}</a>: ${esc(d.status)}</li>`)
+    .join('\n');
+  return `<h2>Demos</h2>
+<ul class="demo-list">
+${items}
+</ul>
+<p class="muted">Statuses written on ${esc(dates)} from local builds, not measured at the live URLs. See the <a href="demos/">demos page</a>.</p>`;
+}
+
 export function build({ root, outDir }) {
   const srcDir = join(root, 'src');
   const layout = readFileSync(join(srcDir, 'templates', 'layout.html'), 'utf8');
@@ -130,6 +186,8 @@ export function build({ root, outDir }) {
   const pagesDir = join(srcDir, 'pages');
   const papers = JSON.parse(readFileSync(join(root, 'data', 'papers.json'), 'utf8'));
   const benchmarks = JSON.parse(readFileSync(join(root, 'data', 'benchmarks.json'), 'utf8'));
+  const demos = JSON.parse(readFileSync(join(root, 'data', 'demos.json'), 'utf8'));
+  checkDemos(demos);
   for (const file of readdirSync(pagesDir).filter((f) => f.endsWith('.html')).sort()) {
     const name = basename(file, '.html');
     const fragment = readFileSync(join(pagesDir, file), 'utf8');
@@ -138,6 +196,12 @@ export function build({ root, outDir }) {
     let content = stripMeta(fragment);
     if (content.includes('{{benchmarks-table}}')) {
       content = content.replace('{{benchmarks-table}}', () => renderBenchmarks(benchmarks));
+    }
+    if (content.includes('{{demos-table}}')) {
+      content = content.replace('{{demos-table}}', () => renderDemos(demos));
+    }
+    if (content.includes('{{demos-home}}')) {
+      content = content.replace('{{demos-home}}', () => renderDemosHome(demos));
     }
     if (name === 'index') emit('index.html', title, description, content, 0, 'index');
     else emit(join(name, 'index.html'), title, description, content, 1, name);
@@ -182,6 +246,7 @@ ${items.length ? `<ul class="writeup-list">\n${items.join('\n')}\n</ul>` : '<p c
   const css = readFileSync(join(srcDir, 'styles.css'), 'utf8');
   if (/@import|url\(\s*["']?https?:/i.test(css)) throw new Error('refusing to build: styles.css loads a remote resource');
   copyFileSync(join(srcDir, 'styles.css'), join(outDir, 'styles.css'));
+  copyFileSync(join(srcDir, 'favicon.svg'), join(outDir, 'favicon.svg'));
   writeFileSync(join(outDir, '.nojekyll'), '');
   return { pages: outputs.length, papers: papers.length, writeups: writeups.length };
 }

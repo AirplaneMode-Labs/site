@@ -4,7 +4,7 @@ import { mkdtempSync, readFileSync, readdirSync, statSync, existsSync, mkdirSync
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { build, ALLOWED_RESOURCE_HOSTS } from '../scripts/build.mjs';
+import { build, checkDemos, ALLOWED_RESOURCE_HOSTS } from '../scripts/build.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -25,7 +25,7 @@ function buildToTemp() {
 
 test('build produces the expected pages and .nojekyll', () => {
   const { out } = buildToTemp();
-  for (const f of ['index.html', 'papers/index.html', 'benchmarks/index.html', 'writeups/index.html', 'styles.css', '.nojekyll']) {
+  for (const f of ['index.html', 'demos/index.html', 'papers/index.html', 'benchmarks/index.html', 'writeups/index.html', 'styles.css', 'favicon.svg', '.nojekyll']) {
     assert.ok(existsSync(join(out, f)), `${f} missing`);
   }
 });
@@ -152,4 +152,71 @@ test('the Sprint 1 write-up records the OPFS quota retest from T1 evidence and l
   assert.match(html, /round-2 result (is|was) not yet in/);
   // The placeholder sentence is gone.
   assert.doesNotMatch(html, /will be recorded here/);
+});
+
+const DEMO_REPOS = ['pagetriage', 'runtime', 'glyphsift', 'localdata', 'dockit', 'site'];
+const DEMO_URLS = DEMO_REPOS.map((r) => `https://airplanemode-labs.github.io/${r}/`);
+
+test('demos.json lists exactly the six demos with consistent URLs, statuses and one written-on date', () => {
+  const demos = JSON.parse(readFileSync(join(root, 'data', 'demos.json'), 'utf8'));
+  assert.equal(demos.length, 6);
+  assert.deepEqual(new Set(demos.map((d) => d.repo)), new Set(DEMO_REPOS));
+  for (const d of demos) {
+    assert.match(d.url, /^https:\/\/airplanemode-labs\.github\.io\/[a-z]+\/$/, `${d.repo}: url shape`);
+    assert.equal(d.url, `https://airplanemode-labs.github.io/${d.repo}/`, `${d.repo}: url does not match repo`);
+    assert.ok(typeof d.status === 'string' && d.status.length > 0, `${d.repo}: empty status`);
+    assert.equal(d.writtenOn, '2026-11-09', `${d.repo}: writtenOn`);
+  }
+  assert.doesNotThrow(() => checkDemos(demos));
+});
+
+test('build refuses a demos list that is not the six expected entries', () => {
+  assert.throws(() => checkDemos([]), /six/);
+  assert.throws(
+    () => checkDemos(DEMO_REPOS.map((repo) => ({ repo, url: `https://example.invalid/${repo}/`, status: 'x', writtenOn: '2026-11-09' }))),
+    /url must be/,
+  );
+  assert.throws(
+    () => checkDemos(DEMO_REPOS.map(() => ({ repo: 'site', url: 'https://airplanemode-labs.github.io/site/', status: 'x', writtenOn: '2026-11-09' }))),
+    /duplicate/,
+  );
+});
+
+test('the demos page lists all six URLs, heads the date column "Status written on" and never says "Checked"', () => {
+  const { out } = buildToTemp();
+  const html = readFileSync(join(out, 'demos', 'index.html'), 'utf8');
+  for (const u of DEMO_URLS) assert.ok(html.includes(`href="${u}"`), `${u} missing from demos page`);
+  const found = [...html.matchAll(/https:\/\/airplanemode-labs\.github\.io\/[a-z]+\//g)].map((m) => m[0]);
+  assert.deepEqual(new Set(found), new Set(DEMO_URLS));
+  assert.match(html, /<th>Status written on<\/th>/);
+  assert.doesNotMatch(html, /<th>[^<]*Checked[^<]*<\/th>/);
+  assert.doesNotMatch(html, /\bChecked\b/);
+  assert.match(html, /written on 9 Nov 2026 from local builds served under \/&lt;repo&gt;\//);
+  assert.match(html, /nothing on this page was measured against the live URLs/);
+  assert.equal((html.match(/<h2>What this demo does not do yet<\/h2>/g) ?? []).length, 1, 'exactly one not-yet heading');
+  const demos = JSON.parse(readFileSync(join(root, 'data', 'demos.json'), 'utf8'));
+  for (const d of demos) assert.ok(html.includes(d.status.replace(/&/g, '&amp;')), `${d.repo}: status text missing`);
+});
+
+test('the home page has a Demos section with the six URLs before Repositories and the honesty line', () => {
+  const { out } = buildToTemp();
+  const html = readFileSync(join(out, 'index.html'), 'utf8');
+  for (const u of DEMO_URLS) assert.ok(html.includes(`href="${u}"`), `${u} missing from home`);
+  const demosAt = html.indexOf('<h2>Demos</h2>');
+  const reposAt = html.indexOf('<h2>Repositories</h2>');
+  assert.ok(demosAt > 0 && reposAt > demosAt, 'Demos section must precede Repositories');
+  assert.match(html, /Statuses written on 9 Nov 2026 from local builds, not measured at the live URLs\./);
+});
+
+test('every page carries the Demos nav link resolving to the demos page', () => {
+  const { out } = buildToTemp();
+  const pages = walk(out).filter((f) => f.endsWith('.html'));
+  assert.ok(pages.length >= 6);
+  for (const file of pages) {
+    const html = readFileSync(file, 'utf8');
+    const m = /<a href="((?:\.\.\/)*)demos\/"[^>]*>Demos<\/a>/.exec(html);
+    assert.ok(m, `${file} lacks the Demos nav link`);
+    const target = join(dirname(file), m[1], 'demos', 'index.html');
+    assert.ok(existsSync(target), `${file}: Demos link resolves to ${target}, which does not exist`);
+  }
 });

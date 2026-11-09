@@ -1,0 +1,38 @@
+[
+  {
+    "repo": "pagetriage",
+    "url": "https://airplanemode-labs.github.io/pagetriage/",
+    "status": "Working: tilt, blur, bleed-through, PDF text-layer and legacy-font checks on sample or dropped pages; WASM report byte-identical to native. No OCR, no tag yet.",
+    "writtenOn": "2026-11-09"
+  },
+  {
+    "repo": "runtime",
+    "url": "https://airplanemode-labs.github.io/runtime/",
+    "status": "Working: capability profile; signed-manifest verification; download, hash check and quota eviction of synthetic assets (not a model); resume verified on a local Range server, unverified on Pages until first deploy. No inference backend yet (Sprint 2).",
+    "writtenOn": "2026-11-09"
+  },
+  {
+    "repo": "glyphsift",
+    "url": "https://airplanemode-labs.github.io/glyphsift/",
+    "status": "Partial: grapheme clustering of pasted Devanagari; validate() returns Unimplemented until Sprint 2.",
+    "writtenOn": "2026-11-09"
+  },
+  {
+    "repo": "localdata",
+    "url": "https://airplanemode-labs.github.io/localdata/",
+    "status": "Working: set/get/delete/list over OPFS, IndexedDB or memory with quota accounting; query() not implemented (Sprint 4).",
+    "writtenOn": "2026-11-09"
+  },
+  {
+    "repo": "dockit",
+    "url": "https://airplanemode-labs.github.io/dockit/",
+    "status": "Skeleton: installable PWA shell that works offline; every pipeline stage is a stub, no document processing (Sprint 5).",
+    "writtenOn": "2026-11-09"
+  },
+  {
+    "repo": "site",
+    "url": "https://airplanemode-labs.github.io/site/",
+    "status": "Live: paper tracker, benchmarks scaffold, write-ups, this list. No scripts.",
+    "writtenOn": "2026-11-09"
+  }
+]

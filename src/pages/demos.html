@@ -1,0 +1,35 @@
+<!-- title: Demos -->
+<!-- description: The six public Airplane Mode Labs demos on GitHub Pages, each with a one-line honest status and the date it was written. -->
+<h1>Demos</h1>
+<p class="lede">
+  Every Airplane Mode Labs repository with a browser surface ships a public demo on GitHub Pages
+  from Sprint 1 onward. Each demo shows only what works today and has a box titled "What this demo
+  does not do yet". Everything runs in the browser tab: nothing is uploaded, there are no
+  third-party scripts, fonts or trackers, and the only network requests are for the page's own
+  files.
+</p>
+<p class="muted">
+  These statuses were written on 9 Nov 2026 from local builds served under /&lt;repo&gt;/ on a
+  developer machine. The Pages URLs become reachable only after the owner enables Pages and pushes;
+  nothing on this page was measured against the live URLs.
+</p>
+{{demos-table}}
+<h2>What a demo is allowed to claim</h2>
+<p>
+  A demo page states its browser requirements with live feature detection, names the sprint in
+  which each missing piece lands, and works under its sub-path with relative URLs only. Storage
+  demos write only under their own prefix, because all six share the
+  <code>airplanemode-labs.github.io</code> origin.
+</p>
+<section id="not-yet" class="box box-warn">
+  <h2>What this demo does not do yet</h2>
+  <ul>
+    <li>No search.</li>
+    <li>No RSS feed.</li>
+    <li>Benchmarks are unmeasured; every cell on the benchmarks page reads "not measured".</li>
+    <li>
+      The demo statuses above are hand-written and dated, not measured at the live URLs; they are
+      updated by hand after each deploy.
+    </li>
+  </ul>
+</section>

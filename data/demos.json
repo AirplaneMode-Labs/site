@@ -2,37 +2,37 @@
   {
     "repo": "pagetriage",
     "url": "https://airplanemode-labs.github.io/pagetriage/",
-    "status": "Working: tilt, blur, bleed-through, PDF text-layer and legacy-font checks on sample or dropped pages; WASM report byte-identical to native. No OCR, no tag yet.",
+    "status": "Sprint 2 (9 Nov 2026): Working: tilt, blur, bleed-through, PDF text-layer and legacy-font checks on sample or dropped pages; WASM report byte-identical to native; the status line shows the build id. Windows determinism is configured, not yet executed. No OCR, no tag yet.",
     "writtenOn": "2026-11-09"
   },
   {
     "repo": "runtime",
     "url": "https://airplanemode-labs.github.io/runtime/",
-    "status": "Working: capability profile; signed-manifest verification; download, hash check and quota eviction of synthetic assets (not a model); resume verified on a local Range server and on Pages (206 on 9 Nov 2026). No inference backend yet (Sprint 2).",
+    "status": "Sprint 2 (9 Nov 2026): Working: capability profile, signed-manifest verification, download, hash check and quota eviction of synthetic assets, resume. New this sprint: a backend panel with the capability tier and the per-rung plan, and a test-model page that downloads the SmolLM2-135M test model only after you click, then answers on WebGPU and, with Force WASM, on WebAssembly (Chrome on an Apple-silicon Mac only; not the Hindi production model). The page freezes while WebAssembly generates. Not yet: WebLLM (Sprint 3), Windows and 8 GB no-GPU measurements.",
     "writtenOn": "2026-11-09"
   },
   {
     "repo": "glyphsift",
     "url": "https://airplanemode-labs.github.io/glyphsift/",
-    "status": "Partial: grapheme clustering of pasted Devanagari; validate() returns Unimplemented until Sprint 2.",
+    "status": "Sprint 2 (9 Nov 2026): Working: paste or load a synthetic sample of Devanagari and get a document score, a per-line score table and the count of each of the sixteen rules, computed in WebAssembly in the tab; input over 1 MiB is refused. Not yet: a per-line heatmap, scripts other than Devanagari, and checks for OCR confusions that are structurally valid. No npm package or wheel.",
     "writtenOn": "2026-11-09"
   },
   {
     "repo": "localdata",
     "url": "https://airplanemode-labs.github.io/localdata/",
-    "status": "Working: set/get/delete/list over OPFS, IndexedDB or memory with quota accounting; query() not implemented (Sprint 4).",
+    "status": "Sprint 2 (9 Nov 2026): Working: set/get/delete/list over OPFS, IndexedDB or memory with quota accounting; query() throws not_implemented naming Sprint 4, with a design note for the vector index; the status line shows the build id.",
     "writtenOn": "2026-11-09"
   },
   {
     "repo": "dockit",
     "url": "https://airplanemode-labs.github.io/dockit/",
-    "status": "Skeleton: installable PWA shell that works offline; every pipeline stage is a stub, no document processing (Sprint 5).",
+    "status": "Sprint 2 (9 Nov 2026): Skeleton: installable PWA shell that works offline. The Answer card shows the planned model and the backend fallback chain as a plan and a prediction only; every pipeline stage is a stub, with no inference until Sprint 5.",
     "writtenOn": "2026-11-09"
   },
   {
     "repo": "site",
     "url": "https://airplanemode-labs.github.io/site/",
-    "status": "Live: paper tracker, benchmarks scaffold, write-ups, this list. No scripts.",
+    "status": "Sprint 2 (9 Nov 2026): Live: paper tracker, benchmarks with three unmeasured Sprint 2 slots (two done-when rows and glyphsift throughput), write-ups including a Sprint 2 skeleton, this list, and a build id in the footer. No scripts.",
     "writtenOn": "2026-11-09"
   }
 ]

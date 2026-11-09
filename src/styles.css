@@ -1,0 +1,152 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f6f3ec;
+  --fg: #1c1c1c;
+  --muted: #5b5b5b;
+  --line: #d8d2c4;
+  --accent: #14213d;
+  --accent-soft: #e6ebf7;
+  --tag: #eee9dc;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15171c;
+    --fg: #e8e6e1;
+    --muted: #9c9c9c;
+    --line: #2f333d;
+    --accent: #c9d6ff;
+    --accent-soft: #1f2636;
+    --tag: #262a33;
+  }
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  font-size: 100%;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  line-height: 1.55;
+}
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92em;
+}
+a {
+  color: var(--accent);
+}
+.skip {
+  position: absolute;
+  left: -999px;
+}
+.skip:focus {
+  left: 16px;
+  top: 8px;
+  background: var(--bg);
+  padding: 4px 8px;
+}
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 24px;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+.site-header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+.site-header nav a {
+  text-decoration: none;
+  padding: 2px 0;
+  border-bottom: 2px solid transparent;
+}
+.site-header nav a[aria-current='page'] {
+  border-bottom-color: var(--accent);
+}
+.content {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 16px;
+}
+.lede {
+  font-size: 1.1rem;
+  max-width: 48rem;
+}
+.muted {
+  color: var(--muted);
+}
+h1 {
+  font-size: 1.9rem;
+  margin: 0.6em 0 0.3em;
+  color: var(--accent);
+}
+h2 {
+  font-size: 1.25rem;
+  margin-top: 1.8em;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+th,
+td {
+  text-align: left;
+  vertical-align: top;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--line);
+}
+th {
+  background: var(--accent-soft);
+}
+.table-wrap {
+  overflow-x: auto;
+}
+.tag {
+  display: inline-block;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--tag);
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+.principles dt {
+  font-weight: 600;
+  margin-top: 0.8em;
+}
+.principles dd {
+  margin: 0.2em 0 0;
+}
+.paper-claim {
+  max-width: 28rem;
+}
+.site-footer {
+  max-width: 72rem;
+  margin: 32px auto 0;
+  padding: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.writeup-list li {
+  margin: 0.4em 0;
+}

@@ -1,0 +1,54 @@
+<!-- title: Home -->
+<!-- description: Airplane Mode Labs builds offline-first, browser-native AI infrastructure from the research papers up. -->
+<h1>Offline-first AI, built from the papers up</h1>
+<p class="lede">
+  Airplane Mode Labs builds the tools that AI usually needs the cloud for, so that they run offline,
+  in the browser, on small hardware. The first product is an offline document intelligence kit for
+  Indian financial, legal and healthcare documents that works on an 8 GB laptop with the Wi-Fi off.
+</p>
+
+<h2>What is here</h2>
+<ul>
+  <li><a href="papers/">Papers</a>: the reading list, with each paper's claim, our status and notes.</li>
+  <li><a href="benchmarks/">Benchmarks</a>: measurements on modest hardware, or an honest "not measured".</li>
+  <li><a href="writeups/">Write-ups</a>: what a paper claimed, what held up, what did not.</li>
+</ul>
+
+<h2>Repositories</h2>
+<table class="repos">
+  <thead>
+    <tr><th>Repo</th><th>Job</th><th>Stack</th><th>Licence</th><th>Status</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><a href="https://github.com/AirplaneMode-Labs/pagetriage" rel="noopener">pagetriage</a></td><td>What is on a scanned or PDF page, and where it should go next</td><td>Rust core, Python wheel, WebAssembly</td><td>MIT OR Apache-2.0</td><td>Working; release preparation in progress, no tag yet</td></tr>
+    <tr><td><a href="https://github.com/AirplaneMode-Labs/glyphsift" rel="noopener">glyphsift</a></td><td>Is extracted Indic text clean enough to trust or train on; Hindi first</td><td>Rust core, WebAssembly, Python wheel, CLI</td><td>Apache-2.0</td><td>Skeleton; tests written, validator lands in Sprint 2</td></tr>
+    <tr><td><a href="https://github.com/AirplaneMode-Labs/localdata" rel="noopener">localdata</a></td><td>set/get/delete/query over OPFS with an IndexedDB fallback</td><td>TypeScript SDK; vector index in Rust to WebAssembly later</td><td>Apache-2.0</td><td>Skeleton; drivers and behavioural suite in Sprint 1</td></tr>
+    <tr><td><a href="https://github.com/AirplaneMode-Labs/runtime" rel="noopener">runtime</a></td><td>Capability profile, asset manager, backend adapter, observability events; the open specs</td><td>TypeScript</td><td>Apache-2.0</td><td>Sprint 1: specs, capability profile and asset manager</td></tr>
+    <tr><td><a href="https://github.com/AirplaneMode-Labs/dockit" rel="noopener">dockit</a></td><td>Reference app: offline PDF question answering as an installable web app</td><td>TypeScript, React, PWA</td><td>Apache-2.0</td><td>Skeleton; no document processing; demo in Sprint 5</td></tr>
+    <tr><td><a href="https://github.com/AirplaneMode-Labs/site" rel="noopener">site</a></td><td>This site: paper tracker, benchmarks, write-ups</td><td>Plain HTML, zero dependencies</td><td>Apache-2.0 code, CC BY 4.0 prose</td><td>Live</td></tr>
+    <tr><td>control-plane</td><td>Signed registry, offline update bundles, policy, audit, fleet view (private)</td><td>Rust</td><td>FSL-1.1-Apache-2.0</td><td>Private; manifest and signing crates only</td></tr>
+  </tbody>
+</table>
+<p class="muted">
+  Package names use the placeholder scope <code>@airplanemode</code> and crate names <code>&lt;repo&gt;</code>
+  until the handles are reserved; nothing is published yet.
+</p>
+
+<h2>How we work</h2>
+<dl class="principles">
+  <dt>Papers before tools</dt>
+  <dd>We read the key papers for a component before we look at how others built it. Existing tools are something to measure against, not something to copy.</dd>
+  <dt>Small repositories with one job each</dt>
+  <dd>Each tool gets its own repository, a clear purpose and a README with a benchmark we are willing to defend.</dd>
+  <dt>The browser and small hardware are the default</dt>
+  <dd>WebAssembly, WebGPU, OPFS and IndexedDB first. Anything that needs a server has to justify itself.</dd>
+  <dt>Measure, and publish what did not work</dt>
+  <dd>A shared harness reports memory, latency, size and quality on modest machines. Negative results are published alongside positive ones.</dd>
+  <dt>Ship something small every week</dt>
+  <dd>A small public artefact every Saturday beats a large private one at the end of the quarter.</dd>
+  <dt>Write it down</dt>
+  <dd>Every reimplemented paper gets a short note: the claim, what held up, what did not.</dd>
+</dl>
+<p class="muted">
+  Everything on this site runs without JavaScript and loads nothing from a third party.
+</p>

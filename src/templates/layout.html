@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="{{description}}" />
+    <link rel="stylesheet" href="{{root}}styles.css" />
+    <title>{{title}} | Airplane Mode Labs</title>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="{{root}}">Airplane Mode Labs</a>
+      <nav aria-label="Site">
+        <a href="{{root}}" {{active:index}}>Home</a>
+        <a href="{{root}}papers/" {{active:papers}}>Papers</a>
+        <a href="{{root}}benchmarks/" {{active:benchmarks}}>Benchmarks</a>
+        <a href="{{root}}writeups/" {{active:writeups}}>Write-ups</a>
+        <a href="https://github.com/AirplaneMode-Labs" rel="noopener">GitHub org</a>
+      </nav>
+    </header>
+    <main id="main" class="content">
+      {{content}}
+    </main>
+    <footer class="site-footer">
+      <p>
+        Airplane Mode Labs. Code under
+        <a href="https://github.com/AirplaneMode-Labs/site/blob/main/LICENSE" rel="noopener">Apache-2.0</a>;
+        prose and data under
+        <a href="https://github.com/AirplaneMode-Labs/site/blob/main/LICENSE-CC-BY-4.0" rel="noopener">CC BY 4.0</a>.
+        No scripts, no tracking, no cookies. Built {{built}}.
+      </p>
+    </footer>
+  </body>
+</html>

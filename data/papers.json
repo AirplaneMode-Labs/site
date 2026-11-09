@@ -1,0 +1,486 @@
+[
+  {
+    "id": "howe-2013",
+    "title": "Document binarization with automatic parameter tuning",
+    "authors": [
+      "Nicholas R. Howe"
+    ],
+    "year": 2013,
+    "venue": "International Journal on Document Analysis and Recognition (IJDAR)",
+    "url": "https://doi.org/10.1007/s10032-012-0192-x",
+    "area": "document-imaging",
+    "claim": "Binarisation parameters can be tuned automatically per image, so a degraded-document binariser needs no hand-set thresholds.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against doi.org (CSL JSON); online 2012, IJDAR volume 2013",
+    "repo": "pagetriage"
+  },
+  {
+    "id": "howe-2011",
+    "title": "A Laplacian energy for document binarization",
+    "authors": [
+      "Nicholas R. Howe"
+    ],
+    "year": 2011,
+    "area": "document-imaging",
+    "claim": "A Laplacian energy minimised by graph cuts binarises degraded documents better than local thresholding.",
+    "status": "to-read",
+    "notes": "citation to verify",
+    "repo": "pagetriage"
+  },
+  {
+    "id": "otsu-1979",
+    "title": "A Threshold Selection Method from Gray-Level Histograms",
+    "authors": [
+      "Nobuyuki Otsu"
+    ],
+    "year": 1979,
+    "venue": "IEEE Transactions on Systems, Man, and Cybernetics",
+    "url": "https://doi.org/10.1109/TSMC.1979.4310076",
+    "area": "document-imaging",
+    "claim": "A single global threshold that maximises between-class variance separates foreground from background with no parameters.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against doi.org (CSL JSON)",
+    "repo": "pagetriage"
+  },
+  {
+    "id": "sauvola-2000",
+    "title": "Adaptive document image binarization",
+    "authors": [
+      "J. Sauvola",
+      "M. Pietikäinen"
+    ],
+    "year": 2000,
+    "venue": "Pattern Recognition",
+    "url": "https://doi.org/10.1016/S0031-3203(99)00055-2",
+    "area": "document-imaging",
+    "claim": "A threshold adapted to the local mean and standard deviation copes with uneven illumination and stains on document images.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against doi.org (CSL JSON)",
+    "repo": "pagetriage"
+  },
+  {
+    "id": "canny-1986",
+    "title": "A Computational Approach to Edge Detection",
+    "authors": [
+      "John Canny"
+    ],
+    "year": 1986,
+    "venue": "IEEE Transactions on Pattern Analysis and Machine Intelligence",
+    "url": "https://doi.org/10.1109/TPAMI.1986.4767851",
+    "area": "document-imaging",
+    "claim": "Framing edge detection as an optimisation of detection, localisation and single response gives a principled detector.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against doi.org (CSL JSON)",
+    "repo": "pagetriage"
+  },
+  {
+    "id": "boykov-kolmogorov-2004",
+    "title": "An experimental comparison of min-cut/max- flow algorithms for energy minimization in vision",
+    "authors": [
+      "Y. Boykov",
+      "V. Kolmogorov"
+    ],
+    "year": 2004,
+    "venue": "IEEE Transactions on Pattern Analysis and Machine Intelligence",
+    "url": "https://doi.org/10.1109/TPAMI.2004.60",
+    "area": "document-imaging",
+    "claim": "A min-cut/max-flow algorithm designed for vision graphs runs several times faster than general-purpose ones.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against doi.org (CSL JSON)",
+    "repo": "pagetriage"
+  },
+  {
+    "id": "chaudhuri-pal-1997",
+    "title": "Skew angle detection of digitized Indian script documents",
+    "authors": [
+      "B.B. Chaudhuri",
+      "U. Pal"
+    ],
+    "year": 1997,
+    "venue": "IEEE Transactions on Pattern Analysis and Machine Intelligence",
+    "url": "https://doi.org/10.1109/34.574803",
+    "area": "document-imaging",
+    "claim": "The headline stroke of Devanagari and Bangla lets skew be detected in a way specific to Indian scripts.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against doi.org (CSL JSON)",
+    "repo": "pagetriage"
+  },
+  {
+    "id": "uax29",
+    "title": "UAX #29: Unicode Text Segmentation",
+    "authors": [
+      "Unicode Consortium"
+    ],
+    "year": null,
+    "venue": "Unicode Standard Annex #29",
+    "url": "https://www.unicode.org/reports/tr29/",
+    "area": "text-segmentation",
+    "claim": "Default, language-independent rules determine grapheme cluster, word and sentence boundaries in Unicode text.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against the standard's own page",
+    "repo": "glyphsift"
+  },
+  {
+    "id": "fineweb-2024",
+    "title": "The FineWeb Datasets: Decanting the Web for the Finest Text Data at Scale",
+    "authors": [
+      "Penedo, Guilherme",
+      "Kydlíček, Hynek",
+      "allal, Loubna Ben",
+      "et al."
+    ],
+    "year": 2024,
+    "venue": "arXiv:2406.17557",
+    "url": "https://arxiv.org/abs/2406.17557",
+    "area": "data-quality",
+    "claim": "Careful filtering and deduplication of Common Crawl yields a 15 trillion token dataset that trains better models than earlier open sets.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page",
+    "repo": "glyphsift"
+  },
+  {
+    "id": "dclm-2024",
+    "title": "DataComp-LM: In search of the next generation of training sets for language models",
+    "authors": [
+      "Li, Jeffrey",
+      "Fang, Alex",
+      "Smyrnis, Georgios",
+      "et al."
+    ],
+    "year": 2024,
+    "venue": "arXiv:2406.11794",
+    "url": "https://arxiv.org/abs/2406.11794",
+    "area": "data-quality",
+    "claim": "A standardised testbed shows that model-based data filtering matters more than raw scale for training-set quality.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page",
+    "repo": "glyphsift"
+  },
+  {
+    "id": "byt5-2022",
+    "title": "ByT5: Towards a token-free future with pre-trained byte-to-byte models",
+    "authors": [
+      "Xue, Linting",
+      "Barua, Aditya",
+      "Constant, Noah",
+      "et al."
+    ],
+    "year": 2021,
+    "venue": "arXiv:2105.13626",
+    "url": "https://arxiv.org/abs/2105.13626",
+    "area": "small-models",
+    "claim": "Byte-level models with no tokenizer compete with token-based models and are more robust to noisy text.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "pagedattention-2023",
+    "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention",
+    "authors": [
+      "Kwon, Woosuk",
+      "Li, Zhuohan",
+      "Zhuang, Siyuan",
+      "et al."
+    ],
+    "year": 2023,
+    "venue": "arXiv:2309.06180",
+    "url": "https://arxiv.org/abs/2309.06180",
+    "area": "inference",
+    "claim": "Paging the KV cache like virtual memory removes fragmentation and raises serving throughput two to four times.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "layerskip-2024",
+    "title": "LayerSkip: Enabling Early Exit Inference and Self-Speculative Decoding",
+    "authors": [
+      "Elhoushi, Mostafa",
+      "Shrivastava, Akshat",
+      "Liskovich, Diana",
+      "et al."
+    ],
+    "year": 2024,
+    "venue": "arXiv:2404.16710",
+    "url": "https://arxiv.org/abs/2404.16710",
+    "area": "inference",
+    "claim": "Layer dropout and an early-exit loss during training let a model exit early and self-speculate for faster decoding.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "streamingllm-2023",
+    "title": "Efficient Streaming Language Models with Attention Sinks",
+    "authors": [
+      "Xiao, Guangxuan",
+      "Tian, Yuandong",
+      "Chen, Beidi",
+      "et al."
+    ],
+    "year": 2023,
+    "venue": "arXiv:2309.17453",
+    "url": "https://arxiv.org/abs/2309.17453",
+    "area": "kv-cache",
+    "claim": "Keeping a few initial attention-sink tokens plus a sliding window lets a model stream over unbounded input.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "duoattention-2024",
+    "title": "DuoAttention: Efficient Long-Context LLM Inference with Retrieval and Streaming Heads",
+    "authors": [
+      "Xiao, Guangxuan",
+      "Tang, Jiaming",
+      "Zuo, Jingwei",
+      "et al."
+    ],
+    "year": 2024,
+    "venue": "arXiv:2410.10819",
+    "url": "https://arxiv.org/abs/2410.10819",
+    "area": "kv-cache",
+    "claim": "Only retrieval heads need the full KV cache; streaming heads can use a short window, cutting memory sharply.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "chunkkv-2025",
+    "title": "ChunkKV: Semantic-Preserving KV Cache Compression for Efficient Long-Context LLM Inference",
+    "authors": [
+      "Liu, Xiang",
+      "Tang, Zhenheng",
+      "Dong, Peijie",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2502.00299",
+    "url": "https://arxiv.org/abs/2502.00299",
+    "area": "kv-cache",
+    "claim": "Compressing the KV cache in semantic chunks rather than per token preserves quality at lower memory.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "bitnet-b158-2024",
+    "title": "The Era of 1-bit LLMs: All Large Language Models are in 1.58 Bits",
+    "authors": [
+      "Ma, Shuming",
+      "Wang, Hongyu",
+      "Ma, Lingxiao",
+      "et al."
+    ],
+    "year": 2024,
+    "venue": "arXiv:2402.17764",
+    "url": "https://arxiv.org/abs/2402.17764",
+    "area": "small-models",
+    "claim": "Ternary weights match full-precision quality at 3 billion parameters with far less memory and energy.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "mamba-2023",
+    "title": "Mamba: Linear-Time Sequence Modeling with Selective State Spaces",
+    "authors": [
+      "Gu, Albert",
+      "Dao, Tri"
+    ],
+    "year": 2023,
+    "venue": "arXiv:2312.00752",
+    "url": "https://arxiv.org/abs/2312.00752",
+    "area": "inference",
+    "claim": "Selective state-space models match transformers with linear-time modelling and constant-memory inference.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "rwkv7-2025",
+    "title": "RWKV-7 \"Goose\" with Expressive Dynamic State Evolution",
+    "authors": [
+      "Peng, Bo",
+      "Zhang, Ruichong",
+      "Goldstein, Daniel",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2503.14456",
+    "url": "https://arxiv.org/abs/2503.14456",
+    "area": "inference",
+    "claim": "A generalised delta rule gives an RNN with expressive state evolution and constant memory per token.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "retro-2022",
+    "title": "Improving language models by retrieving from trillions of tokens",
+    "authors": [
+      "Borgeaud, Sebastian",
+      "Mensch, Arthur",
+      "Hoffmann, Jordan",
+      "et al."
+    ],
+    "year": 2021,
+    "venue": "arXiv:2112.04426",
+    "url": "https://arxiv.org/abs/2112.04426",
+    "area": "retrieval",
+    "claim": "Retrieving from a trillion-token database lets a comparatively small model match far larger ones.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "flora-2024",
+    "title": "FLoRA: Federated Fine-Tuning Large Language Models with Heterogeneous Low-Rank Adaptations",
+    "authors": [
+      "Wang, Ziyao",
+      "Shen, Zheyu",
+      "He, Yexiao",
+      "et al."
+    ],
+    "year": 2024,
+    "venue": "arXiv:2409.05976",
+    "url": "https://arxiv.org/abs/2409.05976",
+    "area": "training",
+    "claim": "Stacking heterogeneous LoRA adapters allows federated fine-tuning without the noise of naive aggregation.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "task-arithmetic-2023",
+    "title": "Editing Models with Task Arithmetic",
+    "authors": [
+      "Ilharco, Gabriel",
+      "Ribeiro, Marco Tulio",
+      "Wortsman, Mitchell",
+      "et al."
+    ],
+    "year": 2022,
+    "venue": "arXiv:2212.04089",
+    "url": "https://arxiv.org/abs/2212.04089",
+    "area": "model-merging",
+    "claim": "Adding and subtracting task vectors (weight deltas) edits model behaviour without retraining.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "ties-merging-2023",
+    "title": "TIES-Merging: Resolving Interference When Merging Models",
+    "authors": [
+      "Yadav, Prateek",
+      "Tam, Derek",
+      "Choshen, Leshem",
+      "et al."
+    ],
+    "year": 2023,
+    "venue": "arXiv:2306.01708",
+    "url": "https://arxiv.org/abs/2306.01708",
+    "area": "model-merging",
+    "claim": "Trimming small deltas, electing signs and merging only agreeing parameters reduces interference between merged models.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "llm-runtime-error-handler-2024",
+    "title": "LLM as Runtime Error Handler",
+    "authors": [
+      "(authors to verify)"
+    ],
+    "year": 2024,
+    "area": "agents",
+    "claim": "A language model can catch runtime errors in a running program and propose or apply a fix.",
+    "status": "to-read",
+    "notes": "citation to verify"
+  },
+  {
+    "id": "hnsw-2018",
+    "title": "Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs",
+    "authors": [
+      "Malkov, Yu. A.",
+      "Yashunin, D. A."
+    ],
+    "year": 2016,
+    "venue": "arXiv:1603.09320",
+    "url": "https://arxiv.org/abs/1603.09320",
+    "area": "vector-search",
+    "claim": "A hierarchy of navigable small-world graphs gives logarithmic-time approximate nearest-neighbour search.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page",
+    "repo": "localdata"
+  },
+  {
+    "id": "product-quantization-2011",
+    "title": "Product Quantization for Nearest Neighbor Search",
+    "authors": [
+      "H Jégou",
+      "M Douze",
+      "C Schmid"
+    ],
+    "year": 2011,
+    "venue": "IEEE Transactions on Pattern Analysis and Machine Intelligence",
+    "url": "https://doi.org/10.1109/TPAMI.2010.57",
+    "area": "vector-search",
+    "claim": "Quantising sub-vectors separately gives compact codes with accurate asymmetric distance estimation.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against doi.org (CSL JSON)",
+    "repo": "localdata"
+  },
+  {
+    "id": "speculative-decoding-2023",
+    "title": "Fast Inference from Transformers via Speculative Decoding",
+    "authors": [
+      "Leviathan, Yaniv",
+      "Kalman, Matan",
+      "Matias, Yossi"
+    ],
+    "year": 2022,
+    "venue": "arXiv:2211.17192",
+    "url": "https://arxiv.org/abs/2211.17192",
+    "area": "inference",
+    "claim": "A small draft model proposes tokens that the large model verifies in parallel, speeding decoding two to three times with identical output.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "lora-2021",
+    "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+    "authors": [
+      "Hu, Edward J.",
+      "Shen, Yelong",
+      "Wallis, Phillip",
+      "et al."
+    ],
+    "year": 2021,
+    "venue": "arXiv:2106.09685",
+    "url": "https://arxiv.org/abs/2106.09685",
+    "area": "training",
+    "claim": "Freezing the weights and training low-rank update matrices fine-tunes large models with a small fraction of the parameters.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against arxiv.org abstract page"
+  },
+  {
+    "id": "openssf-model-signing",
+    "title": "Supply chain security for ML",
+    "authors": [
+      "OpenSSF Model Signing project (Sigstore)"
+    ],
+    "year": null,
+    "venue": "sigstore/model-transparency (GitHub)",
+    "url": "https://github.com/sigstore/model-transparency",
+    "area": "supply-chain",
+    "claim": "Signing model artefacts with Sigstore gives verifiable provenance for machine-learning models.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against the standard's own page",
+    "repo": "runtime"
+  },
+  {
+    "id": "owasp-llm01",
+    "title": "LLM01:2025 Prompt Injection",
+    "authors": [
+      "OWASP Gen AI Security Project"
+    ],
+    "year": 2025,
+    "venue": "OWASP Top 10 for LLM Applications 2025",
+    "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+    "area": "security",
+    "claim": "Prompt injection is the top risk for LLM applications; the defence is layered controls, not a single filter.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-09 against the standard's own page",
+    "repo": "runtime"
+  }
+]

@@ -81,12 +81,16 @@ test('no page contains a script tag, a third-party asset or an inline style attr
   assert.doesNotMatch(css, /@import|url\(\s*["']?https?:/i, 'styles.css loads something remote');
 });
 
-test('benchmarks page carries the 8 GB laptop columns and only "not measured" cells', () => {
+test('benchmarks page carries the 8 GB laptop columns; figures appear only in rows that name their evidence', () => {
   const { out } = buildToTemp();
   const html = readFileSync(join(out, 'benchmarks', 'index.html'), 'utf8');
   assert.match(html, /8 GB Windows/);
   assert.match(html, /not measured/);
-  assert.doesNotMatch(html, /\d+(\.\d+)?\s*(MB\/s|tok\/s|ms)\b/, 'a figure appeared without a measurement');
+  for (const row of html.match(/<tr><td>.*?<\/tr>/gs) ?? []) {
+    if (/\d+(\.\d+)?\s*(MB\/s|tok\/s|ms)\b/.test(row)) {
+      assert.match(row, /Evidence: evidence\/sprint-\d\//, `a figure appeared without its evidence: ${row}`);
+    }
+  }
 });
 
 test('build refuses a page with a script tag', () => {
@@ -221,35 +225,35 @@ test('every page carries the Demos nav link resolving to the demos page', () => 
   }
 });
 
-test('the Sprint 2 write-up is a skeleton: honest-claim wording present, every slot empty, no stray figures', () => {
+test('the Sprint 2 write-up is finished: honest-claim wording, every figure from saved evidence, no stray figures', () => {
   const html = readFileSync(join(root, 'writeups', '2026-11-sprint-2.html'), 'utf8');
   const flat = html.replace(/\s+/g, ' ');
-  assert.ok(
-    flat.includes(
-      'Same prompt answered on WebGPU and on WebAssembly with the test model SmolLM2-135M-Instruct (q4), in Chrome on an Apple-silicon Mac only. This is not the Hindi production model; Windows and the 8 GB no-GPU laptop are not measured.',
-    ),
-    'done-when wording missing',
-  );
-  assert.ok(
-    flat.includes(
-      'Planned production model: Qwen3-1.7B (Apache-2.0), WebGPU q4f16 1.43 GB, WASM q8 1.74 GB. Provisional until the Sprint 5 measurement on an 8 GB laptop; contingency Qwen3-0.6B.',
-    ),
-    'model card wording missing',
-  );
+  for (const sentence of [
+    'Same prompt answered on WebGPU and on WebAssembly with the test model SmolLM2-135M-Instruct (q4), in Chrome on an Apple-silicon Mac only. This is not the Hindi production model; Windows and the 8 GB no-GPU laptop are not measured.',
+    'Planned production model: Qwen3-1.7B (Apache-2.0), WebGPU q4f16 1.43 GB, WASM q8 1.74 GB. Provisional until the Sprint 5 measurement on an 8 GB laptop; contingency Qwen3-0.6B.',
+    'Loaded once in a browser: a local, unscored WebGPU smoke run of five synthetic Hindi prompts on an Apple-silicon Mac, which needed ONNX Runtime graph optimisation turned off (evidence/sprint-2/D1/hindi-smoke.json).',
+    'Hindi quality is not measured.',
+  ]) {
+    assert.ok(flat.includes(sentence), `missing: ${sentence}`);
+  }
   assert.doesNotMatch(flat, /not yet loaded in a browser/);
-  assert.ok(
-    flat.includes(
-      'Loaded once in a browser: a local, unscored WebGPU smoke run of five synthetic Hindi prompts on an Apple-silicon Mac, which needed ONNX Runtime graph optimisation turned off (evidence/sprint-2/D1/hindi-smoke.json).',
-    ),
-    'smoke-run sentence missing',
-  );
-  assert.match(flat, /to be filled by the PO at wrap-up from/);
+  assert.doesNotMatch(flat, /to be filled/);
   assert.doesNotMatch(html, /<script|\sstyle="|https?:\/\//i);
-  // Remove everything that is allowed to contain digits, then none may remain.
-  const stripped = flat
+  // Each result section names its command and the saved output its figures were copied from.
+  assert.match(flat, /evidence\/sprint-2\/D3\/bench-run-1\.log/);
+  assert.match(flat, /evidence\/sprint-2\/D1\/model-run\.json/);
+  // The only figures allowed are these, copied from evidence/sprint-2/D3/bench-run-1.log (with
+  // docs/score-vs-noise.csv) and evidence/sprint-2/D1/model-run.json. A new figure must be added here
+  // deliberately, with its evidence.
+  const FIGURES = [
+    '1,000,000', '998,454', '996,931', '991,588', '983,739', '967,065', '932,405',
+    '0.01', '0.02', '0.05', '0.1', '0.2', '0.4',
+    '2,667 ms', '66 ms', '51 ms', '155.9 tokens', '2,592 ms', '368 ms', '732 ms', '10.9 tokens',
+  ];
+  let stripped = flat
     .replace(/<!--.*?-->/g, ' ')
     .replace(/Loaded once in a browser: a local, unscored WebGPU smoke run of five synthetic Hindi prompts on an Apple-silicon Mac, which needed ONNX Runtime graph optimisation turned off \(evidence\/sprint-2\/D1\/hindi-smoke\.json\)\./g, ' ')
-    .replace(/<code>.*?<\/code>/g, ' ') // named commands
+    .replace(/<code>.*?<\/code>/g, ' ') // named commands and evidence paths
     .replace(/Planned production model: Qwen3-1\.7B.*?contingency Qwen3-0\.6B\./g, ' ')
     .replace(/SmolLM2-135M-Instruct/g, ' ')
     .replace(/Qwen3-(1\.7B|0\.6B)/g, ' ')
@@ -257,10 +261,15 @@ test('the Sprint 2 write-up is a skeleton: honest-claim wording present, every s
     .replace(/\b\d{1,2} (to|and) \d{1,2} (November|December)( \d{4})?\b/g, ' ')
     .replace(/\bSprint \d\b/g, ' ')
     .replace(/\b8 GB\b/g, ' ')
-    .replace(/\b[TDS]\d\b/g, ' ') // lane and role ids named as report sources
-    .replace(/CC BY 4\.0/g, ' ') // licence name
+    .replace(/\b[TDS]\d\b/g, ' ')
+    .replace(/CC BY 4\.0/g, ' ')
     .replace(/\bq4f16\b|\bq4\b|\bq8\b/g, ' ')
+    .replace(/SHA-256/g, ' ')
+    .replace(/seeds 1 to 3/g, ' ')
+    .replace(/spec release 0\.2\.0/g, ' ')
     .replace(/<[^>]+>/g, ' ');
+  for (const f of FIGURES) stripped = stripped.split(f).join(' ');
+  stripped = stripped.replace(/(?<![\w.,])0(?![\w.,])/g, ' '); // the p = 0 row
   const stray = stripped.match(/[^\s]*\d[^\s]*/g) ?? [];
   assert.deepEqual(stray, [], `stray digits: ${stray.join(' | ')}`);
 });
@@ -273,7 +282,7 @@ test('the Sprint 2 write-up is built and listed on the write-ups index', () => {
   assert.match(idx, /Sprint 2: a validator that scores corruption/);
 });
 
-test('benchmarks.json has the two Sprint 2 slots, both "not measured", with their reproduce commands', () => {
+test('benchmarks.json: the two Sprint 2 slots carry their reproduce commands; a figure needs evidence; the laptop column is unmeasured', () => {
   const data = JSON.parse(readFileSync(join(root, 'data', 'benchmarks.json'), 'utf8'));
   const gs = data.rows.find((r) => /score versus noise/i.test(r.benchmark));
   assert.ok(gs, 'glyphsift score-versus-noise row missing');
@@ -287,14 +296,13 @@ test('benchmarks.json has the two Sprint 2 slots, both "not measured", with thei
   assert.equal(rt.repo, 'runtime');
   assert.equal(rt.command, 'RUNTIME_MODEL=1 RUNTIME_REQUIRE_WEBGPU=1 npm run test:model');
   assert.match(rt.benchmark, /SmolLM2-135M/);
-  for (const r of [gs, rt]) {
-    assert.equal(r.dev, 'not measured', `${r.repo}: dev cell`);
-    assert.equal(r.laptop, 'not measured', `${r.repo}: laptop cell`);
-  }
-  // No row may carry a figure unless it is the literal "not measured".
   for (const r of data.rows) {
-    assert.equal(r.dev, 'not measured', `${r.benchmark}: dev`);
+    // The 8 GB Windows no-GPU laptop has not been measured: no figure may appear in that column.
     assert.equal(r.laptop, 'not measured', `${r.benchmark}: laptop`);
+    if (r.dev !== 'not measured') {
+      assert.match(r.evidence ?? '', /^evidence\/sprint-\d\//, `${r.benchmark}: a figure without evidence`);
+      assert.ok(r.command, `${r.benchmark}: a figure without a command`);
+    }
   }
 });
 

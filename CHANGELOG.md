@@ -22,6 +22,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- The Sprint 2 write-up is finished from saved evidence (score versus noise, WebGPU and WebAssembly legs,
+  what did not pass); three benchmark rows carry Apple-silicon placeholder figures with an `evidence` field
+  rendered in the notes column, and the laptop column stays "not measured". The tests now allow a figure
+  only with its evidence (write-up: an explicit list of figures copied from evidence). The pagetriage and
+  site demo status lines say Windows CI passes and the write-up is finished.
 - Added `.npmrc` with the five standard lines for consistency; site still has zero dependencies. (T3-S2-R1-04)
 
 - `demos.json` status lines rewritten to match T1's observations; Sprint 2 write-up uses the

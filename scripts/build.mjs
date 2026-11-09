@@ -104,7 +104,7 @@ function renderBenchmarks(data) {
   const rows = data.rows
     .map(
       (r) =>
-        `<tr><td>${esc(r.benchmark)}</td><td><span class="tag">${esc(r.repo)}</span></td><td><code>${esc(r.command)}</code></td><td>${esc(r.dev)}</td><td>${esc(r.laptop)}</td><td>${esc(r.notes)}</td></tr>`,
+        `<tr><td>${esc(r.benchmark)}</td><td><span class="tag">${esc(r.repo)}</span></td><td><code>${esc(r.command)}</code></td><td>${esc(r.dev)}</td><td>${esc(r.laptop)}</td><td>${esc(r.notes)}${r.evidence ? `${r.notes ? ' ' : ''}Evidence: ${esc(r.evidence)}.` : ''}</td></tr>`,
     )
     .join('\n');
   return `<p class="muted">${esc(data.note)}</p>

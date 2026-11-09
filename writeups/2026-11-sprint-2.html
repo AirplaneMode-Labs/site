@@ -1,13 +1,12 @@
 <!-- title: Sprint 2: a validator that scores corruption, and one prompt on two backends -->
 <!-- date: 2026-11-09 -->
-<!-- description: Skeleton for the Sprint 2 write-up of Airplane Mode Labs. Every result slot is empty until the product owner fills it at wrap-up from a named command. -->
+<!-- description: Sprint 2 of Airplane Mode Labs: the glyphsift validator and its score-versus-noise benchmark, and one prompt answered on WebGPU and on WebAssembly. Every figure names its command and evidence. -->
 <h1>Sprint 2: a validator that scores corruption, and one prompt on two backends</h1>
 <p class="lede">
   Sprint 2 (planned 23 November to 6 December 2026, started early on 9 November) had two
   measurable goals: the glyphsift validator's score falls steadily as synthetic OCR noise rises,
-  and the same prompt is answered on WebGPU and on WebAssembly. This page is a skeleton. The
-  product owner finishes it at wrap-up from the tester reports; until a slot below is filled it
-  reads "to be filled by the PO at wrap-up" and quotes no figure.
+  and the same prompt is answered on WebGPU and on WebAssembly. Both were met. Every figure below
+  names the command that produced it and the saved output it was copied from.
 </p>
 <p class="muted">
   Any figure that lands here was measured on an Apple-silicon development machine and is a
@@ -23,24 +22,47 @@
 
 <h2>glyphsift: score versus noise</h2>
 <p>
-  Result: to be filled by the PO at wrap-up from
-  <code>cargo run -p glyphsift-cli --release -- bench --corpus bench/corpus/clean.txt --seeds 1,2,3 --csv docs/score-vs-noise.csv --svg docs/score-vs-noise.svg</code>.
+  Command:
+  <code>cargo run -p glyphsift-cli --release -- bench --corpus bench/corpus/clean.txt --seeds 1,2,3 --csv docs/score-vs-noise.csv --svg docs/score-vs-noise.svg</code>
+  (output in <code>docs/score-vs-noise.csv</code> in the glyphsift repository and
+  <code>evidence/sprint-2/D3/bench-run-1.log</code>).
 </p>
+<table>
+  <thead><tr><th>Noise level p</th><th>Mixed-family mean score (ppm, seeds 1 to 3)</th></tr></thead>
+  <tbody>
+    <tr><td>0</td><td>1,000,000</td></tr>
+    <tr><td>0.01</td><td>998,454</td></tr>
+    <tr><td>0.02</td><td>996,931</td></tr>
+    <tr><td>0.05</td><td>991,588</td></tr>
+    <tr><td>0.1</td><td>983,739</td></tr>
+    <tr><td>0.2</td><td>967,065</td></tr>
+    <tr><td>0.4</td><td>932,405</td></tr>
+  </tbody>
+</table>
 <ul>
-  <li>Mixed-family mean falls at every step: to be filled by the PO at wrap-up from the bench command above.</li>
-  <li>Per-seed and per-family monotonicity: to be filled by the PO at wrap-up from the bench command above.</li>
-  <li>Families the validator cannot see directly: to be filled by the PO at wrap-up from the glyphsift README Limitations.</li>
+  <li>The mixed-family mean falls strictly at every step, and the bench command exits with an error if it ever does not.</li>
+  <li>Mixed is non-increasing for each seed, and so is every family that triggers a rule. Two runs gave byte-identical CSV and chart files. Native, Python and WebAssembly give byte-identical reports.</li>
+  <li>The score is deterministic: integer arithmetic, weights in a readable TOML file, no model. It is the same on any machine.</li>
+  <li>What it cannot see: seven noise families, among them a dropped or swapped vowel sign, a lost nukta and a deleted virama, produce clusters that are still structurally valid. They change meaning, not structure, so the validator does not flag them. The README says so in its Limitations section.</li>
 </ul>
 
 <h2>runtime: one prompt, two backends</h2>
 <p>
-  Result: to be filled by the PO at wrap-up from
-  <code>RUNTIME_MODEL=1 RUNTIME_REQUIRE_WEBGPU=1 npm run test:model</code>.
+  Command: <code>RUNTIME_MODEL=1 RUNTIME_REQUIRE_WEBGPU=1 npm run test:model</code>
+  (output in <code>evidence/sprint-2/D1/model-run.json</code>), prompt "What is the capital of
+  France? Answer in one word.", greedy decoding.
 </p>
+<table>
+  <thead><tr><th>Leg</th><th>Load</th><th>Prefill</th><th>Decode</th><th>Speed</th><th>Answer</th></tr></thead>
+  <tbody>
+    <tr><td>WebGPU</td><td>2,667 ms</td><td>66 ms</td><td>51 ms</td><td>155.9 tokens per second</td><td>The capital of France is Paris.</td></tr>
+    <tr><td>WebAssembly</td><td>2,592 ms</td><td>368 ms</td><td>732 ms</td><td>10.9 tokens per second</td><td>The capital of France is Paris.</td></tr>
+  </tbody>
+</table>
 <ul>
-  <li>WebGPU leg (load time, prefill, decode, tokens per second): to be filled by the PO at wrap-up from the test:model command above.</li>
-  <li>WebAssembly leg (same fields): to be filled by the PO at wrap-up from the test:model command above.</li>
-  <li>Independent browser repeat and network log: to be filled by the PO at wrap-up from the T1 report.</li>
+  <li>Every model file is checked against its SHA-256 in a signed manifest before the engine sees it, and the engine has no network access of its own. A tampered file is caught before it loads.</li>
+  <li>The browser tester repeated both legs with an independent harness and logged every request: none left the page origin, worker threads included.</li>
+  <li>After the push, both legs also answered on the live demo page, served by GitHub Pages.</li>
 </ul>
 
 <h2>The model decision</h2>
@@ -55,14 +77,19 @@
 
 <h2>What else landed</h2>
 <ul>
-  <li>Backend adapter and model descriptor contracts: to be filled by the PO at wrap-up from the runtime spec changelog.</li>
-  <li>pagetriage determinism gate on Windows: configured, not yet executed; to be filled by the PO at wrap-up from the D2 report.</li>
-  <li>Demos refreshed: to be filled by the PO at wrap-up from the T1 report.</li>
-  <li>Security review: to be filled by the PO at wrap-up from the S1 report.</li>
+  <li>Contracts: spec release 0.2.0 (draft) adds the model descriptor and backend adapter contracts and the new backend and model events. localdata, dockit and control-plane re-vendored them.</li>
+  <li>pagetriage: the determinism gate (native, Python and WebAssembly give identical reports) now runs on Windows as well as Linux and macOS, and passes on all three.</li>
+  <li>Demos: all six were refreshed to show this sprint's work. The browser tester built each one the way its Pages workflow builds it and found zero console errors and only same-origin requests.</li>
+  <li>Security: no critical, high or medium finding is open. Making the six public repositories and their demos public was approved with conditions, and the conditions are met.</li>
 </ul>
 
 <h2>What did not pass</h2>
-<p>to be filled by the PO at wrap-up from the tester reports. Negative results get the same care as positive ones.</p>
+<ul>
+  <li>The first CI run on Windows found three bugs that only show up there. Two test scripts assumed forward slashes in file paths, and one Python script could not print Devanagari to a Windows console. All three are fixed.</li>
+  <li>The live backend demo first refused to load any model: GitHub Pages compresses JSON on the fly, which tripped a file-size check. That check now allows for compression, and the SHA-256 check still decides.</li>
+  <li>A WebGPU failure blocks the WebAssembly fallback in the same page, and WebAssembly generation runs on the main thread, so the page freezes while it generates. Both are documented, and both are Sprint 3 work.</li>
+  <li>Hindi quality is not measured. The smoke run above is unscored.</li>
+</ul>
 
 <h2>What is next</h2>
 <p>

@@ -25,6 +25,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   tagged.
 - GitHub Pages workflow with per-job permissions (`pages: write`, `id-token: write` on the
   deploy job only) and a three-OS CI workflow.
+- Demos page (`/demos/`) rendered from `data/demos.json`: the six public GitHub Pages demos
+  (pagetriage, runtime, glyphsift, localdata, dockit, site) with a one-line status each and a
+  column headed "Status written on"; the lede says the statuses were written on 9 Nov 2026 from
+  local builds and not measured at the live URLs; a "What this demo does not do yet" box closes
+  the page. A Demos section with the same six links sits on the home page before Repositories,
+  and the nav gains a Demos link. The build refuses a demos list that is not exactly those six
+  entries with matching URLs; five tests cover the data, both pages and the nav.
+- `persist-credentials: false` on the `actions/checkout` step of both workflows.
 
 ### Security
 

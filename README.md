@@ -1,18 +1,32 @@
 # Airplane Mode Labs site
 
 The lab's public site: the paper tracker, the benchmarks page and the write-ups, published to
-GitHub Pages at https://airplanemode-labs.github.io/site/.
+GitHub Pages (see Demo below).
 
 ## Status
 
 Live skeleton. The paper tracker holds the first 30 papers named or implied in the plans, all
 still `to-read`. The benchmarks page is a scaffold whose every cell reads `not measured`. One
-write-up exists: the Sprint 1 note, written from the tester reports. Everything is plain HTML with zero dependencies: no framework, no
-JavaScript on any page, no analytics, no third-party fonts or scripts.
+write-up exists: the Sprint 1 note, written from the tester reports. The demos page lists the
+six public GitHub Pages demos with a hand-written, dated status each. Everything is plain HTML
+with zero dependencies: no framework, no JavaScript on any page, no analytics, no third-party
+fonts or scripts.
 
 Package names use the placeholder scope `@airplanemode` / crate names `<repo>` until the
 handles are reserved; nothing is published yet. This repository is a private package
 (`@airplanemode/site`) and is never published to npm.
+
+## Demo
+
+Live demo: <https://airplanemode-labs.github.io/site/>. Built from `main` by
+`.github/workflows/pages.yml` on every push; it shows only what works today and has a box titled
+"What this demo does not do yet". It runs entirely in the browser: no upload, no analytics, no
+third-party scripts or fonts.
+
+The site is its own demo: the home page carries a Demos section and `/demos/` lists the six demo
+URLs (pagetriage, runtime, glyphsift, localdata, dockit, site) with a one-line status and the
+date it was written. Those statuses come from local builds served under `/<repo>/` on a
+developer machine on 9 Nov 2026, not from the live URLs.
 
 ## Install
 
@@ -37,7 +51,9 @@ Open `dist/index.html` in a browser, or serve `dist/` with any static file serve
 
 `scripts/build.mjs` (Node, zero dependencies) reads `src/templates/layout.html`, wraps each
 fragment in `src/pages/` into it, renders `data/papers.json` into `dist/papers/index.html`,
-renders `data/benchmarks.json` into the table slot of `src/pages/benchmarks.html`, wraps each
+renders `data/benchmarks.json` into the table slot of `src/pages/benchmarks.html`, renders
+`data/demos.json` into the table slot of `src/pages/demos.html` and into the Demos section of
+the home page (refusing to build unless it holds exactly the six demos with matching URLs), wraps each
 `writeups/*.html` fragment into `dist/writeups/<slug>/index.html` with an index, copies
 `src/styles.css` and writes `.nojekyll`. Before writing anything it checks every page and
 refuses to build if any output contains `<script`, loads a stylesheet or script from a host
@@ -96,6 +112,7 @@ produced it on a named machine, and Apple-silicon figures are labelled placehold
 ## Limitations
 
 - No search and no RSS feed.
+- The demo statuses on `/demos/` are hand-written and dated, not measured at the live URLs.
 - No scripts at all, by design; nothing on the site is interactive.
 - Benchmarks are empty until measured; the paper tracker has no read papers yet.
 - The Sprint 1 write-up quotes Apple-silicon figures only, labelled as placeholders; its

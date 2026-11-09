@@ -1,0 +1,14 @@
+Airplane Mode Labs site
+Copyright 2026 Tushar (jtushar53@gmail.com)
+
+This product includes software developed at Airplane Mode Labs (https://github.com/AirplaneMode-Labs).
+
+Licensing
+---------
+Code (scripts/, test/, src/templates/, src/styles.css, workflows): Apache License 2.0 (LICENSE).
+Prose and data (writeups/, data/, the text of src/pages/): Creative Commons Attribution 4.0
+International (LICENSE-CC-BY-4.0).
+
+Third-party notices
+-------------------
+None. The site has no dependencies and loads no third-party resources.

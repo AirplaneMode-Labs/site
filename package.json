@@ -1,0 +1,16 @@
+{
+  "name": "@airplanemode/site",
+  "version": "0.1.0-dev",
+  "private": true,
+  "description": "Airplane Mode Labs static site: paper tracker, benchmarks, write-ups. Zero dependencies.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test",
+    "ci": "node scripts/build.mjs && node --test"
+  }
+}

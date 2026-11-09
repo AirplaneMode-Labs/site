@@ -220,3 +220,151 @@ test('every page carries the Demos nav link resolving to the demos page', () => 
     assert.ok(existsSync(target), `${file}: Demos link resolves to ${target}, which does not exist`);
   }
 });
+
+test('the Sprint 2 write-up is a skeleton: honest-claim wording present, every slot empty, no stray figures', () => {
+  const html = readFileSync(join(root, 'writeups', '2026-11-sprint-2.html'), 'utf8');
+  const flat = html.replace(/\s+/g, ' ');
+  assert.ok(
+    flat.includes(
+      'Same prompt answered on WebGPU and on WebAssembly with the test model SmolLM2-135M-Instruct (q4), in Chrome on an Apple-silicon Mac only. This is not the Hindi production model; Windows and the 8 GB no-GPU laptop are not measured.',
+    ),
+    'done-when wording missing',
+  );
+  assert.ok(
+    flat.includes(
+      'Planned production model: Qwen3-1.7B (Apache-2.0), WebGPU q4f16 1.43 GB, WASM q8 1.74 GB. Provisional until the Sprint 5 measurement on an 8 GB laptop; contingency Qwen3-0.6B.',
+    ),
+    'model card wording missing',
+  );
+  assert.doesNotMatch(flat, /not yet loaded in a browser/);
+  assert.ok(
+    flat.includes(
+      'Loaded once in a browser: a local, unscored WebGPU smoke run of five synthetic Hindi prompts on an Apple-silicon Mac, which needed ONNX Runtime graph optimisation turned off (evidence/sprint-2/D1/hindi-smoke.json).',
+    ),
+    'smoke-run sentence missing',
+  );
+  assert.match(flat, /to be filled by the PO at wrap-up from/);
+  assert.doesNotMatch(html, /<script|\sstyle="|https?:\/\//i);
+  // Remove everything that is allowed to contain digits, then none may remain.
+  const stripped = flat
+    .replace(/<!--.*?-->/g, ' ')
+    .replace(/Loaded once in a browser: a local, unscored WebGPU smoke run of five synthetic Hindi prompts on an Apple-silicon Mac, which needed ONNX Runtime graph optimisation turned off \(evidence\/sprint-2\/D1\/hindi-smoke\.json\)\./g, ' ')
+    .replace(/<code>.*?<\/code>/g, ' ') // named commands
+    .replace(/Planned production model: Qwen3-1\.7B.*?contingency Qwen3-0\.6B\./g, ' ')
+    .replace(/SmolLM2-135M-Instruct/g, ' ')
+    .replace(/Qwen3-(1\.7B|0\.6B)/g, ' ')
+    .replace(/\b\d{1,2} (January|February|March|April|May|June|July|August|September|October|November|December)( \d{4})?\b/g, ' ')
+    .replace(/\b\d{1,2} (to|and) \d{1,2} (November|December)( \d{4})?\b/g, ' ')
+    .replace(/\bSprint \d\b/g, ' ')
+    .replace(/\b8 GB\b/g, ' ')
+    .replace(/\b[TDS]\d\b/g, ' ') // lane and role ids named as report sources
+    .replace(/CC BY 4\.0/g, ' ') // licence name
+    .replace(/\bq4f16\b|\bq4\b|\bq8\b/g, ' ')
+    .replace(/<[^>]+>/g, ' ');
+  const stray = stripped.match(/[^\s]*\d[^\s]*/g) ?? [];
+  assert.deepEqual(stray, [], `stray digits: ${stray.join(' | ')}`);
+});
+
+test('the Sprint 2 write-up is built and listed on the write-ups index', () => {
+  const { out } = buildToTemp();
+  assert.ok(existsSync(join(out, 'writeups', '2026-11-sprint-2', 'index.html')));
+  const idx = readFileSync(join(out, 'writeups', 'index.html'), 'utf8');
+  assert.match(idx, /2026-11-sprint-2\//);
+  assert.match(idx, /Sprint 2: a validator that scores corruption/);
+});
+
+test('benchmarks.json has the two Sprint 2 slots, both "not measured", with their reproduce commands', () => {
+  const data = JSON.parse(readFileSync(join(root, 'data', 'benchmarks.json'), 'utf8'));
+  const gs = data.rows.find((r) => /score versus noise/i.test(r.benchmark));
+  assert.ok(gs, 'glyphsift score-versus-noise row missing');
+  assert.equal(gs.repo, 'glyphsift');
+  assert.equal(
+    gs.command,
+    'cargo run -p glyphsift-cli --release -- bench --corpus bench/corpus/clean.txt --seeds 1,2,3 --csv docs/score-vs-noise.csv --svg docs/score-vs-noise.svg',
+  );
+  const rt = data.rows.find((r) => /WebGPU versus WASM/i.test(r.benchmark));
+  assert.ok(rt, 'runtime WebGPU versus WASM row missing');
+  assert.equal(rt.repo, 'runtime');
+  assert.equal(rt.command, 'RUNTIME_MODEL=1 RUNTIME_REQUIRE_WEBGPU=1 npm run test:model');
+  assert.match(rt.benchmark, /SmolLM2-135M/);
+  for (const r of [gs, rt]) {
+    assert.equal(r.dev, 'not measured', `${r.repo}: dev cell`);
+    assert.equal(r.laptop, 'not measured', `${r.repo}: laptop cell`);
+  }
+  // No row may carry a figure unless it is the literal "not measured".
+  for (const r of data.rows) {
+    assert.equal(r.dev, 'not measured', `${r.benchmark}: dev`);
+    assert.equal(r.laptop, 'not measured', `${r.benchmark}: laptop`);
+  }
+});
+
+test('every demos.json status line carries a Sprint 2 date and the keys and URLs are unchanged', () => {
+  const demos = JSON.parse(readFileSync(join(root, 'data', 'demos.json'), 'utf8'));
+  assert.equal(demos.length, 6);
+  for (const d of demos) {
+    assert.deepEqual(Object.keys(d).sort(), ['repo', 'status', 'url', 'writtenOn'], `${d.repo}: keys`);
+    assert.match(d.status, /^Sprint 2 \(\d{1,2} (Nov|Dec) 2026\): /, `${d.repo}: Sprint 2 date`);
+  }
+  assert.deepEqual(new Set(demos.map((d) => d.url)), new Set(DEMO_URLS));
+});
+
+test('the demos page not-yet box lists the four site limits and the page text derives its date from the data', () => {
+  const { out } = buildToTemp();
+  const html = readFileSync(join(out, 'demos', 'index.html'), 'utf8');
+  assert.match(html, /<li>No search\.<\/li>/);
+  assert.match(html, /<li>No RSS feed\.<\/li>/);
+  assert.match(html, /Benchmarks are unmeasured/);
+  assert.match(html, /hand-written and dated/);
+  assert.doesNotMatch(html, /\{\{/, 'unreplaced placeholder');
+});
+
+test('no built page contains a script tag (Sprint 2 pages included)', () => {
+  const { out } = buildToTemp();
+  for (const file of walk(out).filter((f) => f.endsWith('.html'))) {
+    assert.doesNotMatch(readFileSync(file, 'utf8'), /<script/i, `${file} has <script`);
+  }
+});
+
+test('no demos.json status line still says "not in this status yet" and runtime/glyphsift lines match T1 observations', () => {
+  const demos = JSON.parse(readFileSync(join(root, 'data', 'demos.json'), 'utf8'));
+  for (const d of demos) {
+    assert.doesNotMatch(d.status, /not in this status yet/, `${d.repo}: stale status`);
+    assert.match(d.status, /^Sprint 2 \(9 Nov 2026\): /, `${d.repo}: prefix`);
+  }
+  const by = Object.fromEntries(demos.map((d) => [d.repo, d.status]));
+  assert.match(by.runtime, /WebGPU/);
+  assert.match(by.runtime, /Force WASM/);
+  assert.match(by.runtime, /freezes while WebAssembly generates/);
+  assert.match(by.glyphsift, /sixteen/);
+  assert.match(by.dockit, /plan and a prediction only/);
+  assert.match(by.dockit, /no inference until Sprint 5/);
+});
+
+test('every page footer shows the build id: first 12 hex of a 40-hex GITHUB_SHA, else "local"', () => {
+  const SHA = 'abcdef0123456789abcdef0123456789abcdef01';
+  const cases = [
+    [undefined, 'local'],
+    ['', 'local'],
+    ['abc123', 'local'],
+    [SHA.toUpperCase(), 'local'],
+    [SHA + '0', 'local'],
+    ['<script>alert(1)</script>' + 'a'.repeat(20), 'local'],
+    [SHA, 'abcdef012345'],
+  ];
+  const prev = process.env.GITHUB_SHA;
+  try {
+    for (const [val, want] of cases) {
+      if (val === undefined) delete process.env.GITHUB_SHA;
+      else process.env.GITHUB_SHA = val;
+      const { out } = buildToTemp();
+      for (const file of walk(out).filter((f) => f.endsWith('.html'))) {
+        const html = readFileSync(file, 'utf8');
+        assert.match(html, new RegExp(`Built \\d{4}-\\d{2}-\\d{2} · build ${want}\\b`), `${file} (${val}): build id`);
+        assert.doesNotMatch(html, /<script/i);
+      }
+    }
+  } finally {
+    if (prev === undefined) delete process.env.GITHUB_SHA;
+    else process.env.GITHUB_SHA = prev;
+  }
+});

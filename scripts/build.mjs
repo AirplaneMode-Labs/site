@@ -49,6 +49,11 @@ export function checkOutput(html, name) {
   }
 }
 
+/** First 12 characters of GITHUB_SHA when it is exactly 40 lowercase hex, else 'local'. */
+export function buildId(sha = process.env.GITHUB_SHA) {
+  return typeof sha === 'string' && /^[0-9a-f]{40}$/.test(sha) ? sha.slice(0, 12) : 'local';
+}
+
 function renderLayout(layout, { title, description, content, root, active, built }) {
   let html = layout
     .replaceAll('{{title}}', esc(title))
@@ -172,7 +177,7 @@ ${items}
 export function build({ root, outDir }) {
   const srcDir = join(root, 'src');
   const layout = readFileSync(join(srcDir, 'templates', 'layout.html'), 'utf8');
-  const built = new Date().toISOString().slice(0, 10);
+  const built = `${new Date().toISOString().slice(0, 10)} \u00b7 build ${buildId()}`;
   const outputs = [];
 
   const emit = (relPath, title, description, content, depth, active) => {
@@ -199,6 +204,10 @@ export function build({ root, outDir }) {
     }
     if (content.includes('{{demos-table}}')) {
       content = content.replace('{{demos-table}}', () => renderDemos(demos));
+    }
+    if (content.includes('{{demos-written}}')) {
+      const dates = [...new Set(demos.map((d) => d.writtenOn))].map(humanDate).join(', ');
+      content = content.replace('{{demos-written}}', () => dates);
     }
     if (content.includes('{{demos-home}}')) {
       content = content.replace('{{demos-home}}', () => renderDemosHome(demos));

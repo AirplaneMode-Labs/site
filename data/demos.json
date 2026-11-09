@@ -8,7 +8,7 @@
   {
     "repo": "runtime",
     "url": "https://airplanemode-labs.github.io/runtime/",
-    "status": "Working: capability profile; signed-manifest verification; download, hash check and quota eviction of synthetic assets (not a model); resume verified on a local Range server, unverified on Pages until first deploy. No inference backend yet (Sprint 2).",
+    "status": "Working: capability profile; signed-manifest verification; download, hash check and quota eviction of synthetic assets (not a model); resume verified on a local Range server and on Pages (206 on 9 Nov 2026). No inference backend yet (Sprint 2).",
     "writtenOn": "2026-11-09"
   },
   {

@@ -10,7 +10,7 @@
 - Tests first: `test/build.test.mjs` pins what the build must produce; extend it before
   changing the build.
 - Papers: follow the citation rule in README.md. A `url` or `venue` is written only after the
-  source (arxiv.org, doi.org or the standard's page) was fetched and the fetch logged; until
+  source (arxiv.org, doi.org, a proceedings page or the standard's page) was fetched and the fetch logged; until
   then the entry is `to-read` with the note `citation to verify`.
 - Write-ups quote numbers with the command that produced them, or do not quote numbers.
 - British spelling, no emojis.

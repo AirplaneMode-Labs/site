@@ -9,6 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Sprint 4 (14 Nov 2026, committed, not pushed): 35 papers added to the tracker from `research/plan-validation-2026-11-14.md`
+  section 3, each tagged with the repo it informs and each checked against its primary page (arxiv.org,
+  doi.org, the USENIX or NeurIPS proceedings page) on 14 Nov 2026; all `to-read`. FineWeb2 is recorded under
+  the ID its own page confirms (the research list gave a different paper's ID). Standards and items that
+  could not be confirmed are not added. Tests first: the total is 30 plus the pinned new ids, no duplicate
+  id, URL or normalised title, https URLs, a `citation verified 2026-11-14 against ...` note, and every
+  external link carries `rel="noopener noreferrer"`. (D5-02)
+- `scripts/import-localdata-bench.mjs`: writes two `data/benchmarks.json` rows (100,000 x 384 with 256-byte and
+  2,048-byte synthetic chunks, OPFS, cold open plus first query, median and worst of the cold runs) from
+  `../localdata/docs/benchmarks/vector-index.csv`, citing the CSV path, the commit column as written and
+  `npm run bench:vectors`; with no CSV the rows read `not measured`; a row whose `match` is not true is refused.
+  Tests use `test/fixtures/vector-index.csv`. (D5-05)
+- Sprint 3 write-up finished from `evidence/sprint-3/` only (each figure next to its evidence path, checked by a
+  test against the saved files; says it is committed on 14 Nov 2026, not pushed); Sprint 4 write-up skeleton
+  with five sections marked for the product owner. Both unlisted, `noindex` and unlinked. (D5-04)
+- Tests: licensing marks and sources, the demos lines, the WebLLM and spec wording, and a sweep that no page,
+  write-up or data file pitches cheaper inference, savings on inference or a cost per token. (D5-03, D5-06)
+
 - Sprint 3 fix round: tests that pin the glyphsift score-versus-noise row to a fresh computation over the
   sibling `docs/score-vs-noise.csv`, the demos.json lines to T1's observations (runtime, glyphsift, the
   build-id wording), the licensing promise sentence, the README owner step and section order, and the
@@ -36,6 +54,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   script tag. (D5-05)
 
 ### Changed
+
+- `/licensing/` (still a `noindex`, unlinked draft): the marks on the pagetriage dual licence, what the core
+  covers, the open specs and the control-plane licence are settled only where a LICENSE, CONTRIBUTING or spec
+  file states the text verbatim, each with a `<!-- source: path:line | fragment -->` comment and a row in the
+  README; the pricing sentence lost its mark and gained no price or term. `CLA or DCO [owner to confirm]` and
+  `Trademark and name use. [owner to confirm]` remain. TD-06 (amended) and TD-24, team decisions under
+  owner delegation. (D5-03)
+- Model-load timing and memory benchmark rows filled from the saved DevTools-panel output of two headed runs
+  (`RUNTIME_MODEL=1 npm run test:devtools`), labelled Apple silicon, WebAssembly only. (D5-05)
+- `data/demos.json`: the dockit and site lines are Sprint 4 lines (14 Nov 2026); WebLLM reads "cut from
+  Sprint 4"; the spec wording is "manifest spec v0.1 published in runtime/spec (committed; public after the
+  owner's push)". The home page runtime row says "WebLLM: not yet (cut from Sprint 4)". External links carry
+  `rel="noopener noreferrer"`. The tests read LANDED.json from `LANDED_JSON` or the merged
+  `evidence/sprint-<n>/D1/LANDED.json` files, and no scratch path. (D5-06)
 
 - `data/demos.json`: six lines dated Sprint 3 (14 Nov 2026), now matched to T1's observations and
   LANDED.json. runtime: engine picker, the engine runs in a worker, the page stays responsive during a

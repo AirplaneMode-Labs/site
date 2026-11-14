@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Sprint 3 fix round: tests that pin the glyphsift score-versus-noise row to a fresh computation over the
+  sibling `docs/score-vs-noise.csv`, the demos.json lines to T1's observations (runtime, glyphsift, the
+  build-id wording), the licensing promise sentence, the README owner step and section order, and the
+  dated Sprint 2 correction. LANDED.json is read from `LANDED_JSON`, the workspace evidence copy or the
+  scratch copy, and the worker and Trusted Types cross-checks are skipped when none is reachable.
+  (BUG-T1-S3-02, BUG-T1-S3-03, BUG-T1-S3-06, T3-S3-005, T3-S3-006, T3-S3-015)
+
+- Draft support in the build: `<meta name="draft" content="true" />` emits a robots noindex meta
+  and keeps the page out of the write-ups list. (D5-05)
+- `/licensing/`: licensing policy draft for owner review, unlinked and `noindex`, table from the new
+  `data/licences.json` (seven repos, equal to the sibling LICENSE files), the plan's literal
+  promises only, all else `[owner to confirm]`. (D5-05)
+- Sprint 3 write-up skeleton `writeups/2026-11-sprint-3.html` (draft, no figures) and two
+  benchmark slots for model-load timing per phase and memory at load, both "not measured". (D5-06)
+
 - Build id in every page footer (`Built <date> · build <id>`): first 12 characters of
   `GITHUB_SHA` only when it is 40-hex, else `local`; node tests cover unset, malformed and valid
   values. (T1-S2-05)
@@ -21,6 +36,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   script tag. (D5-05)
 
 ### Changed
+
+- `data/demos.json`: six lines dated Sprint 3 (14 Nov 2026), now matched to T1's observations and
+  LANDED.json. runtime: engine picker, the engine runs in a worker, the page stays responsive during a
+  WebAssembly answer, a load-timing and memory read-out, the DevTools panel loadable unpacked, Trusted
+  Types on; the freeze and Force WASM statements are gone; WebLLM (carried to Sprint 4), the 8 GB laptop
+  and the Stop button are not yet. glyphsift: paste, drop or choose a UTF-8 .txt up to 1 MiB, per-line
+  strip, per-cluster heatmap, refusals, 0 requests; the stale "per-line heatmap" not-yet is removed.
+  pagetriage, localdata and dockit: "the page shows the build id" instead of "the status line"; dockit
+  adds Trusted Types and the worker note. (D5-06, BUG-T1-S3-02, BUG-T1-S3-03, BUG-T1-S3-06, T3-S3-005)
+- `data/benchmarks.json`, glyphsift score-versus-noise row: the mixed-family means are recomputed by
+  script from the regenerated `glyphsift/docs/score-vs-noise.csv` (998,476; 996,985; 991,696; 983,977;
+  967,538; 933,440; the Sprint 2 figures were 998,454 to 932,405) and the evidence is
+  `evidence/sprint-3/D3/bench-s3.log and docs/score-vs-noise.csv`. (T3-S3-006)
+- Licensing draft: the promise sentence names pagetriage's `MIT OR Apache-2.0` dual licence instead of
+  claiming Apache-2.0 for every library, and says what is beyond the plan text with `[owner to
+  confirm]`; what "the core" covers is added to the undecided list. (T3-S3-015)
+- Sprint 2 write-up: a dated correction (14 November 2026) that WebLLM moved to Sprint 4 and that its
+  score-versus-noise table is the Sprint 2 one; the original text is left in place. (T3-S3-015)
+- README: Install carries an explicit "Not a registry package" note (the site is an application on
+  GitHub Pages); sections follow the conventions order (Demo and Licensing draft after Contracts);
+  Status, Benchmarks and Limitations updated; the owner step now covers the `#draft-banner`, the
+  "(draft)" title and the nav link. (T3-S3-015)
 
 - The Sprint 2 write-up is finished from saved evidence (score versus noise, WebGPU and WebAssembly legs,
   what did not pass); three benchmark rows carry Apple-silicon placeholder figures with an `evidence` field
@@ -60,14 +97,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   entries with matching URLs; five tests cover the data, both pages and the nav.
 - `persist-credentials: false` on the `actions/checkout` step of both workflows.
 
+### Fixed
+
+- `data/demos.json` localdata line now states the Sprint 3 capability the refreshed demo shows (storage.set, storage.get, storage.delete and storage.quota events listed live through an optional sink, never keys or values; not yet in the DevTools panel). (T3-S3-029)
+
+- `demos.json` site status now says "three unmeasured Sprint 2 slots (two done-when rows and glyphsift throughput)", matching the benchmarks page. (T1-R1-01)
+- Write-up loaded-once sentence now ends with the evidence citation, as in runtime/README.md. (T3-S2-R1-02)
+
 ### Security
 
 - The build refuses to emit any page containing `<script`, any `<link>`, `<script>` or
   `@import` that references a host other than github.com, arxiv.org or doi.org, or any
   inline `style=` attribute. Every page carries a CSP meta that allows only same-origin
   styles and images.
-
-### Fixed
-
-- `demos.json` site status now says "three unmeasured Sprint 2 slots (two done-when rows and glyphsift throughput)", matching the benchmarks page. (T1-R1-01)
-- Write-up loaded-once sentence now ends with the evidence citation, as in runtime/README.md. (T3-S2-R1-02)

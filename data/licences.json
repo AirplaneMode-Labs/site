@@ -1,0 +1,11 @@
+{
+  "repos": [
+    { "repo": "pagetriage", "licence": "MIT OR Apache-2.0", "visibility": "public", "note": "Dual licence, kept as the repository already had it." },
+    { "repo": "glyphsift", "licence": "Apache-2.0", "visibility": "public", "note": "LICENSE and NOTICE." },
+    { "repo": "localdata", "licence": "Apache-2.0", "visibility": "public", "note": "LICENSE and NOTICE." },
+    { "repo": "runtime", "licence": "Apache-2.0", "visibility": "public", "note": "LICENSE and NOTICE. The open specs live in runtime/spec." },
+    { "repo": "dockit", "licence": "Apache-2.0", "visibility": "public", "note": "LICENSE and NOTICE." },
+    { "repo": "site", "licence": "Apache-2.0", "visibility": "public", "note": "Code under Apache-2.0; the site's prose and data are also CC BY 4.0." },
+    { "repo": "control-plane", "licence": "Functional Source License, Version 1.1, Apache 2.0 Future License (FSL-1.1-Apache-2.0; SPDX FSL-1.1-ALv2)", "visibility": "private", "note": "It converts to Apache-2.0 two years after each version is made available. It is not open source by the OSI definition." }
+  ]
+}

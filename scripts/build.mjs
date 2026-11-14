@@ -54,8 +54,17 @@ export function buildId(sha = process.env.GITHUB_SHA) {
   return typeof sha === 'string' && /^[0-9a-f]{40}$/.test(sha) ? sha.slice(0, 12) : 'local';
 }
 
-function renderLayout(layout, { title, description, content, root, active, built }) {
+const DRAFT_META = /<meta\s+name="draft"\s+content="true"\s*\/?>\s*\n?/i;
+const NOINDEX = '\n    <meta name="robots" content="noindex" />';
+
+/** A fragment is a draft when it carries <meta name="draft" content="true">. The marker is consumed. */
+function takeDraft(fragment) {
+  return { draft: DRAFT_META.test(fragment), fragment: fragment.replace(DRAFT_META, '') };
+}
+
+function renderLayout(layout, { title, description, content, root, active, built, draft }) {
   let html = layout
+    .replaceAll('{{robots}}', draft ? NOINDEX : '')
     .replaceAll('{{title}}', esc(title))
     .replaceAll('{{description}}', esc(description))
     .replaceAll('{{root}}', root)
@@ -174,15 +183,47 @@ ${items}
 <p class="muted">Statuses written on ${esc(dates)} from local builds, not measured at the live URLs. See the <a href="demos/">demos page</a>.</p>`;
 }
 
+const LICENCE_REPOS = ['pagetriage', 'glyphsift', 'localdata', 'runtime', 'dockit', 'site', 'control-plane'];
+
+/** Throws unless licences.json lists exactly the seven repos, in order, with a licence each. */
+export function checkLicences(data) {
+  const repos = data?.repos;
+  if (!Array.isArray(repos) || repos.map((r) => r.repo).join() !== LICENCE_REPOS.join()) {
+    throw new Error('licences.json must list exactly the seven repos in the fixed order');
+  }
+  for (const r of repos) {
+    for (const k of ['licence', 'visibility', 'note']) {
+      if (typeof r[k] !== 'string' || r[k].length === 0) throw new Error(`licences.json: ${r.repo} lacks ${k}`);
+    }
+  }
+}
+
+function renderLicences(data) {
+  const rows = data.repos
+    .map(
+      (r) =>
+        `<tr class="licence" data-repo="${esc(r.repo)}"><td>${esc(r.repo)}</td><td>${esc(r.licence)}</td><td>${esc(r.visibility)}</td><td>${esc(r.note)}</td></tr>`,
+    )
+    .join('\n');
+  return `<div class="table-wrap">
+<table class="licences">
+<thead><tr><th>Repo</th><th>Licence</th><th>Visibility</th><th>Note</th></tr></thead>
+<tbody>
+${rows}
+</tbody>
+</table>
+</div>`;
+}
+
 export function build({ root, outDir }) {
   const srcDir = join(root, 'src');
   const layout = readFileSync(join(srcDir, 'templates', 'layout.html'), 'utf8');
   const built = `${new Date().toISOString().slice(0, 10)} \u00b7 build ${buildId()}`;
   const outputs = [];
 
-  const emit = (relPath, title, description, content, depth, active) => {
+  const emit = (relPath, title, description, content, depth, active, draft = false) => {
     const rel = '../'.repeat(depth);
-    const html = renderLayout(layout, { title, description, content, root: rel, active, built });
+    const html = renderLayout(layout, { title, description, content, root: rel, active, built, draft });
     checkOutput(html, relPath);
     outputs.push([relPath, html]);
   };
@@ -193,14 +234,19 @@ export function build({ root, outDir }) {
   const benchmarks = JSON.parse(readFileSync(join(root, 'data', 'benchmarks.json'), 'utf8'));
   const demos = JSON.parse(readFileSync(join(root, 'data', 'demos.json'), 'utf8'));
   checkDemos(demos);
+  const licences = JSON.parse(readFileSync(join(root, 'data', 'licences.json'), 'utf8'));
+  checkLicences(licences);
   for (const file of readdirSync(pagesDir).filter((f) => f.endsWith('.html')).sort()) {
     const name = basename(file, '.html');
-    const fragment = readFileSync(join(pagesDir, file), 'utf8');
+    const { draft, fragment } = takeDraft(readFileSync(join(pagesDir, file), 'utf8'));
     const title = readMeta(fragment, 'title', name);
     const description = readMeta(fragment, 'description', 'Airplane Mode Labs');
     let content = stripMeta(fragment);
     if (content.includes('{{benchmarks-table}}')) {
       content = content.replace('{{benchmarks-table}}', () => renderBenchmarks(benchmarks));
+    }
+    if (content.includes('{{licences-table}}')) {
+      content = content.replace('{{licences-table}}', () => renderLicences(licences));
     }
     if (content.includes('{{demos-table}}')) {
       content = content.replace('{{demos-table}}', () => renderDemos(demos));
@@ -212,8 +258,8 @@ export function build({ root, outDir }) {
     if (content.includes('{{demos-home}}')) {
       content = content.replace('{{demos-home}}', () => renderDemosHome(demos));
     }
-    if (name === 'index') emit('index.html', title, description, content, 0, 'index');
-    else emit(join(name, 'index.html'), title, description, content, 1, name);
+    if (name === 'index') emit('index.html', title, description, content, 0, 'index', draft);
+    else emit(join(name, 'index.html'), title, description, content, 1, name, draft);
   }
 
   // Papers
@@ -232,11 +278,12 @@ export function build({ root, outDir }) {
   const items = [];
   for (const file of writeups) {
     const slug = basename(file, '.html');
-    const fragment = readFileSync(join(wuDir, file), 'utf8');
+    const { draft, fragment } = takeDraft(readFileSync(join(wuDir, file), 'utf8'));
     const title = readMeta(fragment, 'title', slug);
     const date = readMeta(fragment, 'date', '');
     const description = readMeta(fragment, 'description', title);
-    emit(join('writeups', slug, 'index.html'), title, description, stripMeta(fragment), 2, 'writeups');
+    emit(join('writeups', slug, 'index.html'), title, description, stripMeta(fragment), 2, 'writeups', draft);
+    if (draft) continue; // drafts are reachable by direct URL only
     items.push(`<li><a href="${esc(slug)}/">${esc(title)}</a>${date ? ` <span class="muted">${esc(date)}</span>` : ''}</li>`);
   }
   const wuIndex = `<h1>Write-ups</h1>

@@ -1,0 +1,78 @@
+<!-- title: Licensing policy (draft) -->
+<!-- description: Draft licensing policy of Airplane Mode Labs: the licence of each repository and the promise never to relicense the core. Not yet published as policy. -->
+<meta name="draft" content="true" />
+<section class="box box-warn" id="draft-banner">
+  <p><strong>Draft for owner review. Not yet published as policy.</strong></p>
+  <p class="muted">
+    Worded from the three plan documents only. Anything the plans do not state is marked
+    [owner to confirm]. This page is not linked from the rest of the site and asks search engines
+    not to index it.
+  </p>
+</section>
+<h1>Licensing policy</h1>
+<p class="lede">
+  Which licence each Airplane Mode Labs repository carries, and what we promise about changing
+  them.
+</p>
+
+<h2>The licence of each repository</h2>
+<p class="muted">Read against the LICENSE file in each repository on 14 Nov 2026.</p>
+{{licences-table}}
+
+<h2>The promise</h2>
+<ul>
+  <li>
+    We pick the licence of each repository on day one and we will never relicense the core: that
+    is Apache-2.0 for every browser library and the core runtime, and, for pagetriage, the
+    <code>MIT OR Apache-2.0</code> dual licence it already carried, as the table above states.
+    [owner to confirm the exact wording of the written commitment, and that it covers pagetriage's
+    dual licence]
+  </li>
+  <li>There is no AGPL in the browser libraries.</li>
+</ul>
+
+<h2>Not yet decided</h2>
+<p>These points are not stated in the plans and are not promises until the owner confirms them.</p>
+<ul>
+  <li>
+    What the core covers: the six public repositories, or only the browser libraries and the core
+    runtime that the plan names. [owner to confirm]
+  </li>
+  <li>
+    Whether the open specs in <code>runtime/spec</code> never move behind the control-plane
+    licence. [owner to confirm]
+  </li>
+  <li>How contributions are accepted, including any CLA or DCO. [owner to confirm]</li>
+  <li>Trademark and name use. [owner to confirm]</li>
+  <li>Any commitment about the future of the control-plane licence beyond the FSL terms. [owner to confirm]</li>
+</ul>
+
+<h2>Why</h2>
+<p>
+  Changing the licence of an established project causes forks and backlash: HashiCorp moved to
+  BSL and OpenTofu forked within weeks; Redis changed licence and Valkey forked under the Linux
+  Foundation. The lesson in our plan is to pick the licence on day one and never relicense the
+  core. Permissive Apache-2.0 also carries a patent grant that enterprises look for, and it keeps
+  embedding simple for developers who ship JavaScript and WebAssembly to their users.
+</p>
+
+<h2>What is paid</h2>
+<p>
+  The paid layer is the control plane, which runs on the customer's premises. Per the plan it
+  covers:
+</p>
+<ul>
+  <li>a signed private model and data registry with an offline sync and import channel;</li>
+  <li>policy: model allow-lists per device class, prompt-injection rulesets and data-retention controls;</li>
+  <li>audit logs and a DPDP/GDPR-ready compliance export;</li>
+  <li>SSO and SCIM for the admin console;</li>
+  <li>fleet capability and health telemetry, aggregated locally and exported on the customer's terms;</li>
+  <li>certified, reproducible builds with an SBOM;</li>
+  <li>Indic model packs;</li>
+  <li>support SLAs.</li>
+</ul>
+<p>
+  Pricing, terms and which of these ship first are not part of this page. [owner to confirm]
+</p>
+
+<p class="muted">Questions: see SECURITY.md contact</p>

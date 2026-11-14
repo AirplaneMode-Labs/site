@@ -31,6 +31,11 @@ The first write-up, `2026-11-sprint-1.html`, is written from the Sprint 1 tester
 nothing else; a write-up is never written from the plan. If a retest changes a number, the
 write-up is updated from the retest report.
 
-The second, `2026-11-sprint-2.html`, is a skeleton: the product owner fills each slot from the
-named command or tester report at wrap-up, and a build test fails if any figure other than a
-date, sprint number, named command or model name appears before then.
+The second, `2026-11-sprint-2.html`, started as a skeleton that the product owner filled from the
+named command or tester report at wrap-up; a build test fails if any figure other than a date,
+sprint number, named command, model name or an explicitly listed evidence figure appears in it. It
+carries a dated correction (14 November 2026) that the WebLLM backend moved to Sprint 4.
+
+The third, `2026-11-sprint-3.html`, is an unlisted, `noindex` skeleton (`<meta name="draft"
+content="true" />`) with no figures; the product owner fills it at wrap-up from real results, and
+a build test fails if any figure appears in it before then.

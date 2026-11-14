@@ -214,8 +214,8 @@ the 8 GB laptop has been measured. Today the page carries:
 - The Sprint 1 write-up quotes Apple-silicon figures only, labelled as placeholders; its
   fix-round paragraph is updated from the retest report once that report exists.
 - The Sprint 2 write-up (`writeups/2026-11-sprint-2.html`) is finished from saved evidence and
-  carries a dated correction (14 Nov 2026): WebLLM moved to Sprint 4, and its score-versus-noise table
-  is the Sprint 2 one (the CSV was regenerated in Sprint 3).
+  carries a dated correction (14 Nov 2026): WebLLM moved to Sprint 4 and was then cut (TD-08, not yet),
+  and its score-versus-noise table is the Sprint 2 one (the CSV was regenerated in Sprint 3).
 - The licensing page is a draft: nothing on it is policy until the owner approves it and links it.
   The team settled marks only where a LICENSE, CONTRIBUTING or spec file already says so (cited above);
   `CLA or DCO [owner to confirm]` and `Trademark and name use. [owner to confirm]` remain, and the

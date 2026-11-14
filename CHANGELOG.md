@@ -25,7 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   test against the saved files; says it is committed on 14 Nov 2026, not pushed); Sprint 4 write-up skeleton
   with five sections marked for the product owner. Both unlisted, `noindex` and unlinked. (D5-04)
 - Tests: licensing marks and sources, the demos lines, the WebLLM and spec wording, and a sweep that no page,
-  write-up or data file pitches cheaper inference, savings on inference or a cost per token. (D5-03, D5-06)
+  write-up or data file makes an inference-cost pitch (phrase list in `test/build.test.mjs`, TD-11).
+  (D5-03, D5-06)
 
 - Sprint 3 fix round: tests that pin the glyphsift score-versus-noise row to a fresh computation over the
   sibling `docs/score-vs-noise.csv`, the demos.json lines to T1's observations (runtime, glyphsift, the

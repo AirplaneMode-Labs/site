@@ -1,35 +1,168 @@
-<!-- title: Sprint 3: write-up skeleton (draft) -->
+<!-- title: Sprint 3: what landed (draft) -->
 <!-- date: 2026-11-14 -->
-<!-- description: Draft skeleton of the Sprint 3 write-up of Airplane Mode Labs. No figures until the product owner fills it from evidence. -->
+<!-- description: Draft write-up of Sprint 3 of Airplane Mode Labs, written only from the saved Sprint 3 evidence. Committed, not pushed. -->
 <meta name="draft" content="true" />
-<h1>Sprint 3: write-up skeleton (draft)</h1>
+<h1>Sprint 3: what landed (draft)</h1>
 <p class="lede">
-  Sprint 3 (planned 7 to 20 December 2026, build work started early on 14 November 2026). This
-  page is a skeleton: the product owner fills every slot at wrap-up from the saved evidence and
-  from nothing else. It is not listed and asks search engines not to index it.
+  Sprint 3 (planned 7 to 20 December 2026, build work started early on 14 November 2026). Committed
+  on 14 Nov 2026, not pushed; the live demos show Sprint 2 until the owner pushes. This page is a
+  draft for owner approval: it is not listed and asks search engines not to index it.
 </p>
 <p class="muted">
-  Rules for filling it: every number is quoted with the command that produced it and the machine
-  it ran on; an Apple-silicon figure is a placeholder until the 8 GB Windows laptop without a GPU
-  has been measured; nothing is written from the plan.
+  Rules this page follows: every figure sits next to the saved evidence file it was read from, and
+  nothing is written from the plan. Every Apple-silicon figure is a placeholder, and anything about
+  the 8 GB Windows laptop without a GPU is not measured on 8 GB.
 </p>
 
 <h2>What we tried</h2>
-<p data-slot="tried">To be filled from evidence/sprint-3 at wrap-up.</p>
+<ul>
+  <li>
+    Run the model engine in a dedicated worker, a fresh one per load, so that a slow WebAssembly
+    answer cannot freeze the page (evidence/sprint-3/D1/LANDED.json).
+  </li>
+  <li>
+    Guard the worker's network access and validate every message it exchanges with the page
+    (evidence/sprint-3/D1/WEBLLM-NOT-LANDED.txt lists the guard and the message protocol as ready).
+  </li>
+  <li>
+    Make every model load observable: phase durations and memory samples as events, and a first
+    DevTools panel that reads them (evidence/sprint-3/D1/LANDED.json, entry devtoolsTransport).
+  </li>
+  <li>
+    Build the glyphsift and pagetriage wheels and the glyphsift, pagetriage, runtime and localdata
+    tarballs locally on macOS arm64, and install each into an empty directory or environment to see
+    whether it works on a machine that has never seen the repository
+    (evidence/sprint-3/T1/r3/install.log).
+  </li>
+  <li>
+    Add a WebLLM engine rung. It did not land; see the next sections
+    (evidence/sprint-3/D1/WEBLLM-NOT-LANDED.txt).
+  </li>
+</ul>
 
 <h2>What held up</h2>
-<p data-slot="held-up">To be filled from evidence/sprint-3 at wrap-up.</p>
+<ul>
+  <li>
+    The page stays responsive while the engine answers in a worker. In three WebAssembly answers
+    of 32 tokens each, the longest animation-frame gap during the answer was 16.8 ms with the
+    engine in the worker, and between 3,749.8 and 3,883.1 ms when the same engine ran on the main
+    thread (evidence/sprint-3/T1/r3/worker.json). Apple silicon; not measured on 8 GB.
+  </li>
+  <li>
+    Aborting works: 5 of 5 aborts finished with the reason abort, in 252.3 to 253.1 ms, and the
+    answer after an abort downloaded 0 bytes (evidence/sprint-3/T1/r3/worker.json).
+  </li>
+  <li>
+    The worker's egress guard refused the in-worker network probes: 12 egress-refused events were
+    recorded and 0 requests reached a staging prefix (evidence/sprint-3/T1/r3/worker.json).
+  </li>
+  <li>
+    The real Airplane Mode tab, inside an open Chrome DevTools window, showed the five load-phase
+    durations under the page snapshot's load id, in two runs: the developer's harness and the
+    tester's independent harness (evidence/sprint-3/D1/devtools/devtools-figures.json and
+    evidence/sprint-3/T1/r3/devtools/devtools-figures-t1.json).
+  </li>
+  <li>
+    runtime: 955 unit tests passed (evidence/sprint-3/T1/r3/runtime-ci.log); the browser suite
+    12 passed (evidence/sprint-3/T1/r3/runtime-test-browser.log), the model test 9 passed
+    (evidence/sprint-3/T1/r3/runtime-test-model.log), the worker test 8 passed
+    (evidence/sprint-3/T1/r3/runtime-test-worker.log) and the headed DevTools test 2 passed
+    (evidence/sprint-3/T1/r3/runtime-test-devtools.log).
+  </li>
+  <li>
+    localdata: 144 passed and 13 skipped by design (evidence/sprint-3/T1/r3/localdata-ci.log;
+    the tester's index calls the skips by design: evidence/sprint-3/T1/r3/INDEX.txt); browser suite 11 passed
+    (evidence/sprint-3/T1/r3/localdata-test-browser.log).
+  </li>
+  <li>
+    dockit: 103 unit tests passed (evidence/sprint-3/T1/r3/dockit-ci-noenv.log) and 21 passed in
+    the browser (evidence/sprint-3/T1/r3/dockit-test-browser.log). This site: 40 of 40 tests passed
+    (evidence/sprint-3/T1/r3/site-build-test.log).
+  </li>
+  <li>
+    Rust: glyphsift 121, pagetriage 419 and control-plane 85 Rust tests passed, 0 failed
+    (evidence/sprint-3/T2/r2/cargo-test-glyphsift.full.log,
+    evidence/sprint-3/T2/r2/cargo-test-pagetriage.full.log and
+    evidence/sprint-3/T2/r2/cargo-test-control-plane.full.log).
+  </li>
+  <li>
+    The glyphsift wheel (245,869 B) and tarball (111,710 B) and the pagetriage wheel (1,685,837 B)
+    and tarball (988,441 B) were hash-checked by the browser tester
+    (evidence/sprint-3/T1/r3/artifact-hashes.log). The wheels were installed with pip and with uv
+    into fresh environments and called (evidence/sprint-3/T2/r2/gs-wheel-proof.log and
+    evidence/sprint-3/T2/r2/pt-wheel-proof.log); the tarballs were installed offline from an empty
+    directory (evidence/sprint-3/T1/r3/install.log).
+  </li>
+  <li>
+    Spec release 0.3.0 (draft) landed with 71 sha256 values, one per file under the spec folder
+    (evidence/sprint-3/D1/SPEC-LANDED.txt).
+  </li>
+</ul>
 
 <h2>What did not</h2>
-<p data-slot="did-not">To be filled from evidence/sprint-3 at wrap-up.</p>
+<ul>
+  <li>
+    WebLLM did not land: the work that had to come first used the sprint's capacity, and every
+    WebLLM sentence in the demos and READMEs says not yet
+    (evidence/sprint-3/D1/WEBLLM-NOT-LANDED.txt, evidence/sprint-3/D1/LANDED.json).
+  </li>
+  <li>
+    The runtime demo has no Stop button (evidence/sprint-3/T1/r3/worker.json, entry
+    demoHasStopButton), and embeddings are not available through the worker host
+    (evidence/sprint-3/D1/LANDED.json, entry worker).
+  </li>
+  <li>
+    The DevTools memory read is coarse. After the session was created, the page JS heap read
+    79,554,898 B in the first run and 33,865,195 B in the independent run, the worker heap and
+    WebAssembly memory were not exposed, and the difference between the two runs is not explained
+    here (evidence/sprint-3/D1/devtools/devtools-figures.json and
+    evidence/sprint-3/T1/r3/devtools/devtools-figures-t1.json).
+  </li>
+  <li>
+    The glyphsift NOTICE link in the demo downloads the file instead of displaying it; the browser
+    tester filed it as a finding (evidence/sprint-3/T1/r3/INDEX.txt, line about T3-S3-023).
+  </li>
+  <li>
+    The security review gave NO-GO to the glyphsift v0.1.0 tag and to the pagetriage v1.0.0 tag
+    while the owner's release rows are open (evidence/sprint-3/S1/rv2/rv2-findings-append.md).
+  </li>
+</ul>
 
-<h2>Numbers</h2>
-<p data-slot="numbers">
-  Model-load timing per phase and memory at load: to be filled from evidence/sprint-3 at wrap-up,
-  each with its command. Until then both read not measured on the benchmarks page.
+<h2>Numbers (Apple silicon; not measured on 8 GB)</h2>
+<p>
+  Model-load timing per phase, from the Airplane Mode DevTools panel, SmolLM2-135M test model on
+  the WebAssembly engine in a worker, Chrome 157.0.8103.79, command
+  <code>RUNTIME_MODEL=1 npm run test:devtools</code> (headed). The same figures are on the
+  benchmarks page. Saved output: evidence/sprint-3/D1/devtools/devtools-figures.json and
+  evidence/sprint-3/T1/r3/devtools/devtools-figures-t1.json.
 </p>
+<ul>
+  <li>
+    First run: acquire 1,260.9 ms, verify 663 ms, hand-off 7.6 ms, session create 481.2 ms, first
+    token 655.1 ms (evidence/sprint-3/D1/devtools/devtools-figures.json).
+  </li>
+  <li>
+    Independent run: acquire 1,254 ms, verify 664.9 ms, hand-off 7.4 ms, session create 479.7 ms,
+    first token 655.5 ms (evidence/sprint-3/T1/r3/devtools/devtools-figures-t1.json).
+  </li>
+</ul>
 
 <h2>Limitations</h2>
-<p data-slot="limitations">
-  To be filled from evidence/sprint-3 at wrap-up. The 8 GB Windows no-GPU laptop is not measured.
-</p>
+<ul>
+  <li>
+    The 8 GB Windows no-GPU laptop is not measured on 8 GB: every figure above is Apple silicon
+    and a placeholder until that laptop is measured.
+  </li>
+  <li>
+    Everything was built and installed on macOS arm64 only; the wheels are tagged for that
+    platform (evidence/sprint-3/T1/r3/artifact-hashes.log).
+  </li>
+  <li>
+    Nothing was published, tagged or registered, and the registry names are not reserved. Sprint 3
+    is committed, not pushed; the live demos show Sprint 2 until the owner pushes.
+  </li>
+  <li>
+    Three-OS claim: tests-first evidence Done (red/green logs); local macOS green; CI on three OSes
+    configured, pending the owner's push.
+  </li>
+</ul>

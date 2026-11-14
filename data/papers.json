@@ -482,5 +482,625 @@
     "status": "to-read",
     "notes": "citation verified 2026-11-09 against the standard's own page",
     "repo": "runtime"
+  },
+  {
+    "id": "intelligence-per-watt-2025",
+    "title": "Intelligence per Watt: Measuring Intelligence Efficiency of Local AI",
+    "authors": [
+      "Jon Saad-Falcon",
+      "Avanika Narayan",
+      "Hakki Orhun Akengin",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2511.07885",
+    "url": "https://arxiv.org/abs/2511.07885",
+    "area": "local-inference",
+    "claim": "On 1M real single-turn chat and reasoning queries, local models of up to 20B active parameters answered 88.7% successfully, and intelligence per watt rose 5.3x between 2023 and 2025.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API); arXiv comment field: Conference on Neural Information Processing Systems (NeurIPS) 2026",
+    "repo": "runtime"
+  },
+  {
+    "id": "minions-2025",
+    "title": "Minions: Cost-efficient Collaboration Between On-device and Cloud Language Models",
+    "authors": [
+      "Avanika Narayan",
+      "Dan Biderman",
+      "Sabri Eyuboglu",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2502.15964",
+    "url": "https://arxiv.org/abs/2502.15964",
+    "area": "local-inference",
+    "claim": "A small on-device model that reads the whole document, working with a cloud model that only plans, sends far less to the cloud: 30.4x less remote spend at 87% of the cloud model's quality for a naive chat protocol, and 5.7x less at 97.9% for MinionS.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "dockit"
+  },
+  {
+    "id": "slm-agentic-ai-2025",
+    "title": "Small Language Models are the Future of Agentic AI",
+    "authors": [
+      "Peter Belcak",
+      "Greg Heinrich",
+      "Shizhe Diao",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2506.02153",
+    "url": "https://arxiv.org/abs/2506.02153",
+    "area": "small-models",
+    "claim": "Position paper: small language models are powerful enough, a better fit and more economical for the repetitive, narrow calls inside agentic systems, with mixed-model systems where general conversation is needed.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "runtime"
+  },
+  {
+    "id": "ohrbench-2024",
+    "title": "OCR Hinders RAG: Evaluating the Cascading Impact of OCR on Retrieval-Augmented Generation",
+    "authors": [
+      "Junyuan Zhang",
+      "Qintong Zhang",
+      "Bin Wang",
+      "et al."
+    ],
+    "year": 2024,
+    "venue": "arXiv:2412.02592",
+    "url": "https://arxiv.org/abs/2412.02592",
+    "area": "ocr",
+    "claim": "OCR noise, both semantic and formatting, degrades retrieval-augmented answers, and none of the OCR solutions the benchmark tested builds a high-quality knowledge base for RAG.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API); arXiv comment field: Accepted by ICCV 2025",
+    "repo": "pagetriage"
+  },
+  {
+    "id": "ocr-vlms-devanagari-2026",
+    "title": "Can OCR-VLMs Read Devanagari? A Stress-Test Benchmark and Post-Correction Study",
+    "authors": [
+      "Aditya Pratap Singh"
+    ],
+    "year": 2026,
+    "venue": "arXiv:2606.29213",
+    "url": "https://arxiv.org/abs/2606.29213",
+    "area": "ocr",
+    "claim": "On 300 real printed Hindi scans nine of the ten OCR systems collapse, synthetic renders badly overstate Devanagari quality, and strong English OCR does not predict Indic OCR.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "glyphsift"
+  },
+  {
+    "id": "chitrapathak-2026",
+    "title": "Designing Production-Scale OCR for India: Multilingual and Domain-Specific Systems",
+    "authors": [
+      "Ali Faraz",
+      "Raja Kolla",
+      "Ashish Kulkarni",
+      "Shubham Agarwal"
+    ],
+    "year": 2026,
+    "venue": "arXiv:2602.16430",
+    "url": "https://arxiv.org/abs/2602.16430",
+    "area": "ocr",
+    "claim": "For Indic OCR, fine-tuning an existing OCR model gave better accuracy-latency trade-offs than training a new vision-language OCR end to end (the Chitrapathak series), and a separate model series reads key fields from nine kinds of Indian government document.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API); the paper title differs from the short name \"Chitrapathak\" used in the research list; the series name is in the abstract",
+    "repo": "dockit"
+  },
+  {
+    "id": "seeing-straight-orb-2025",
+    "title": "Seeing Straight: Document Orientation Detection for Efficient OCR",
+    "authors": [
+      "Suranjan Goswami",
+      "Abhinav Ravi",
+      "Raja Kolla",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2511.04161",
+    "url": "https://arxiv.org/abs/2511.04161",
+    "area": "ocr",
+    "claim": "A lightweight rotation classifier and the OCR-Rotation-Bench benchmark (ORB-En and ORB-Indic, 11 Indic languages) show that correcting page orientation before OCR raises OCR accuracy, by up to 14% for closed models and up to 4x for open-weights models in the simulated setting.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API); the paper title differs from the benchmark name \"OCR-Rotation-Bench\" used in the research list; the benchmark name is in the abstract",
+    "repo": "pagetriage"
+  },
+  {
+    "id": "quality-at-a-glance-2021",
+    "title": "Quality at a Glance: An Audit of Web-Crawled Multilingual Datasets",
+    "authors": [
+      "Julia Kreutzer",
+      "Isaac Caswell",
+      "Lisa Wang",
+      "et al."
+    ],
+    "year": 2021,
+    "venue": "arXiv:2103.12028",
+    "url": "https://arxiv.org/abs/2103.12028",
+    "area": "data-quality",
+    "claim": "A manual audit of 205 language-specific corpora from five public web-crawled datasets found at least 15 with no usable text, a significant fraction with under 50% sentences of acceptable quality, and mislabeled or nonstandard language codes.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API); arXiv journal_ref field: Transactions of the Association for Computational Linguistics (2022) 10: 50-72",
+    "repo": "glyphsift"
+  },
+  {
+    "id": "fineweb2-2025",
+    "title": "FineWeb2: One Pipeline to Scale Them All -- Adapting Pre-Training Data Processing to Every Language",
+    "authors": [
+      "Guilherme Penedo",
+      "Hynek Kydlíček",
+      "Vinko Sabolčec",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2506.20920",
+    "url": "https://arxiv.org/abs/2506.20920",
+    "area": "data-quality",
+    "claim": "A pre-training data curation pipeline based on FineWeb that adapts automatically to any language, ablated on nine languages, yields non-English corpora that train better models than earlier datasets.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API); the research list gave arXiv 2502.10361 for FineWeb2, which is a different paper (Messmer et al., model-based data selection) and is not added; this entry is the FineWeb2 paper found by its own title",
+    "repo": "glyphsift"
+  },
+  {
+    "id": "glotlid-2023",
+    "title": "GlotLID: Language Identification for Low-Resource Languages",
+    "authors": [
+      "Amir Hossein Kargaran",
+      "Ayyoob Imani",
+      "François Yvon",
+      "Hinrich Schütze"
+    ],
+    "year": 2023,
+    "venue": "arXiv:2310.16248",
+    "url": "https://arxiv.org/abs/2310.16248",
+    "area": "data-quality",
+    "claim": "GlotLID-M identifies 1665 languages and beats four baselines (CLD3, FT176, OpenLID, NLLB) when balancing F1 against false positive rate, with an analysis of why low-resource language identification is hard.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API); arXiv comment field: EMNLP 2023",
+    "repo": "glyphsift"
+  },
+  {
+    "id": "indicllmsuite-2024",
+    "title": "IndicLLMSuite: A Blueprint for Creating Pre-training and Fine-Tuning Datasets for Indian Languages",
+    "authors": [
+      "Mohammed Safi Ur Rahman Khan",
+      "Priyam Mehta",
+      "Ananth Sankar",
+      "et al."
+    ],
+    "year": 2024,
+    "venue": "arXiv:2403.06350",
+    "url": "https://arxiv.org/abs/2403.06350",
+    "area": "data-quality",
+    "claim": "A blueprint and resource suite for Indic LLM data across 22 languages (251B tokens, 74.8M instruction-response pairs) with a clean open pipeline for crawling, cleaning, flagging and deduplicating web, PDF and video sources.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API); arXiv comment field: ACL-2024 Outstanding Paper",
+    "repo": "glyphsift"
+  },
+  {
+    "id": "milu-2024",
+    "title": "MILU: A Multi-task Indic Language Understanding Benchmark",
+    "authors": [
+      "Sshubam Verma",
+      "Mohammed Safi Ur Rahman Khan",
+      "Vishwajeet Kumar",
+      "et al."
+    ],
+    "year": 2024,
+    "venue": "arXiv:2411.02538",
+    "url": "https://arxiv.org/abs/2411.02538",
+    "area": "evaluation",
+    "claim": "MILU is a multi-task benchmark of 8 domains and 41 subjects in 11 Indic languages; of the 42+ models evaluated, the best (GPT-4o) reached 74% average accuracy.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "runtime"
+  },
+  {
+    "id": "micronn-2025",
+    "title": "MicroNN: An On-device Disk-resident Updatable Vector Database",
+    "authors": [
+      "Jeffrey Pound",
+      "Floris Chabert",
+      "Arjun Bhushan",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2504.05573",
+    "url": "https://arxiv.org/abs/2504.05573",
+    "area": "vector-search",
+    "claim": "An embedded, disk-resident vector search engine for low-resource devices that supports continuous inserts and deletes and queries that combine nearest-neighbour search with attribute filters.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "localdata"
+  },
+  {
+    "id": "leann-2025",
+    "title": "LEANN: A Low-Storage Vector Index",
+    "authors": [
+      "Yichuan Wang",
+      "Zhifei Li",
+      "Shu Liu",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2506.08276",
+    "url": "https://arxiv.org/abs/2506.08276",
+    "area": "vector-search",
+    "claim": "A vector index that recomputes embeddings on the fly and compresses a proximity graph, using a small fraction of storage (for example 5% of the original data) and cutting index size by up to 50x against conventional indices.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "localdata"
+  },
+  {
+    "id": "edgerag-2024",
+    "title": "EdgeRAG: Online-Indexed RAG for Edge Devices",
+    "authors": [
+      "Korakit Seemakhupt",
+      "Sihang Liu",
+      "Samira Khan"
+    ],
+    "year": 2024,
+    "venue": "arXiv:2412.21023",
+    "url": "https://arxiv.org/abs/2412.21023",
+    "area": "vector-search",
+    "claim": "Pruning embeddings inside clusters and generating them on demand lets retrieval-augmented generation fit in memory on a constrained edge device, with lower latency than the IVF baseline and similar generation quality.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "localdata"
+  },
+  {
+    "id": "rabitq-2024",
+    "title": "RaBitQ: Quantizing High-Dimensional Vectors with a Theoretical Error Bound for Approximate Nearest Neighbor Search",
+    "authors": [
+      "Jianyang Gao",
+      "Cheng Long"
+    ],
+    "year": 2024,
+    "venue": "arXiv:2405.12497",
+    "url": "https://arxiv.org/abs/2405.12497",
+    "area": "vector-search",
+    "claim": "Quantises D-dimensional vectors into D-bit strings with a sharp theoretical error bound and SIMD-friendly distance estimation, beating product quantisation on the accuracy-efficiency trade-off.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API); arXiv comment field: The paper has been accepted by SIGMOD 2024",
+    "repo": "localdata"
+  },
+  {
+    "id": "matryoshka-2022",
+    "title": "Matryoshka Representation Learning",
+    "authors": [
+      "Aditya Kusupati",
+      "Gantavya Bhatt",
+      "Aniket Rege",
+      "et al."
+    ],
+    "year": 2022,
+    "venue": "arXiv:2205.13147",
+    "url": "https://arxiv.org/abs/2205.13147",
+    "area": "vector-search",
+    "claim": "Trains one embedding whose leading dimensions are themselves usable representations, so a downstream system can pick a smaller size to fit its compute and storage limits.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "localdata"
+  },
+  {
+    "id": "diskann-2019",
+    "title": "DiskANN: Fast Accurate Billion-point Nearest Neighbor Search on a Single Node",
+    "authors": [
+      "Suhas Jayaram Subramanya",
+      "Devvrit",
+      "Harsha Vardhan Simhadri",
+      "et al."
+    ],
+    "year": 2019,
+    "venue": "Advances in Neural Information Processing Systems 32 (NeurIPS 2019)",
+    "url": "https://papers.nips.cc/paper_files/paper/2019/hash/09853c7fb1d3f8ee67a61b6bf4a7f8e6-Abstract.html",
+    "area": "vector-search",
+    "claim": "A graph-based index kept on an inexpensive SSD instead of main memory can index, store and search a billion-point database on one workstation with 64GB of RAM at high recall and low latency.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the NeurIPS 2019 proceedings page (papers.nips.cc); author order and list as shown on that page, abbreviated",
+    "repo": "localdata"
+  },
+  {
+    "id": "bm25-2009",
+    "title": "The Probabilistic Relevance Framework: BM25 and Beyond",
+    "authors": [
+      "Stephen Robertson",
+      "Hugo Zaragoza"
+    ],
+    "year": 2009,
+    "venue": "Foundations and Trends® in Information Retrieval",
+    "url": "https://doi.org/10.1561/1500000019",
+    "area": "retrieval",
+    "claim": "Presents the probabilistic relevance framework and the BM25 and BM25F ranking functions that grew out of it.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against doi.org (CSL JSON); informs lexical plus vector retrieval in localdata; the research list dates it 2009 and Crossref gives volume 4, issues 1-2",
+    "repo": "localdata"
+  },
+  {
+    "id": "rrf-2009",
+    "title": "Reciprocal rank fusion outperforms condorcet and individual rank learning methods",
+    "authors": [
+      "Gordon V. Cormack",
+      "Charles L A Clarke",
+      "Stefan Buettcher"
+    ],
+    "year": 2009,
+    "venue": "Proceedings of the 32nd international ACM SIGIR conference on Research and development in information retrieval",
+    "url": "https://doi.org/10.1145/1571941.1572114",
+    "area": "retrieval",
+    "claim": "Fusing ranked lists by reciprocal rank outperforms Condorcet fusion and individual rank-learning methods.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against doi.org (CSL JSON); claim written from the title, abstract not read; SIGIR 2009",
+    "repo": "localdata"
+  },
+  {
+    "id": "embeddinggemma-2025",
+    "title": "EmbeddingGemma: Powerful and Lightweight Text Representations",
+    "authors": [
+      "Henrique Schechter Vera",
+      "Sahil Dua",
+      "Biao Zhang",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2509.20354",
+    "url": "https://arxiv.org/abs/2509.20354",
+    "area": "retrieval",
+    "claim": "A 300M-parameter open text embedding model that leads MTEB among models under 500M parameters and keeps its lead when the weights are quantised or the embeddings truncated.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "localdata"
+  },
+  {
+    "id": "mmteb-2025",
+    "title": "MMTEB: Massive Multilingual Text Embedding Benchmark",
+    "authors": [
+      "Kenneth Enevoldsen",
+      "Isaac Chung",
+      "Imene Kerboua",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2502.13595",
+    "url": "https://arxiv.org/abs/2502.13595",
+    "area": "retrieval",
+    "claim": "A community-built benchmark of over 500 tasks across 250+ languages for text embeddings; the best publicly available model on it is multilingual-e5-large-instruct at 560M parameters.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API); arXiv comment field: Accepted for ICLR",
+    "repo": "localdata"
+  },
+  {
+    "id": "tuf-2010",
+    "title": "Survivable key compromise in software update systems",
+    "authors": [
+      "Justin Samuel",
+      "Nick Mathewson",
+      "Justin Cappos",
+      "Roger Dingledine"
+    ],
+    "year": 2010,
+    "venue": "Proceedings of the 17th ACM conference on Computer and communications security",
+    "url": "https://doi.org/10.1145/1866307.1866315",
+    "area": "supply-chain",
+    "claim": "Describes a software update system designed so that the compromise of some signing keys does not by itself let an attacker push malicious updates.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against doi.org (CSL JSON); claim written from the title, abstract not read; the research list calls this paper \"The Update Framework\" and the title shown is the one on the record; informs the open key revocation, rollback and offline-update findings",
+    "repo": "runtime"
+  },
+  {
+    "id": "in-toto-2019",
+    "title": "in-toto: Providing farm-to-table guarantees for bits and bytes",
+    "authors": [
+      "Santiago Torres-Arias",
+      "Hammad Afzali",
+      "Trishank Karthik Kuppusamy",
+      "et al."
+    ],
+    "year": 2019,
+    "venue": "28th USENIX Security Symposium (USENIX Security 19)",
+    "url": "https://www.usenix.org/conference/usenixsecurity19/presentation/torres-arias",
+    "area": "supply-chain",
+    "claim": "A framework that cryptographically ties together every step of a software supply chain, from source to deployment, so an end user can verify the whole chain and not only the final artifact.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the USENIX Security 2019 presentation page",
+    "repo": "control-plane"
+  },
+  {
+    "id": "sigstore-2022",
+    "title": "Sigstore: Software Signing for Everybody",
+    "authors": [
+      "Zachary Newman",
+      "John Speed Meyers",
+      "Santiago Torres-Arias"
+    ],
+    "year": 2022,
+    "venue": "Proceedings of the 2022 ACM SIGSAC Conference on Computer and Communications Security",
+    "url": "https://doi.org/10.1145/3548606.3560596",
+    "area": "supply-chain",
+    "claim": "Describes Sigstore, a software signing system meant to be usable by everybody.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against doi.org (CSL JSON); claim written from the title, abstract not read",
+    "repo": "control-plane"
+  },
+  {
+    "id": "prompt-injection-indirect-2023",
+    "title": "Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection",
+    "authors": [
+      "Kai Greshake",
+      "Sahar Abdelnabi",
+      "Shailesh Mishra",
+      "et al."
+    ],
+    "year": 2023,
+    "venue": "arXiv:2302.12173",
+    "url": "https://arxiv.org/abs/2302.12173",
+    "area": "security",
+    "claim": "LLM-integrated applications blur data and instructions, so an attacker can inject prompts into data likely to be retrieved and attack remotely; the paper gives a taxonomy of impacts including data theft and worming.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "dockit"
+  },
+  {
+    "id": "camel-2025",
+    "title": "Defeating Prompt Injections by Design",
+    "authors": [
+      "Edoardo Debenedetti",
+      "Ilia Shumailov",
+      "Tianqi Fan",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2503.18813",
+    "url": "https://arxiv.org/abs/2503.18813",
+    "area": "security",
+    "claim": "CaMeL wraps the model in a protective layer that takes control and data flow from the trusted query and uses capabilities to block exfiltration, solving 77% of AgentDojo tasks with provable security against 84% undefended.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "control-plane"
+  },
+  {
+    "id": "injection-design-patterns-2025",
+    "title": "Design Patterns for Securing LLM Agents against Prompt Injections",
+    "authors": [
+      "Luca Beurer-Kellner",
+      "Beat Buesser",
+      "Ana-Maria Creţu",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2506.08837",
+    "url": "https://arxiv.org/abs/2506.08837",
+    "area": "security",
+    "claim": "A set of principled design patterns for building agents with provable resistance to prompt injection, with the utility and security trade-offs of each and case studies.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "control-plane"
+  },
+  {
+    "id": "webllm-2024",
+    "title": "WebLLM: A High-Performance In-Browser LLM Inference Engine",
+    "authors": [
+      "Charlie F. Ruan",
+      "Yucheng Qin",
+      "Akaash R. Parthasarathy",
+      "et al."
+    ],
+    "year": 2024,
+    "venue": "arXiv:2412.15803",
+    "url": "https://arxiv.org/abs/2412.15803",
+    "area": "inference",
+    "claim": "An open-source JavaScript framework for LLM inference inside the browser on WebGPU and WebAssembly, retaining up to 80% of native performance in its evaluation.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API); reference only: the WebLLM rung in runtime is not yet (cut from Sprint 4)",
+    "repo": "runtime"
+  },
+  {
+    "id": "xgrammar-2024",
+    "title": "XGrammar: Flexible and Efficient Structured Generation Engine for Large Language Models",
+    "authors": [
+      "Yixin Dong",
+      "Charlie F. Ruan",
+      "Yaxing Cai",
+      "et al."
+    ],
+    "year": 2024,
+    "venue": "arXiv:2411.15100",
+    "url": "https://arxiv.org/abs/2411.15100",
+    "area": "inference",
+    "claim": "Speeds up grammar-constrained decoding by prechecking the context-independent tokens and interpreting only the context-dependent ones at run time.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API); arXiv comment field: MLSys '25",
+    "repo": "runtime"
+  },
+  {
+    "id": "smollm2-2025",
+    "title": "SmolLM2: When Smol Goes Big -- Data-Centric Training of a Small Language Model",
+    "authors": [
+      "Loubna Ben Allal",
+      "Anton Lozhkov",
+      "Elie Bakouch",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2502.02737",
+    "url": "https://arxiv.org/abs/2502.02737",
+    "area": "small-models",
+    "claim": "A 1.7B-parameter small language model overtrained on about 11 trillion tokens through a multi-stage data mix, outperforming Qwen2.5-1.5B and Llama3.2-1B.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "runtime"
+  },
+  {
+    "id": "qwen3-2025",
+    "title": "Qwen3 Technical Report",
+    "authors": [
+      "An Yang",
+      "Anfeng Li",
+      "Baosong Yang",
+      "et al."
+    ],
+    "year": 2025,
+    "venue": "arXiv:2505.09388",
+    "url": "https://arxiv.org/abs/2505.09388",
+    "area": "small-models",
+    "claim": "The Qwen3 family (0.6B to 235B parameters, dense and mixture-of-experts) unifies a thinking mode and a non-thinking mode, with a thinking budget that trades latency for quality.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "runtime"
+  },
+  {
+    "id": "ragas-2023",
+    "title": "Ragas: Automated Evaluation of Retrieval Augmented Generation",
+    "authors": [
+      "Shahul Es",
+      "Jithin James",
+      "Luis Espinosa-Anke",
+      "Steven Schockaert"
+    ],
+    "year": 2023,
+    "venue": "arXiv:2309.15217",
+    "url": "https://arxiv.org/abs/2309.15217",
+    "area": "retrieval",
+    "claim": "Reference-free metrics for evaluating retrieval-augmented generation along three dimensions (relevant retrieved context, faithful use of it, quality of the generation) without human-labelled ground truth.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API)",
+    "repo": "dockit"
+  },
+  {
+    "id": "alce-2023",
+    "title": "Enabling Large Language Models to Generate Text with Citations",
+    "authors": [
+      "Tianyu Gao",
+      "Howard Yen",
+      "Jiatong Yu",
+      "Danqi Chen"
+    ],
+    "year": 2023,
+    "venue": "arXiv:2305.14627",
+    "url": "https://arxiv.org/abs/2305.14627",
+    "area": "retrieval",
+    "claim": "ALCE is a benchmark and set of metrics for answers with citations (fluency, correctness, citation quality); on ELI5 even the best models lack complete citation support 50% of the time.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against the arxiv.org abstract page (record from the export.arxiv.org API); arXiv comment field: Accepted by EMNLP 2023; the paper title differs from the short name \"ALCE\" used in the research list",
+    "repo": "dockit"
+  },
+  {
+    "id": "local-first-2019",
+    "title": "Local-first software: you own your data, in spite of the cloud",
+    "authors": [
+      "Martin Kleppmann",
+      "Adam Wiggins",
+      "Peter van Hardenberg",
+      "Mark McGranaghan"
+    ],
+    "year": 2019,
+    "venue": "Proceedings of the 2019 ACM SIGPLAN International Symposium on New Ideas, New Paradigms, and Reflections on Programming and Software",
+    "url": "https://doi.org/10.1145/3359591.3359737",
+    "area": "local-first",
+    "claim": "Argues for local-first software, in which users own their data in spite of the cloud.",
+    "status": "to-read",
+    "notes": "citation verified 2026-11-14 against doi.org (CSL JSON); claim written from the title, abstract not read; Onward! 2019",
+    "repo": "localdata"
   }
 ]

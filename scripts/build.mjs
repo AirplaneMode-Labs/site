@@ -75,7 +75,7 @@ function renderLayout(layout, { title, description, content, root, active, built
 }
 
 function paperRow(p) {
-  const title = p.url ? `<a href="${esc(p.url)}" rel="noopener">${esc(p.title)}</a>` : esc(p.title);
+  const title = p.url ? `<a href="${esc(p.url)}" rel="noopener noreferrer">${esc(p.title)}</a>` : esc(p.title);
   const cite = [p.authors.join(', '), p.year ?? '', p.venue ?? ''].filter(Boolean).map(esc).join(' · ');
   const repo = p.repo ? `<br /><span class="tag">${esc(p.repo)}</span>` : '';
   return `<tr class="paper" data-status="${esc(p.status)}" data-area="${esc(p.area)}">
@@ -95,7 +95,7 @@ function renderPapers(papers) {
 <p class="lede">The reading list behind the tools: ${papers.length} papers, ${summary}. Status moves from
 <em>to-read</em> through <em>reading</em>, <em>read</em>, <em>reproducing</em> to <em>reproduced</em> or
 <em>not-reproduced</em>, and <em>write-up</em> once the note is published.</p>
-<p class="muted">Citation rule: a title links to its source only after we fetched that source (arxiv.org, doi.org
+<p class="muted">Citation rule: a title links to its source only after we fetched that source (arxiv.org, doi.org, a proceedings page
 or the standard's own page) and logged the fetch. Entries marked "citation to verify" have not been checked yet
 and carry no link.</p>
 <div class="table-wrap">
@@ -158,7 +158,7 @@ function renderDemos(demos) {
   const rows = demos
     .map(
       (d) =>
-        `<tr class="demo" data-repo="${esc(d.repo)}"><td><a href="${esc(`${GITHUB_ORG}/${d.repo}`)}" rel="noopener">${esc(d.repo)}</a></td><td><a href="${esc(d.url)}">${esc(d.url)}</a></td><td class="demo-status">${esc(d.status)}</td><td class="demo-date">${esc(humanDate(d.writtenOn))}</td></tr>`,
+        `<tr class="demo" data-repo="${esc(d.repo)}"><td><a href="${esc(`${GITHUB_ORG}/${d.repo}`)}" rel="noopener noreferrer">${esc(d.repo)}</a></td><td><a href="${esc(d.url)}">${esc(d.url)}</a></td><td class="demo-status">${esc(d.status)}</td><td class="demo-date">${esc(humanDate(d.writtenOn))}</td></tr>`,
     )
     .join('\n');
   return `<div class="table-wrap">

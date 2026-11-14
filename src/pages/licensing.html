@@ -4,9 +4,11 @@
 <section class="box box-warn" id="draft-banner">
   <p><strong>Draft for owner review. Not yet published as policy.</strong></p>
   <p class="muted">
-    Worded from the three plan documents only. Anything the plans do not state is marked
-    [owner to confirm]. This page is not linked from the rest of the site and asks search engines
-    not to index it.
+    Worded from the three plan documents and from the LICENSE, CONTRIBUTING and spec files of the
+    repositories. Anything those do not state is marked [owner to confirm]. Marks settled by the
+    team under owner delegation on 14 Nov 2026 only where a LICENSE, CONTRIBUTING or spec file
+    already says so; the owner approves before publishing. This page is not linked from the rest of
+    the site and asks search engines not to index it.
   </p>
 </section>
 <h1>Licensing policy</h1>
@@ -21,30 +23,71 @@
 
 <h2>The promise</h2>
 <ul>
-  <li>
+  <li data-settled="commitment">
     We pick the licence of each repository on day one and we will never relicense the core: that
     is Apache-2.0 for every browser library and the core runtime, and, for pagetriage, the
-    <code>MIT OR Apache-2.0</code> dual licence it already carried, as the table above states.
-    [owner to confirm the exact wording of the written commitment, and that it covers pagetriage's
-    dual licence]
+    <code>MIT OR Apache-2.0</code> dual licence it already carried, as the table above states. The
+    commitment covers pagetriage's dual licence.
+    <!-- source: pagetriage/Cargo.toml | license = "MIT OR Apache-2.0" -->
+    <!-- source: pagetriage/LICENSE-MIT | MIT License -->
+    <!-- source: pagetriage/LICENSE-APACHE | Apache License -->
+    <!-- source: Startup Plan - Offline-First AI Lab.md | pick the licence on day one and never relicense the core -->
+    <!-- source: Startup Plan - Offline-First AI Lab.md | with a written commitment never to relicense the core -->
   </li>
   <li>There is no AGPL in the browser libraries.</li>
 </ul>
 
+<h2>What the commitment covers</h2>
+<p class="muted">Each point below is stated by a file in the repositories, cited in the page source.</p>
+<ul>
+  <li data-settled="core">
+    The core is the six public repositories: pagetriage, glyphsift, localdata, runtime, dockit and
+    site. They are under Apache-2.0, except that pagetriage is <code>MIT OR Apache-2.0</code> and
+    the site's prose and data are CC BY 4.0.
+    <!-- source: glyphsift/LICENSE | Apache License -->
+    <!-- source: localdata/LICENSE | Apache License -->
+    <!-- source: runtime/LICENSE | Apache License -->
+    <!-- source: dockit/LICENSE | Apache License -->
+    <!-- source: site/LICENSE:2 | Apache License -->
+    <!-- source: pagetriage/Cargo.toml | license = "MIT OR Apache-2.0" -->
+    <!-- source: site/LICENSE-CC-BY-4.0:1 | Attribution 4.0 International -->
+    <!-- source: site/CONTRIBUTING.md:21 | are licensed under CC BY 4.0 (LICENSE-CC-BY-4.0) -->
+    <!-- source: control-plane/CONTRIBUTING.md | This is a private repository of Airplane Mode Labs. -->
+  </li>
+  <li data-settled="specs">
+    The open specs in <code>runtime/spec</code> are published under Apache-2.0 and never move
+    behind the control-plane licence.
+    <!-- source: runtime/spec/README.md | The contracts are published under Apache-2.0 and never move behind the control-plane licence. -->
+  </li>
+  <li data-settled="control-plane">
+    control-plane is private and is under FSL-1.1-Apache-2.0, which converts each version to
+    Apache-2.0 on the second anniversary of the date that version is made available. No commitment
+    beyond those terms is made.
+    <!-- source: control-plane/LICENSE | Grant of Future License -->
+    <!-- source: control-plane/LICENSE | the Apache License, Version 2.0 that is effective on the second anniversary of -->
+  </li>
+  <li data-settled="contributions">
+    Contributions are accepted under the licence of the repository they go to, as each repository's
+    CONTRIBUTING file says: Apache-2.0 for glyphsift, localdata, runtime and dockit,
+    <code>MIT OR Apache-2.0</code> for pagetriage, and for the site Apache-2.0 for code and CC BY
+    4.0 for prose and data.
+    <!-- source: pagetriage/CONTRIBUTING.md | Contributions are accepted under the repository licence -->
+    <!-- source: glyphsift/CONTRIBUTING.md | By contributing you agree that your contribution is licensed under the Apache License 2.0 -->
+    <!-- source: localdata/CONTRIBUTING.md | By contributing you agree that your contributions are licensed under the Apache License -->
+    <!-- source: runtime/CONTRIBUTING.md | Contributions are accepted under the repository licence (Apache-2.0). -->
+    <!-- source: dockit/CONTRIBUTING.md | By contributing you agree that your contribution is licensed under the Apache License 2.0 -->
+    <!-- source: site/CONTRIBUTING.md:20 | Code contributions are licensed under Apache-2.0 (LICENSE). -->
+  </li>
+</ul>
+
 <h2>Not yet decided</h2>
-<p>These points are not stated in the plans and are not promises until the owner confirms them.</p>
+<p>These points are not stated in any LICENSE, CONTRIBUTING or spec file and are not promises until the owner confirms them.</p>
 <ul>
   <li>
-    What the core covers: the six public repositories, or only the browser libraries and the core
-    runtime that the plan names. [owner to confirm]
+    CLA or DCO [owner to confirm]: whether contributors must sign a contributor licence agreement
+    or certify a developer certificate of origin. No CONTRIBUTING file states either.
   </li>
-  <li>
-    Whether the open specs in <code>runtime/spec</code> never move behind the control-plane
-    licence. [owner to confirm]
-  </li>
-  <li>How contributions are accepted, including any CLA or DCO. [owner to confirm]</li>
   <li>Trademark and name use. [owner to confirm]</li>
-  <li>Any commitment about the future of the control-plane licence beyond the FSL terms. [owner to confirm]</li>
 </ul>
 
 <h2>Why</h2>
@@ -64,7 +107,7 @@
 <ul>
   <li>a signed private model and data registry with an offline sync and import channel;</li>
   <li>policy: model allow-lists per device class, prompt-injection rulesets and data-retention controls;</li>
-  <li>audit logs and a DPDP/GDPR-ready compliance export;</li>
+  <li>audit logs and an evidence export (planned; no compliance claim);</li>
   <li>SSO and SCIM for the admin console;</li>
   <li>fleet capability and health telemetry, aggregated locally and exported on the customer's terms;</li>
   <li>certified, reproducible builds with an SBOM;</li>
@@ -72,7 +115,7 @@
   <li>support SLAs.</li>
 </ul>
 <p>
-  Pricing, terms and which of these ship first are not part of this page. [owner to confirm]
+  Pricing, terms and which of these ship first are not part of this page.
 </p>
 
 <p class="muted">Questions: see SECURITY.md contact</p>

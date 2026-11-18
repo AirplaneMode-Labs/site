@@ -31,6 +31,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Post-push CI fix (18 Nov 2026): the build-id tests failed on every GitHub Actions run (and so did `pages.yml`, which blocked the deploy). `buildId` took
+  `sha` and `ref` parameters that defaulted to `process.env`, and a default applies to an explicit `undefined`, so `sha: undefined` ("not in CI") read the runner's
+  `GITHUB_SHA`. `buildId` now takes `env` (default `process.env`) and the tests pass `env` or run inside `withEnv()`, which clears every CI variable, sets only the ones
+  named and restores them. New cases assert the CI branch (git is never asked), the pull_request ref (`refs/pull/<n>/merge`, a local-form id), and that the real call
+  accepts both well-formed shapes. The suite is green plain, under a push-to-main CI environment and under a pull-request one, in place and in a lone copy.
 - T3-R2-04 / BUG-T1-S5-R3-01: every 8 GB cell of the older benchmarks table (`data/benchmarks.json`, 14 rows, and the localdata importer) reads
   `not measured on 8 GB`, not the bare `not measured`; the demos and benchmarks pages say so, and a test fails on the bare phrase in that column.
 - The footer build id follows the other demos: `Built from main at <sha12>` in CI, `Local build <sha12>[-dirty]` from git HEAD locally, and `Local build unknown` for a lone

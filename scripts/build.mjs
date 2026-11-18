@@ -62,9 +62,13 @@ const runGit = (root, args) =>
  *   anything else                                    'Local build unknown'
  * The last line is the documented fallback for a lone checkout with no .git (and for no git at all). git is trusted only when the
  * repository's top level is this very folder: a copy of the site inside another repository must not borrow that repository's HEAD.
- * `git` is injectable for the tests.
+ * `env` (default process.env) and `git` are injectable for the tests. The CI branch reads GITHUB_SHA and GITHUB_REF from `env` only, so a
+ * test passes `env: {}` for "not in CI". (Individual `sha`/`ref` parameters with process.env defaults were removed: a default applies to an
+ * explicit `undefined`, so `sha: undefined` silently read the runner's GITHUB_SHA and the local-build tests failed on GitHub Actions only.)
  */
-export function buildId({ sha = process.env.GITHUB_SHA, ref = process.env.GITHUB_REF, root, git = runGit } = {}) {
+export function buildId({ env = process.env, root, git = runGit } = {}) {
+  const sha = env.GITHUB_SHA;
+  const ref = env.GITHUB_REF;
   const onMain = ref === undefined || ref === '' || ref === 'refs/heads/main';
   if (typeof sha === 'string' && /^[0-9a-f]{40}$/.test(sha) && onMain) return `Built from main at ${sha.slice(0, 12)}`;
   try {

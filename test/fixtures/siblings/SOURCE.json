@@ -1,0 +1,673 @@
+{
+  "note": "Fixtures cut from the sibling repositories and the workspace evidence folder by scripts/make-sibling-fixtures.mjs. sha256 is the hash of the fixture file; sourceSha256 is the hash of the whole source file at the commit; cut says how the fixture was taken from it. npm run test:siblings (local only) re-derives every fixture from its source.",
+  "heads": {
+    "pagetriage": "b290cc84c08d9874d5d6d569e7a2bf7e0acfc0df",
+    "glyphsift": "5ff0c47ec1fcb0b8d1c80f0029aa89ab78e03d2e",
+    "localdata": "39d59a01aa49d4e66a38b0828c0d8b2d622ee76d",
+    "runtime": "3bf53c6f801c2da928dcae69e087221fb757ecd4",
+    "dockit": "4bc19e9ae8587549894975f87334102d7f8c73fc",
+    "control-plane": "f311b42c89ffe4d688caea3bf8d0bdc0cfda33af"
+  },
+  "files": [
+    {
+      "repo": "control-plane",
+      "commit": "f311b42c89ffe4d688caea3bf8d0bdc0cfda33af",
+      "path": "CONTRIBUTING.md",
+      "cut": {
+        "mode": "lines",
+        "ranges": [],
+        "fragments": [
+          "This is a private repository of Airplane Mode Labs."
+        ]
+      },
+      "bytes": 100,
+      "sha256": "4c7c2ab471d076ee9022cdfb62fadc6e0350bf795ea814d71bd9ccc25e6ee46d",
+      "sourceSha256": "f87c78d0843e7df641f0d55542344250d9514a0a16a3955bac5a833b486daba1"
+    },
+    {
+      "repo": "control-plane",
+      "commit": "f311b42c89ffe4d688caea3bf8d0bdc0cfda33af",
+      "path": "LICENSE",
+      "cut": {
+        "mode": "lines",
+        "ranges": [
+          [
+            1,
+            12
+          ]
+        ],
+        "fragments": [
+          "Grant of Future License",
+          "the Apache License, Version 2.0 that is effective on the second anniversary of"
+        ]
+      },
+      "bytes": 278,
+      "sha256": "a460ddcbe3106533d6668ba440fa7ae570c926c5f926ee8125e945b402f47c2b",
+      "sourceSha256": "6772fc56acea14e20834da0395e640a185be896e49879fc2e89c6438afc72cf9"
+    },
+    {
+      "repo": "dockit",
+      "commit": "4bc19e9ae8587549894975f87334102d7f8c73fc",
+      "path": "CONTRIBUTING.md",
+      "cut": {
+        "mode": "lines",
+        "ranges": [],
+        "fragments": [
+          "By contributing you agree that your contribution is licensed under the Apache License 2.0"
+        ]
+      },
+      "bytes": 91,
+      "sha256": "d234f2d0d651d5749ab93b1afcbfc538236730d31ffbaaff14c4b5f521946afe",
+      "sourceSha256": "e3e0534f0ff867d56ce0ea32861d49152c34828e26e01448e00a07353c9c790b"
+    },
+    {
+      "repo": "dockit",
+      "commit": "4bc19e9ae8587549894975f87334102d7f8c73fc",
+      "path": "LICENSE",
+      "cut": {
+        "mode": "lines",
+        "ranges": [
+          [
+            1,
+            10
+          ]
+        ],
+        "fragments": [
+          "Apache License"
+        ]
+      },
+      "bytes": 514,
+      "sha256": "9059941c33d409ac48947c8ab5998e76412c0b42ea74496cef742f6005c873a0",
+      "sourceSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "repo": "dockit",
+      "commit": null,
+      "origin": "working-tree",
+      "path": "docs/benchmarks/e2e-questions.csv",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 5132,
+      "sha256": "6c4a08d03cebb46c9194ca0dc4536a348816358b86376e4a0563caa83b60a149",
+      "sourceSha256": "6c4a08d03cebb46c9194ca0dc4536a348816358b86376e4a0563caa83b60a149"
+    },
+    {
+      "repo": "dockit",
+      "commit": null,
+      "origin": "working-tree",
+      "path": "docs/benchmarks/e2e.csv",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 2156,
+      "sha256": "9c83ca474c74b242c5f4f059169a6f9970a6de8de723ee1c0bfa25ac5a8e3b9a",
+      "sourceSha256": "9c83ca474c74b242c5f4f059169a6f9970a6de8de723ee1c0bfa25ac5a8e3b9a"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/D1/LANDED.json",
+      "cut": {
+        "mode": "whole",
+        "redact": "paths"
+      },
+      "bytes": 1752,
+      "sha256": "465933f12981062657b44ad40c604a2069f8760c46da25083db61ffeb2d206fd",
+      "sourceSha256": "be1dccb4530aced476824982979377141312b8d44c8829835b2c1a601d8e8929"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/D1/SPEC-LANDED.txt",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 6923,
+      "sha256": "949eb2111437e8890b69a54333520bdedcae5f391b1556a29765283dbfbbb66c",
+      "sourceSha256": "949eb2111437e8890b69a54333520bdedcae5f391b1556a29765283dbfbbb66c"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/D1/devtools/devtools-figures.json",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 4958,
+      "sha256": "e29cd6350b1171fb8444b191e0300609f303d8c6d8671f6bb35c99c562bb9062",
+      "sourceSha256": "e29cd6350b1171fb8444b191e0300609f303d8c6d8671f6bb35c99c562bb9062"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/S1/rv2/rv2-findings-append.md",
+      "cut": {
+        "mode": "lines",
+        "ranges": [],
+        "fragments": [
+          "glyphsift v0.1.0 tag NO-GO"
+        ]
+      },
+      "bytes": 96,
+      "sha256": "aba307b32f5949fcbb163bd37a62d0e8f09cc1e9b943a674e15cdfe5c7a9f7aa",
+      "sourceSha256": "1e285f49926da47c93733192fa8595372f13f98c515f01ec7027e4c5cfaec1d0"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T1/r3/artifact-hashes.log",
+      "cut": {
+        "mode": "whole",
+        "redact": "paths"
+      },
+      "bytes": 1827,
+      "sha256": "ad41f3d10d6d4da1c39c5b583dc0d602541f0e62f87a499535d1929b36e8e092",
+      "sourceSha256": "1a75aefb5bbc2f70ceea23871c415cee21ed7b43dbcae5bb43d6827ecc670e0c"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T1/r3/devtools/devtools-figures-t1.json",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 4647,
+      "sha256": "ca75eb45f46f278f547e4e9cd6d0b8a166384357465dbf0c3ca1623254db6638",
+      "sourceSha256": "ca75eb45f46f278f547e4e9cd6d0b8a166384357465dbf0c3ca1623254db6638"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T1/r3/dockit-ci-noenv.log",
+      "cut": {
+        "mode": "whole",
+        "redact": "paths"
+      },
+      "bytes": 1363,
+      "sha256": "ee79e99540c9e857a1ca86805a8b008e53bc4ca2b25756ba9140c45c5f14aaff",
+      "sourceSha256": "0fb5c17fd2d644d6ff066eb352f94d11565a48002c1d70bc31e4e455f4c7e1cf"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T1/r3/dockit-test-browser.log",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 3294,
+      "sha256": "21e9189458a3b8382fcc5b39afcae80ffe2295733570c71c892b714feadb8ddc",
+      "sourceSha256": "21e9189458a3b8382fcc5b39afcae80ffe2295733570c71c892b714feadb8ddc"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T1/r3/localdata-ci.log",
+      "cut": {
+        "mode": "whole",
+        "redact": "paths"
+      },
+      "bytes": 1047,
+      "sha256": "02903eed67780dd4bb5850b74f7f84f34f44000fdde6795a76ebe11d4edbfa27",
+      "sourceSha256": "e4c955c47a0da6048f6433f6d1e1caa8271fb22920edf0029ef70dbbae27722a"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T1/r3/localdata-test-browser.log",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 1678,
+      "sha256": "ef6e74b5363a5552134399c6822f76a07573c59f71deff3e38f7140c1379d8d0",
+      "sourceSha256": "ef6e74b5363a5552134399c6822f76a07573c59f71deff3e38f7140c1379d8d0"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T1/r3/runtime-ci.log",
+      "cut": {
+        "mode": "whole",
+        "redact": "paths"
+      },
+      "bytes": 1949,
+      "sha256": "51f41d6ad0ca17f0c3be0177b01afb38281e0b7e382b1e21f1a0543c5f8c9496",
+      "sourceSha256": "ae4834954d38b433d9dc87472de7a28ce06d63f5b49775728daf68e628f0bdcd"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T1/r3/runtime-test-browser.log",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 2395,
+      "sha256": "9f8ba40f5fe91729d8b12f05f58aeba2c4c02ac2498dd3fc731da9894fe214a0",
+      "sourceSha256": "9f8ba40f5fe91729d8b12f05f58aeba2c4c02ac2498dd3fc731da9894fe214a0"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T1/r3/runtime-test-devtools.log",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 899,
+      "sha256": "50ec63892fe4ffbd83f64199c781c02a22c04a18e2d481e71e66a934cafc0cd9",
+      "sourceSha256": "50ec63892fe4ffbd83f64199c781c02a22c04a18e2d481e71e66a934cafc0cd9"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T1/r3/runtime-test-model.log",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 2166,
+      "sha256": "b2e8c8d8c62a29b20cb15f88f886a134862a830f026f17a74ff191ce29fe5ff7",
+      "sourceSha256": "b2e8c8d8c62a29b20cb15f88f886a134862a830f026f17a74ff191ce29fe5ff7"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T1/r3/runtime-test-worker.log",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 1865,
+      "sha256": "7939d9a7edc1cc1978156df2ff8b842eb874ea0fef0a9fa034ef892e463a9668",
+      "sourceSha256": "7939d9a7edc1cc1978156df2ff8b842eb874ea0fef0a9fa034ef892e463a9668"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T1/r3/site-build-test.log",
+      "cut": {
+        "mode": "whole",
+        "redact": "paths"
+      },
+      "bytes": 312,
+      "sha256": "8cc71eaf8514b54a9b70cca000c4f35601086f6f101259ea6c3beb224b78f289",
+      "sourceSha256": "6114199367a709bd7e7f9d086be9685024e08f566a7f6c9d88ab2b6a41963c58"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T1/r3/worker.json",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 11011,
+      "sha256": "571176bfc7f7ba00ee6a7f0933660dbdf78a7a4e078c81cc1bf6ddc63cdfc964",
+      "sourceSha256": "571176bfc7f7ba00ee6a7f0933660dbdf78a7a4e078c81cc1bf6ddc63cdfc964"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T2/r2/cargo-test-control-plane.full.log",
+      "cut": {
+        "mode": "lines",
+        "ranges": [],
+        "fragments": [
+          "test result: "
+        ]
+      },
+      "bytes": 662,
+      "sha256": "8d5901be0846e7c0a6797140c76e42bb603fd489137eff09d290dd54720cfcbc",
+      "sourceSha256": "81c209e4fcaeaef3770a1aa7bcd3071fc3f8fd483dd5d82a0a74825809afc345"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T2/r2/cargo-test-glyphsift.full.log",
+      "cut": {
+        "mode": "lines",
+        "ranges": [],
+        "fragments": [
+          "test result: "
+        ]
+      },
+      "bytes": 1322,
+      "sha256": "bdd95177337046b2e02b554d18c2b533ecbad51cee0c07c25e5c76d688ff713c",
+      "sourceSha256": "9c3d25c454125b83dca0fe306c8ef6d0548dbe564f273ea3c3e04b7f88547a95"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-3/T2/r2/cargo-test-pagetriage.full.log",
+      "cut": {
+        "mode": "lines",
+        "ranges": [],
+        "fragments": [
+          "test result: "
+        ]
+      },
+      "bytes": 2355,
+      "sha256": "f224198f888db0df5516795737fcf80b1dc848ab0bb6a63a23e983f17aea8258",
+      "sourceSha256": "be22b6509db8d651b1bcc84137511065a5e762b8200a15710b3dfc10c720480e"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "sprint-4/D1/LANDED.json",
+      "cut": {
+        "mode": "whole",
+        "redact": "paths"
+      },
+      "bytes": 9123,
+      "sha256": "7df2cbec04641eab8e3d56110d03ae9f59d342ad30365f62b536e7b2c85986d3",
+      "sourceSha256": "5fa457b17c6cec0c337671e28dcc15b66a5f4d23ff45b6e1d4abc6cc8e1fdbfe"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "origin": "scratch",
+      "path": "sprint-5/D1/status-line.txt",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 723,
+      "sha256": "94ec413647de679aa9ba30eef49bdef7e23ce16783ed9f320f30e7c090d815d9",
+      "sourceSha256": "94ec413647de679aa9ba30eef49bdef7e23ce16783ed9f320f30e7c090d815d9"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "origin": "scratch",
+      "path": "sprint-5/D2/status-line.txt",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 453,
+      "sha256": "54ea9904a8ca0074dfaba30adc3b19211b366dfb6878c979c4bdb6e192980a2c",
+      "sourceSha256": "54ea9904a8ca0074dfaba30adc3b19211b366dfb6878c979c4bdb6e192980a2c"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "origin": "scratch",
+      "path": "sprint-5/D3/status-line.txt",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 702,
+      "sha256": "58fc12dcf242f8106b0597cf742346a727f3fd5240d133c3cbb1610506ec5af3",
+      "sourceSha256": "58fc12dcf242f8106b0597cf742346a727f3fd5240d133c3cbb1610506ec5af3"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "origin": "scratch",
+      "path": "sprint-5/D4/status-line.txt",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 481,
+      "sha256": "d14524118244163c6bf925c92ae98649e93132862016283b2b228eeb2dc56e6a",
+      "sourceSha256": "d14524118244163c6bf925c92ae98649e93132862016283b2b228eeb2dc56e6a"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "origin": "scratch",
+      "path": "sprint-5/D5/dockit-status-line.txt",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 825,
+      "sha256": "8caaf682221363b687045aa4c4d7441bfc87f83c0e8cf3fe53d18e0a8db30879",
+      "sourceSha256": "8caaf682221363b687045aa4c4d7441bfc87f83c0e8cf3fe53d18e0a8db30879"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "origin": "scratch",
+      "path": "sprint-5/D5/site-status-line.txt",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 677,
+      "sha256": "9007d224da5762b2a354470503701ca8c995ebcaa46ff80264c6ea97627d1443",
+      "sourceSha256": "9007d224da5762b2a354470503701ca8c995ebcaa46ff80264c6ea97627d1443"
+    },
+    {
+      "repo": "glyphsift",
+      "commit": "5ff0c47ec1fcb0b8d1c80f0029aa89ab78e03d2e",
+      "path": "CONTRIBUTING.md",
+      "cut": {
+        "mode": "lines",
+        "ranges": [],
+        "fragments": [
+          "By contributing you agree that your contribution is licensed under the Apache License 2.0"
+        ]
+      },
+      "bytes": 95,
+      "sha256": "439a3e47660893d5a1ffa4d1f38b5086d4a919f84ddf33b9454720b188c02fb0",
+      "sourceSha256": "edd05a1fee1a3f676f45d3c8ba2adbf773648946b69c5ab2a766f3535e769e7b"
+    },
+    {
+      "repo": "glyphsift",
+      "commit": "5ff0c47ec1fcb0b8d1c80f0029aa89ab78e03d2e",
+      "path": "LICENSE",
+      "cut": {
+        "mode": "lines",
+        "ranges": [
+          [
+            1,
+            10
+          ]
+        ],
+        "fragments": [
+          "Apache License"
+        ]
+      },
+      "bytes": 514,
+      "sha256": "9059941c33d409ac48947c8ab5998e76412c0b42ea74496cef742f6005c873a0",
+      "sourceSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "repo": "glyphsift",
+      "commit": "5ff0c47ec1fcb0b8d1c80f0029aa89ab78e03d2e",
+      "path": "docs/score-vs-noise.csv",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 16275,
+      "sha256": "cac89041a00e4541e8e1acc42c77c39431591992ab2041fe56b994e98af8453e",
+      "sourceSha256": "cac89041a00e4541e8e1acc42c77c39431591992ab2041fe56b994e98af8453e"
+    },
+    {
+      "repo": "localdata",
+      "commit": "39d59a01aa49d4e66a38b0828c0d8b2d622ee76d",
+      "path": "CONTRIBUTING.md",
+      "cut": {
+        "mode": "lines",
+        "ranges": [],
+        "fragments": [
+          "By contributing you agree that your contributions are licensed under the Apache License"
+        ]
+      },
+      "bytes": 102,
+      "sha256": "59bec0fe696dadef0304f994eaea2f0f148bfeb925f88eceaa1f3133389dfc5d",
+      "sourceSha256": "4652661f53fa1b458c4e4526555e0c1b726c564431cbae27b35e25e2531addad"
+    },
+    {
+      "repo": "localdata",
+      "commit": "39d59a01aa49d4e66a38b0828c0d8b2d622ee76d",
+      "path": "LICENSE",
+      "cut": {
+        "mode": "lines",
+        "ranges": [
+          [
+            1,
+            10
+          ]
+        ],
+        "fragments": [
+          "Apache License"
+        ]
+      },
+      "bytes": 514,
+      "sha256": "9059941c33d409ac48947c8ab5998e76412c0b42ea74496cef742f6005c873a0",
+      "sourceSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "repo": "localdata",
+      "commit": "39d59a01aa49d4e66a38b0828c0d8b2d622ee76d",
+      "path": "docs/benchmarks/vector-index.csv",
+      "cut": {
+        "mode": "whole"
+      },
+      "bytes": 6702,
+      "sha256": "e1ea96288d3f7ddf39f5eb01010ca6aeff19586b31378f49c5fafb631604189f",
+      "sourceSha256": "e1ea96288d3f7ddf39f5eb01010ca6aeff19586b31378f49c5fafb631604189f"
+    },
+    {
+      "repo": "pagetriage",
+      "commit": "b290cc84c08d9874d5d6d569e7a2bf7e0acfc0df",
+      "path": "CONTRIBUTING.md",
+      "cut": {
+        "mode": "lines",
+        "ranges": [],
+        "fragments": [
+          "Contributions are accepted under the repository licence"
+        ]
+      },
+      "bytes": 98,
+      "sha256": "602e863b29b7a3c8505a3d460b1cdcd0f99a7a5e99b15e440c06761e17e89f3d",
+      "sourceSha256": "4423e1a0cbf6f5e306f0e97a7acbf32f54343e9192b8a32a16cbbed2292110cd"
+    },
+    {
+      "repo": "pagetriage",
+      "commit": "b290cc84c08d9874d5d6d569e7a2bf7e0acfc0df",
+      "path": "Cargo.toml",
+      "cut": {
+        "mode": "lines",
+        "ranges": [],
+        "fragments": [
+          "license = \"MIT OR Apache-2.0\""
+        ]
+      },
+      "bytes": 30,
+      "sha256": "fb98ff86c3d7348f1098d012a3fa569cbb1cd53dbdc16c72fc953dd7db6c4d66",
+      "sourceSha256": "be6cb3ed9d7d0e5bfd2c8f79fccb79e98709ee72a6808d26c703c79056c0e62a"
+    },
+    {
+      "repo": "pagetriage",
+      "commit": "b290cc84c08d9874d5d6d569e7a2bf7e0acfc0df",
+      "path": "LICENSE-APACHE",
+      "cut": {
+        "mode": "lines",
+        "ranges": [
+          [
+            1,
+            10
+          ]
+        ],
+        "fragments": [
+          "Apache License"
+        ]
+      },
+      "bytes": 514,
+      "sha256": "9059941c33d409ac48947c8ab5998e76412c0b42ea74496cef742f6005c873a0",
+      "sourceSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "repo": "pagetriage",
+      "commit": "b290cc84c08d9874d5d6d569e7a2bf7e0acfc0df",
+      "path": "LICENSE-MIT",
+      "cut": {
+        "mode": "lines",
+        "ranges": [
+          [
+            1,
+            6
+          ]
+        ],
+        "fragments": [
+          "MIT License"
+        ]
+      },
+      "bytes": 203,
+      "sha256": "dffe9a47332e46fcbf6fb0c6596b35b73109518ef52477be9aa4e705cd5e0fbf",
+      "sourceSha256": "bea3a3fadc0b2d5abe0913d28c1192f0d977098ef68e7f148e6bdc30d5139af5"
+    },
+    {
+      "repo": "runtime",
+      "commit": "3bf53c6f801c2da928dcae69e087221fb757ecd4",
+      "path": "CONTRIBUTING.md",
+      "cut": {
+        "mode": "lines",
+        "ranges": [],
+        "fragments": [
+          "Contributions are accepted under the repository licence (Apache-2.0)."
+        ]
+      },
+      "bytes": 72,
+      "sha256": "8b4ffa18434057cf9242ae9e4413fb62d242805cccf6c74812e540db1fc63760",
+      "sourceSha256": "8497c6412b8abd3555f5e7c5ea7cfffff284f81a1a09a1b1d4f9a4f672f4f26a"
+    },
+    {
+      "repo": "runtime",
+      "commit": "3bf53c6f801c2da928dcae69e087221fb757ecd4",
+      "path": "LICENSE",
+      "cut": {
+        "mode": "lines",
+        "ranges": [
+          [
+            1,
+            10
+          ]
+        ],
+        "fragments": [
+          "Apache License"
+        ]
+      },
+      "bytes": 514,
+      "sha256": "9059941c33d409ac48947c8ab5998e76412c0b42ea74496cef742f6005c873a0",
+      "sourceSha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "repo": "runtime",
+      "commit": "3bf53c6f801c2da928dcae69e087221fb757ecd4",
+      "path": "spec/README.md",
+      "cut": {
+        "mode": "lines",
+        "ranges": [],
+        "fragments": [
+          "The contracts are published under Apache-2.0 and never move behind the control-plane licence."
+        ]
+      },
+      "bytes": 94,
+      "sha256": "b64aa18d7162c38be7b8c9545479f484f84e51feace698cf063c984356bd591d",
+      "sourceSha256": "3b9ab2826c7aba7d8a9294dc43cfcfb1c1bb647294a1db493ce9b52c173ded4c"
+    },
+    {
+      "repo": "workspace",
+      "commit": null,
+      "path": "Startup Plan - Offline-First AI Lab.md",
+      "cut": {
+        "mode": "lines",
+        "ranges": [],
+        "fragments": [
+          "pick the licence on day one and never relicense the core",
+          "with a written commitment never to relicense the core"
+        ]
+      },
+      "bytes": 643,
+      "sha256": "6f7e5bcb3de3319711f53a88f536cf26cda2e5671b55dfafcb37e4426fa2e60d",
+      "sourceSha256": "48aff9d105048ed7733d1567f98a46e7cff39c40b5214873be0e8b383b8fd3b2"
+    },
+    {
+      "repo": "evidence",
+      "commit": null,
+      "path": "INDEX.json",
+      "cut": {
+        "mode": "generated"
+      },
+      "bytes": 4067,
+      "sha256": "d34f693b99c09a325cc1924abda72de898f10d21d83cd47a1446eb16b69eacd4",
+      "sourceSha256": null
+    }
+  ]
+}

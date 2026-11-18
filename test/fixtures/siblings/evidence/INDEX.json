@@ -1,0 +1,105 @@
+{
+  "note": "Every evidence/sprint-3 path the Sprint 3 write-up cites, recorded when the fixtures were cut. Existence checks in CI read this index, not the disk.",
+  "files": {
+    "sprint-3/D1/LANDED.json": {
+      "size": 1962,
+      "sha256": "be1dccb4530aced476824982979377141312b8d44c8829835b2c1a601d8e8929"
+    },
+    "sprint-3/D1/SPEC-LANDED.txt": {
+      "size": 6923,
+      "sha256": "949eb2111437e8890b69a54333520bdedcae5f391b1556a29765283dbfbbb66c"
+    },
+    "sprint-3/D1/WEBLLM-NOT-LANDED.txt": {
+      "size": 1210,
+      "sha256": "3c559f36865de18be9747f4578867cfde88b55f59c883e2472435b78a78078e3"
+    },
+    "sprint-3/D1/devtools/devtools-figures.json": {
+      "size": 4958,
+      "sha256": "e29cd6350b1171fb8444b191e0300609f303d8c6d8671f6bb35c99c562bb9062"
+    },
+    "sprint-3/S1/rv2/rv2-findings-append.md": {
+      "size": 13576,
+      "sha256": "1e285f49926da47c93733192fa8595372f13f98c515f01ec7027e4c5cfaec1d0"
+    },
+    "sprint-3/T1/r3/INDEX.txt": {
+      "size": 4197,
+      "sha256": "59cdf23e7b3f7bb9fdeaa941610d62b953eb6c4d3206ba7f27b6d6c8c1bcd485"
+    },
+    "sprint-3/T1/r3/artifact-hashes.log": {
+      "size": 1969,
+      "sha256": "1a75aefb5bbc2f70ceea23871c415cee21ed7b43dbcae5bb43d6827ecc670e0c"
+    },
+    "sprint-3/T1/r3/devtools/devtools-figures-t1.json": {
+      "size": 4647,
+      "sha256": "ca75eb45f46f278f547e4e9cd6d0b8a166384357465dbf0c3ca1623254db6638"
+    },
+    "sprint-3/T1/r3/dockit-ci-noenv.log": {
+      "size": 1400,
+      "sha256": "0fb5c17fd2d644d6ff066eb352f94d11565a48002c1d70bc31e4e455f4c7e1cf"
+    },
+    "sprint-3/T1/r3/dockit-test-browser.log": {
+      "size": 3294,
+      "sha256": "21e9189458a3b8382fcc5b39afcae80ffe2295733570c71c892b714feadb8ddc"
+    },
+    "sprint-3/T1/r3/install.log": {
+      "size": 5580,
+      "sha256": "45ef1efcebab4116999e745ef9101a8279597e2a0ef83d03d97f75a239c20cbd"
+    },
+    "sprint-3/T1/r3/localdata-ci.log": {
+      "size": 1121,
+      "sha256": "e4c955c47a0da6048f6433f6d1e1caa8271fb22920edf0029ef70dbbae27722a"
+    },
+    "sprint-3/T1/r3/localdata-test-browser.log": {
+      "size": 1678,
+      "sha256": "ef6e74b5363a5552134399c6822f76a07573c59f71deff3e38f7140c1379d8d0"
+    },
+    "sprint-3/T1/r3/runtime-ci.log": {
+      "size": 2060,
+      "sha256": "ae4834954d38b433d9dc87472de7a28ce06d63f5b49775728daf68e628f0bdcd"
+    },
+    "sprint-3/T1/r3/runtime-test-browser.log": {
+      "size": 2395,
+      "sha256": "9f8ba40f5fe91729d8b12f05f58aeba2c4c02ac2498dd3fc731da9894fe214a0"
+    },
+    "sprint-3/T1/r3/runtime-test-devtools.log": {
+      "size": 899,
+      "sha256": "50ec63892fe4ffbd83f64199c781c02a22c04a18e2d481e71e66a934cafc0cd9"
+    },
+    "sprint-3/T1/r3/runtime-test-model.log": {
+      "size": 2166,
+      "sha256": "b2e8c8d8c62a29b20cb15f88f886a134862a830f026f17a74ff191ce29fe5ff7"
+    },
+    "sprint-3/T1/r3/runtime-test-worker.log": {
+      "size": 1865,
+      "sha256": "7939d9a7edc1cc1978156df2ff8b842eb874ea0fef0a9fa034ef892e463a9668"
+    },
+    "sprint-3/T1/r3/site-build-test.log": {
+      "size": 349,
+      "sha256": "6114199367a709bd7e7f9d086be9685024e08f566a7f6c9d88ab2b6a41963c58"
+    },
+    "sprint-3/T1/r3/worker.json": {
+      "size": 11011,
+      "sha256": "571176bfc7f7ba00ee6a7f0933660dbdf78a7a4e078c81cc1bf6ddc63cdfc964"
+    },
+    "sprint-3/T2/r2/cargo-test-control-plane.full.log": {
+      "size": 7991,
+      "sha256": "81c209e4fcaeaef3770a1aa7bcd3071fc3f8fd483dd5d82a0a74825809afc345"
+    },
+    "sprint-3/T2/r2/cargo-test-glyphsift.full.log": {
+      "size": 12796,
+      "sha256": "9c3d25c454125b83dca0fe306c8ef6d0548dbe564f273ea3c3e04b7f88547a95"
+    },
+    "sprint-3/T2/r2/cargo-test-pagetriage.full.log": {
+      "size": 41148,
+      "sha256": "be22b6509db8d651b1bcc84137511065a5e762b8200a15710b3dfc10c720480e"
+    },
+    "sprint-3/T2/r2/gs-wheel-proof.log": {
+      "size": 942,
+      "sha256": "1ff5276ce38cbc1e530ff04fb5f0c80e06a31a16b789c14c3692b1c507b92269"
+    },
+    "sprint-3/T2/r2/pt-wheel-proof.log": {
+      "size": 684,
+      "sha256": "2d09f7c6c5851e8ba743d68bbfe3851a35040c205b9f1919684fedca92bfa1a2"
+    }
+  }
+}

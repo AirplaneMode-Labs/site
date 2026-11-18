@@ -1,0 +1,147 @@
+{
+  "release": "0.4.0",
+  "landedAt": "2026-11-14T15:33:17Z",
+  "status": {
+    "manifest": "published",
+    "others": "draft"
+  },
+  "manifestV01": {
+    "status": "green",
+    "note": "manifest spec v0.1 published in runtime/spec (committed; public after the owner's push) as manifest 0.1.1 on wire airplanemode.manifest/0.1; the spec files were written first and SPEC-LANDED.txt was written before the verifier work; spec/ is byte-identical to SPEC-LANDED.txt at the end of the sprint",
+    "evidence": [
+      "evidence/sprint-4/D1/SPEC-LANDED.txt",
+      "evidence/sprint-4/D1/red-D1-01.log",
+      "evidence/sprint-4/D1/green-D1-01.log",
+      "evidence/sprint-4/D1/red-D1-02.log",
+      "evidence/sprint-4/D1/green-D1-02.log"
+    ]
+  },
+  "tamperDemo": {
+    "status": "green",
+    "evidence": [
+      "evidence/sprint-4/D1/demo/tamper-results.json",
+      "evidence/sprint-4/D1/demo/tamper-lab.png",
+      "evidence/sprint-4/D1/red-D1-03.log",
+      "evidence/sprint-4/D1/green-D1-03.log",
+      "evidence/sprint-4/D1/test-demo.log",
+      "evidence/sprint-4/D1/demo-fix1/tamper-results.json",
+      "evidence/sprint-4/D1/demo-fix1/tamper-lab.png",
+      "evidence/sprint-4/D1/test-demo-fix1.log"
+    ],
+    "note": "13 cases in installed Chrome, built as pages.yml builds it and served under /runtime/: every case refused with its documented reason (valid manifest accepted), 0 requests after a manifest refusal, flip and truncated assets fetched once with 0 bytes to a consumer and no blob: URL, nothing persistent written, 0 cross-origin requests, 0 console errors"
+  },
+  "stopButton": {
+    "status": "green",
+    "evidence": [
+      "evidence/sprint-4/D1/demo/stop-run.json",
+      "evidence/sprint-4/D1/red-D1-04.log",
+      "evidence/sprint-4/D1/green-D1-04.log",
+      "evidence/sprint-4/D1/green-D1-04-browser.log",
+      "evidence/sprint-4/D1/demo-fix1/stop-run.json",
+      "evidence/sprint-4/D1/red-fix1-D1-stop.log"
+    ],
+    "note": "Stop enabled only while the model answers; time to stop 253 ms in Chrome (the 250 ms abort backstop terminates the worker, the page says to load the model again). Fix round 1 (T1-S4-02): after a Stop the \"Download test model and load\" button is enabled again and one click reloads from the stored files with 0 B downloaded (stop.spec.ts asserts both)"
+  },
+  "s1074": {
+    "status": "green",
+    "note": "worker-reported backend.egress.refused records origin worker-reported, reporter worker and a count 1..16; no worker text enters an event"
+  },
+  "webllm": {
+    "status": "cut",
+    "note": "cut from Sprint 4 by team decision TD-08; revisit after the Sprint 5 8 GB measurement"
+  },
+  "pack": {
+    "status": "green",
+    "evidence": [
+      "evidence/sprint-4/D1/pack/pack-check.json",
+      "evidence/sprint-4/D1/pack-check.log"
+    ]
+  },
+  "version": "0.2.0-alpha.1",
+  "fixRound1": {
+    "status": "green",
+    "note": "TD-26: manifest 0.1.1 amended in place before the first push (strict SemVer 2.0 for both versions, the Signature schema applied to every signatures[] item, signatures check after the parse stage); still manifest 0.1.1, release 0.4.0, wire string unchanged; 6 new negatives (negative.json 17 to 23 rows); S1-089 test keys fail closed; S1-091 and BUG-T2-S4-10 prose only. storage-api.ts and event.ts are byte-identical to SPEC-LANDED.before-fix1.txt, so localdata contracts need no re-vendor. SPEC-LANDED.txt was regenerated at the same path (112 files, 6 more than before): D5 (dockit manifest.ts) and D6 (cp-manifest vectors, schemas, negative.json) must re-sync.",
+    "evidence": [
+      "evidence/sprint-4/D1/red-fix1-D1.log",
+      "evidence/sprint-4/D1/red-fix1-D1-stop.log",
+      "evidence/sprint-4/D1/green-fix1-D1.log",
+      "evidence/sprint-4/D1/SPEC-LANDED.txt",
+      "evidence/sprint-4/D1/SPEC-LANDED.before-fix1.txt"
+    ],
+    "changedSpecFiles": [
+      "CHANGELOG.md",
+      "MANIFEST.md",
+      "README.md",
+      "manifest.schema.json",
+      "manifest.ts",
+      "storage-api.md",
+      "vectors/README.md",
+      "vectors/negative.json",
+      "vectors/neg-version-leading-zero.json",
+      "vectors/neg-version-empty-prerelease-id.json",
+      "vectors/neg-null-optional.json",
+      "vectors/neg-sig-unknown-member.json",
+      "vectors/neg-sig-bad-signedat.json",
+      "vectors/neg-precedence-digitkey-nosigs.json"
+    ],
+    "unchangedSpecFiles": "storage-api.ts, event.ts, backend-adapter.*, capability-profile.*, model-descriptor.*, index.ts, the 5 positive vectors and the 17 earlier manifest negatives, vectors/tamper/**, vectors/tamper-assets/**, vectors/descriptor/**"
+  },
+  "fixRound2": {
+    "status": "green",
+    "landedAt": "2026-11-14T16:11:47Z",
+    "note": "TD-29: the last amendment of manifest 0.1.1 before the first push; frozen from the owner's push onward. Still manifest 0.1.1, release 0.4.0, wire string airplanemode.manifest/0.1. BUG-T2-S4-11 (high: an undeclared member of any name, __proto__ included, is schema; own-property tests; null-prototype canonical objects), BUG-T2-S4-14 (canonical padded base64 for sig and publicKey), BUG-T2-S4-15 / S1-095 (explicit forbidden url characters), the BUG-T2-S4-13 vectors. ONE spec re-land: SPEC-LANDED.txt now lists 122 files (112 before); FIX2-LANDED.txt carries the sha256 of SPEC-LANDED.txt; runtime/spec/ is not touched again. 32 manifest negatives (23 + 9) and 20 descriptor vectors (19 + 1). The 5 positives, the 13 Sprint 3 negatives, the 4 release-0.4.0 negatives, the 6 TD-26 negatives, vectors/tamper/**, vectors/tamper-assets/**, storage-api.ts and event.ts are byte-identical to SPEC-LANDED.before-fix2.txt (so localdata contracts need no re-vendor); make-tamper-vectors.mjs --check exits 0 and all 15 tamper rows keep their tabled result. Changed spec files: CHANGELOG.md, MANIFEST.md, README.md, manifest.schema.json, manifest.ts (new exports SIGNATURE_SIG_PATTERN, SIGNATURE_PUBLIC_KEY_PATTERN, ENTRY_URL_PATTERN: dockit re-vendors them), vectors/README.md, vectors/negative.json, vectors/descriptor/README.md, vectors/descriptor/negative.json and the ten new vector files. D6 (cp-manifest vectors, schemas, the Rust url set and signature handling), D5 (dockit contracts) and D4 (the localdata --check) sync only after the marker exists.",
+    "newSpecFiles": [
+      "vectors/neg-proto-member-entry.json",
+      "vectors/neg-sig-proto-member.json",
+      "vectors/neg-sig-malformed-keyid-rotation.json",
+      "vectors/neg-sig-malformed-sig-rotation.json",
+      "vectors/neg-sig-malformed-pubkey-rotation.json",
+      "vectors/neg-sig-noncanonical-base64.json",
+      "vectors/neg-pubkey-noncanonical-base64.json",
+      "vectors/neg-url-control-char.json",
+      "vectors/neg-url-unicode-space.json",
+      "vectors/descriptor/neg-proto-member.json"
+    ],
+    "changedSpecFiles": [
+      "CHANGELOG.md",
+      "MANIFEST.md",
+      "README.md",
+      "manifest.schema.json",
+      "manifest.ts",
+      "vectors/README.md",
+      "vectors/negative.json",
+      "vectors/descriptor/README.md",
+      "vectors/descriptor/negative.json"
+    ],
+    "unchangedSpecFiles": "storage-api.ts, storage-api.md, event.ts, event.schema.json, backend-adapter.*, capability-profile.*, model-descriptor.*, index.ts, examples/**, the 5 positive vectors and the 23 earlier manifest negatives, vectors/tamper/**, vectors/tamper-assets/**, the 19 earlier descriptor vectors",
+    "evidence": [
+      "evidence/sprint-4/D1/red-fix2-D1.log",
+      "evidence/sprint-4/D1/green-fix2-D1.log",
+      "evidence/sprint-4/D1/ci-fix2.log",
+      "evidence/sprint-4/D1/SPEC-LANDED.txt",
+      "evidence/sprint-4/D1/SPEC-LANDED.before-fix2.txt",
+      "evidence/sprint-4/D1/FIX2-LANDED.txt",
+      "evidence/sprint-4/D1/test-browser-fix2.log",
+      "evidence/sprint-4/D1/test-demo-fix2.log",
+      "evidence/sprint-4/D1/demo-fix2/tamper-results.json",
+      "evidence/sprint-4/D1/demo-fix2/tamper-lab.png",
+      "evidence/sprint-4/D1/demo-fix2/stop-run.json",
+      "evidence/sprint-4/D1/demo-fix2/demo-run.json",
+      "evidence/sprint-4/D1/test-demo-default-out.log",
+      "evidence/sprint-4/D1/pack/pack-check.json",
+      "evidence/sprint-4/D1/pack-check.log"
+    ],
+    "s1096": {
+      "status": "green",
+      "note": "the browser specs and Playwright configs default to runtime/test-results/ (git-ignored), resolved from test/browser/out-dir.ts's own directory; test/out-dir.test.ts pins it; <projects>/test-results was not touched"
+    },
+    "verification": {
+      "npm run ci": "green (fmt:check, typecheck, vitest 1447 passed in 46 files, build)",
+      "tests first": "red-fix2-D1.log 147 failed of 1393; green-fix2-D1.log 1447 passed",
+      "test:browser": "12 passed in installed Chrome",
+      "test:demo": "6 passed (3 demo picker runs, Stop, Tamper lab 13 cases with 0 console errors, 22 requests all same-origin) with RUNTIME_*_OUT in D1 scratch",
+      "S1-096": "a run with no RUNTIME_*_OUT variable wrote runtime/test-results/ (git-ignored) and nothing into <projects>/test-results",
+      "pack:check": "passed last: 32 files, 189,623 B packed, 672,557 B unpacked; README lines 54 and 382 equal pack-check.json"
+    }
+  }
+}

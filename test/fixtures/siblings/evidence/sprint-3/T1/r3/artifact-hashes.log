@@ -1,0 +1,21 @@
+glyphsift artifacts vs D3/FINAL-ARTIFACTS.txt
+8bb915cfdfee97fe13e01d4f8585c14ad5aad62044d5aca1d91ca4b497a1cbd7  dist/wheels/glyphsift-0.1.0-cp39-abi3-macosx_11_0_arm64.whl
+de2efaef1343787c6d27249de38739a5525dbb429a9f8aac53b8f82a9157a5f3  dist/npm/airplanemode-glyphsift-0.1.0.tgz
+2e55c8fb4c4705d9ad35d3f3258dc8f2c5987a63daf178c6da431c954c294355  <scratch>/sprint-3/D3/cli-root-r2/bin/glyphsift
+sizes: wheel 245869, tgz 111710, cli 1081984 (bytes)
+8bb915cfdfee97fe13e01d4f8585c14ad5aad62044d5aca1d91ca4b497a1cbd7  dist/wheels/glyphsift-0.1.0-cp39-abi3-macosx_11_0_arm64.whl
+de2efaef1343787c6d27249de38739a5525dbb429a9f8aac53b8f82a9157a5f3  dist/npm/airplanemode-glyphsift-0.1.0.tgz
+pagetriage artifacts vs D2/FINAL-ARTIFACTS.txt
+Final pagetriage artifacts after fix round 2 (built 14 Nov 2026, macOS arm64). Architect: hash and copy only these.
+804e6f789ef2bb865a5d2ff8adcc7ae6449d32261b192c31980f565498e77571  1685837  <scratch>/sprint-3/D2/wheels-r2/pagetriage-0.1.0-cp39-abi3-macosx_11_0_arm64.whl
+2d71be0600912d5bd2acb38513eb4d63aff079fc115e49e6e29515e242c284bf  988441  <workspace>/pagetriage/dist/npm/pagetriage-0.1.0.tgz
+Manifest dry run (unsigned): <scratch>/sprint-3/D2/release-manifest-r2.json (also dist/release-manifest.json, untracked/ignored)
+Logs: install-all-r2.log builder-paths-r2.log readme-equal-r2.log cargo-package-list-r2.log cargo-package-list-cli-r2.log demo-check-r2.log
+2d71be0600912d5bd2acb38513eb4d63aff079fc115e49e6e29515e242c284bf  dist/npm/pagetriage-0.1.0.tgz
+total 8
+drwxr-xr-x@  6 <user>  staff  192 14 Nov 10:11 .
+drwxr-xr-x@ 30 <user>  staff  960 14 Nov 07:34 ..
+drwxr-xr-x@  4 <user>  staff  128 14 Nov 10:10 npm
+-rw-r--r--@  1 <user>  staff  947 14 Nov 10:10 release-manifest.json
+drwxr-xr-x@  4 <user>  staff  128 14 Nov 10:10 wasm
+drwxr-xr-x@  4 <user>  staff  128 14 Nov 10:11 wasm-pdf

@@ -1,0 +1,62 @@
+{
+  "chrome": "Chrome/157.0.8103.79",
+  "extensionId": "dnadnfaoaanliaikpijonakaddoiliga",
+  "panelSelection": "InspectorFrontendAPI.showPanel('chrome-extension://dnadnfaoaanliaikpijonakaddoiligaAirplaneMode')",
+  "pageSnapshotLoadId": "f86320114a8e1b97",
+  "panelLoadId": "f86320114a8e1b97",
+  "loadIdEqual": true,
+  "pagePhaseDurationsMs": {
+    "acquire": 1254,
+    "verify": 664.9000000059605,
+    "handoff": 7.4000000059604645,
+    "session": 479.69999998807907,
+    "first_token": 655.5
+  },
+  "panelPhaseDurationsMs": {
+    "acquire": 1254,
+    "verify": 664.9,
+    "handoff": 7.4,
+    "session": 479.7,
+    "first_token": 655.5
+  },
+  "durationsMatchPage": true,
+  "panelMemory": [
+    {
+      "scope": "page",
+      "at": "before_load",
+      "api": "performance.memory",
+      "used": "3,587,929 B"
+    },
+    {
+      "scope": "page",
+      "at": "after_session",
+      "api": "performance.memory",
+      "used": "33,865,195 B"
+    },
+    {
+      "scope": "worker",
+      "at": "after_session",
+      "api": "none",
+      "used": "—"
+    },
+    {
+      "scope": "page",
+      "at": "after_first_token",
+      "api": "performance.memory",
+      "used": "33,954,615 B"
+    },
+    {
+      "scope": "worker",
+      "at": "after_first_token",
+      "api": "none",
+      "used": "—"
+    }
+  ],
+  "nonNullMemoryFigures": 3,
+  "memoryApisLabelled": [
+    "performance.memory",
+    "none"
+  ],
+  "panelText": "Session 91384b74-6973-4071-90e8-da976bb15dc9, read at 04:57:11.462 UTC. Events the page left out: 0. Events dropped here as invalid: 0.\n\nLoads\n\nLoad f86320114a8e1b97 Adapter transformers-js Device wasm Host worker Model smollm2-135m-instruct.descriptor Outcome loaded\n\nPhase\tDuration\tBytes\nAcquire (download, 0 when cached)\t1254 ms\t212,926,670 B\nVerify (re-hash)\t664.9 ms\t212,926,670 B\nHand-off to the engine\t7.4 ms\t212,925,604 B\nSession create\t479.7 ms\t—\nFirst token\t655.5 ms\t—\nMemory\nScope\tPoint\tSource (api)\tJS heap used\tJS heap total\tJS heap limit\tWasm memory\npage\tbefore_load\tperformance.memory\t3,587,929 B\t5,025,485 B\t4,395,630,592 B\t—\npage\tafter_session\tperformance.memory\t33,865,195 B\t37,652,883 B\t4,395,630,592 B\t—\nworker\tafter_session\tnone\t—\t—\t—\t—\npage\tafter_first_token\tperformance.memory\t33,954,615 B\t37,653,035 B\t4,395,630,592 B\t—\nworker\tafter_first_token\tnone\t—\t—\t—\t—\n\nMemory figures are read from the browser, never estimated. Chrome’s performance.memory is coarse, Chrome-only and absent in workers; a dash means the browser did not expose it.\n\nRecent events\nTime (UTC)\tEvent\tLevel\tDetails\n04:57:06.763\tbackend.select\twarn\trung=webgpu adapter=transformers-js outcome=skipped reason=forced\n04:57:06.766\tmemory.sample\tinfo\tat=before_load loadId=f86320114a8e1b97\n04:57:06.779\tasset.verify.ok\tinfo\tentryId=smollm2-135m-instruct.descriptor\n04:57:06.791\tasset.verify.ok\tinfo\tentryId=smollm2-135m-instruct.config\n04:57:06.799\tasset.verify.ok\tinfo\tentryId=smollm2-135m-instruct.generation-config\n04:57:07.821\tasset.verify.ok\tinfo\tentryId=smollm2-135m-instruct.onnx-q4\n04:57:07.992\tasset.verify.ok\tinfo\tentryId=ort.wasm\n04:57:08.014\tasset.verify.ok\tinfo\tentryId=smollm2-135m-instruct.tokenizer\n04:57:08.023\tasset.verify.ok\tinfo\tentryId=smollm2-135m-instruct.tokenizer-config\n04:57:08.023\tmodel.load.phase\tinfo\tphase=acquire adapter=transformers-js device=wasm model=smollm2-135m-instruct.descriptor loadId=f86320114a8e1b97 1254 ms\n04:57:08.686\tmodel.load.phase\tinfo\tphase=verify adapter=transformers-js device=wasm model=smollm2-135m-instruct.descriptor loadId=f86320114a8e1b97 664.9 ms\n04:57:08.687\tbackend.worker\tinfo\tstate=started adapter=transformers-js device=wasm reason=load\n04:57:08.699\tmodel.load.phase\tinfo\tphase=handoff adapter=transformers-js device=wasm model=smollm2-135m-instruct.descriptor loadId=f86320114a8e1b97 7.4 ms\n04:57:09.196\tmodel.load.phase\tinfo\tphase=session adapter=transformers-js device=wasm model=smollm2-135m-instruct.descriptor loadId=f86320114a8e1b97 479.7 ms\n04:57:09.196\tmemory.sample\tinfo\tat=after_session loadId=f86320114a8e1b97\n04:57:09.196\tbackend.worker\tinfo\tstate=ready adapter=transformers-js device=wasm reason=load 509.2 ms\n04:57:09.196\tmemory.sample\tinfo\tat=after_session loadId=f86320114a8e1b97\n04:57:09.196\tmodel.load\tinfo\tadapter=transformers-js device=wasm model=smollm2-135m-instruct.descriptor loadId=f86320114a8e1b97 2429.7 ms\n04:57:09.196\tbackend.select\tinfo\trung=wasm adapter=transformers-js model=smollm2-135m-instruct.descriptor outcome",
+  "screenshot": "devtools/devtools-window-t1.png"
+}

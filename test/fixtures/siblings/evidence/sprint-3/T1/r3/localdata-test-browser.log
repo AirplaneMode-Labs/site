@@ -1,0 +1,21 @@
+
+> @airplanemode/localdata@0.1.0-dev test:browser
+> playwright test -c test/browser/playwright.config.ts
+
+
+Running 11 tests using 1 worker
+
+  ✓   1 [chrome] › test/browser/drivers.spec.ts:34:3 › behavioural suite passes against the opfs driver (1.7s)
+  ✓   2 [chrome] › test/browser/drivers.spec.ts:34:3 › behavioural suite passes against the indexeddb driver (298ms)
+  ✓   3 [chrome] › test/browser/drivers.spec.ts:45:1 › both drivers produce identical results for every case (0ms)
+  ✓   4 [chrome] › test/browser/drivers.spec.ts:55:3 › values persist across page.reload() with the opfs driver (170ms)
+  ✓   5 [chrome] › test/browser/drivers.spec.ts:55:3 › values persist across page.reload() with the indexeddb driver (149ms)
+  ✓   6 [chrome] › test/browser/drivers.spec.ts:69:3 › benchmark: 1000 x 1 KiB and 10 x 5 MiB sets with the opfs driver (3.9s)
+  ✓   7 [chrome] › test/browser/drivers.spec.ts:69:3 › benchmark: 1000 x 1 KiB and 10 x 5 MiB sets with the indexeddb driver (507ms)
+  ✓   8 [chrome] › test/browser/drivers.spec.ts:98:3 › storage.* events over the real opfs driver: shape, driver attr, sink never awaited, no key or value (145ms)
+  ✓   9 [chrome] › test/browser/drivers.spec.ts:98:3 › storage.* events over the real indexeddb driver: shape, driver attr, sink never awaited, no key or value (208ms)
+  ✓  10 [chrome] › test/browser/drivers.spec.ts:128:1 › no request left the harness origin in any scenario (1ms)
+  ✓  11 [chrome] › test/browser/install.spec.ts:105:1 › tarball installed into a fresh directory works over OPFS, 0 console errors, same origin (164ms)
+
+  11 passed (10.4s)
+EXIT 0

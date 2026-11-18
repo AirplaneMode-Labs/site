@@ -1,0 +1,27 @@
+
+> @airplanemode/runtime@0.2.0-alpha.0 test:model
+> playwright test -c test/browser/playwright.model.config.ts
+
+[WebServer] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+Running 9 tests using 1 worker
+
+  ✓  1 [chrome] › test/browser/model.spec.ts:355:1 › leg A: the default chain answers the prompt on the WebGPU path (2.8s)
+  ✓  2 [chrome] › test/browser/model.spec.ts:363:1 › leg B: forceRung wasm answers the same prompt on the WebAssembly path (3.6s)
+  ✓  3 [chrome] › test/browser/model.spec.ts:371:1 › the wasm leg uses the ORT binary the descriptor pins (ort-pins.ts) and no other engine file (59ms)
+  ✓  4 [chrome] › test/browser/model.spec.ts:384:1 › an injected probe to https://huggingface.co/x is refused with egress_refused and one origin-only event, and reaches no network (3.7s)
+  ✓  5 [chrome] › test/browser/model.spec.ts:417:1 › with navigator.gpu undefined the chain selects the wasm rung and still answers (4.0s)
+  ✓  6 [chrome] › test/browser/model.spec.ts:446:1 › with WebGPU and WebAssembly both disabled (Chrome --js-flags=--jitless hides WebAssembly) the refusal is plain language naming all three rungs (475ms)
+  ✓  7 [chrome] › test/browser/model.spec.ts:482:1 › T1-S2-01: a WebGPU device that cannot be created is skipped as unavailable before any session exists, and the default chain answers on wasm (3.8s)
+  ✓  8 [chrome] › test/browser/model.spec.ts:520:1 › T1-S2-01: a WebGPU failure after session creation started refuses with the reload sentence in that page, and a fresh page with forceRung wasm answers (5.6s)
+  ✓  9 [chrome] › test/browser/model.spec.ts:585:1 › T1-S2-02: abort from onToken on the wasm rung ends generation within a few tokens, and a second generate works (12.0s)
+
+  9 passed (38.6s)
+real 38.88
+user 54.46
+sys 8.19
+EXIT 0

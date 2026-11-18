@@ -1,0 +1,439 @@
+{
+  "generatedAt": "2026-11-14T04:49:12.553Z",
+  "problems": [],
+  "longTask": {
+    "worker": [
+      {
+        "run": 1,
+        "completionTokens": 32,
+        "genWindowMs": 3522.0999999940395,
+        "genMono": [
+          2436.300000011921,
+          5958.4000000059605
+        ],
+        "longTasksInWindowMs": [],
+        "longestLongTaskInWindowMs": 0,
+        "hookLongTasksMs": [],
+        "longestRafGapInWindowMs": 16.8,
+        "rafFramesInWindow": 213,
+        "wholeRunLongTasksMs": [
+          562,
+          89
+        ],
+        "wholeRunLongestRafGapMs": 550,
+        "ltObserverError": null
+      },
+      {
+        "run": 2,
+        "completionTokens": 32,
+        "genWindowMs": 3389.699999988079,
+        "genMono": [
+          2569.9000000059605,
+          5959.5999999940395
+        ],
+        "longTasksInWindowMs": [],
+        "longestLongTaskInWindowMs": 0,
+        "hookLongTasksMs": [],
+        "longestRafGapInWindowMs": 16.8,
+        "rafFramesInWindow": 205,
+        "wholeRunLongTasksMs": [
+          580,
+          91
+        ],
+        "wholeRunLongestRafGapMs": 566.6,
+        "ltObserverError": null
+      },
+      {
+        "run": 3,
+        "completionTokens": 32,
+        "genWindowMs": 3389.4000000059605,
+        "genMono": [
+          2451.199999988079,
+          5840.5999999940395
+        ],
+        "longTasksInWindowMs": [],
+        "longestLongTaskInWindowMs": 0,
+        "hookLongTasksMs": [],
+        "longestRafGapInWindowMs": 16.8,
+        "rafFramesInWindow": 204,
+        "wholeRunLongTasksMs": [
+          569,
+          90
+        ],
+        "wholeRunLongestRafGapMs": 549.9,
+        "ltObserverError": null
+      }
+    ],
+    "main": [
+      {
+        "run": 1,
+        "completionTokens": 32,
+        "genWindowMs": 3401.899999976158,
+        "genMono": [
+          2498.900000035763,
+          5900.800000011921
+        ],
+        "longTasksInWindowMs": [],
+        "longestLongTaskInWindowMs": 0,
+        "hookLongTasksMs": [],
+        "longestRafGapInWindowMs": 3749.8,
+        "rafFramesInWindow": 2,
+        "wholeRunLongTasksMs": [
+          579,
+          92
+        ],
+        "wholeRunLongestRafGapMs": 3749.8,
+        "ltObserverError": null
+      },
+      {
+        "run": 2,
+        "completionTokens": 32,
+        "genWindowMs": 3413.100000023842,
+        "genMono": [
+          2454.2999999821186,
+          5867.4000000059605
+        ],
+        "longTasksInWindowMs": [],
+        "longestLongTaskInWindowMs": 0,
+        "hookLongTasksMs": [],
+        "longestRafGapInWindowMs": 3749.8,
+        "rafFramesInWindow": 2,
+        "wholeRunLongTasksMs": [
+          575,
+          91
+        ],
+        "wholeRunLongestRafGapMs": 3749.8,
+        "ltObserverError": null
+      },
+      {
+        "run": 3,
+        "completionTokens": 32,
+        "genWindowMs": 3540.5,
+        "genMono": [
+          2471.600000023842,
+          6012.100000023842
+        ],
+        "longTasksInWindowMs": [],
+        "longestLongTaskInWindowMs": 0,
+        "hookLongTasksMs": [],
+        "longestRafGapInWindowMs": 3883.1,
+        "rafFramesInWindow": 2,
+        "wholeRunLongTasksMs": [
+          588,
+          91
+        ],
+        "wholeRunLongestRafGapMs": 3883.1,
+        "ltObserverError": null
+      }
+    ]
+  },
+  "abort": {
+    "runs": [
+      {
+        "run": 1,
+        "ok": true,
+        "finishReason": "abort",
+        "latencyMs": 252.40000000596046,
+        "refcounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "adapterStillLoaded": false,
+        "bytesDownloaded": 212926670,
+        "modelGets": 7,
+        "lifecycle": [
+          "started:load",
+          "ready:load",
+          "terminated:abort"
+        ]
+      },
+      {
+        "run": 2,
+        "ok": true,
+        "finishReason": "abort",
+        "latencyMs": 253.09999999403954,
+        "refcounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "adapterStillLoaded": false,
+        "bytesDownloaded": 0,
+        "modelGets": 0,
+        "lifecycle": [
+          "started:load",
+          "ready:load",
+          "terminated:abort"
+        ]
+      },
+      {
+        "run": 3,
+        "ok": true,
+        "finishReason": "abort",
+        "latencyMs": 252.30000001192093,
+        "refcounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "adapterStillLoaded": false,
+        "bytesDownloaded": 0,
+        "modelGets": 0,
+        "lifecycle": [
+          "started:load",
+          "ready:load",
+          "terminated:abort"
+        ]
+      },
+      {
+        "run": 4,
+        "ok": true,
+        "finishReason": "abort",
+        "latencyMs": 252.5,
+        "refcounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "adapterStillLoaded": false,
+        "bytesDownloaded": 0,
+        "modelGets": 0,
+        "lifecycle": [
+          "started:load",
+          "ready:load",
+          "terminated:abort"
+        ]
+      },
+      {
+        "run": 5,
+        "ok": true,
+        "finishReason": "abort",
+        "latencyMs": 252.5,
+        "refcounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "adapterStillLoaded": false,
+        "bytesDownloaded": 0,
+        "modelGets": 0,
+        "lifecycle": [
+          "started:load",
+          "ready:load",
+          "terminated:abort"
+        ]
+      }
+    ],
+    "next": {
+      "ok": true,
+      "text": "The capital of France is Paris.",
+      "bytesDownloaded": 0,
+      "modelGets": 0,
+      "downloadEvents": 0,
+      "acquireBytes": 0
+    },
+    "foreignRequests": [],
+    "lastSnapshotLifecycle": [
+      "started:load",
+      "ready:load"
+    ]
+  },
+  "abortOnToken": {
+    "ok": false,
+    "userMessage": "The model could not be loaded (not_loaded).",
+    "code": "not_loaded",
+    "errorName": "AdapterError"
+  },
+  "demoHasStopButton": false,
+  "isolation": {
+    "ok": true,
+    "rung": "wasm",
+    "text": "The capital of France is Paris.",
+    "attempts": [
+      {
+        "rung": "webgpu",
+        "adapter": "transformers-js",
+        "model": "smollm2-135m-instruct.bad-webgpu.descriptor",
+        "outcome": "failed",
+        "reason": "load_failed"
+      },
+      {
+        "rung": "webgpu",
+        "adapter": "transformers-js",
+        "model": "smollm2-135m-instruct.wasm.descriptor",
+        "outcome": "failed",
+        "reason": "load_failed"
+      },
+      {
+        "rung": "wasm",
+        "adapter": "transformers-js",
+        "model": "smollm2-135m-instruct.bad-webgpu.descriptor",
+        "outcome": "skipped",
+        "reason": "profile"
+      },
+      {
+        "rung": "wasm",
+        "adapter": "transformers-js",
+        "model": "smollm2-135m-instruct.wasm.descriptor",
+        "outcome": "selected",
+        "reason": "ok"
+      }
+    ],
+    "userMessage": null,
+    "lifecycle": [
+      "webgpu:started:load",
+      "webgpu:terminated:load_failed",
+      "wasm:started:load",
+      "wasm:ready:load",
+      "wasm:terminated:unload"
+    ],
+    "backendSelect": [
+      {
+        "rung": "webgpu",
+        "adapter": "transformers-js",
+        "model": "smollm2-135m-instruct.bad-webgpu.descriptor",
+        "outcome": "failed",
+        "reason": "load_failed"
+      },
+      {
+        "rung": "webgpu",
+        "adapter": "transformers-js",
+        "model": "smollm2-135m-instruct.wasm.descriptor",
+        "outcome": "failed",
+        "reason": "load_failed"
+      },
+      {
+        "rung": "wasm",
+        "adapter": "transformers-js",
+        "model": "smollm2-135m-instruct.bad-webgpu.descriptor",
+        "outcome": "skipped",
+        "reason": "profile"
+      },
+      {
+        "rung": "wasm",
+        "adapter": "transformers-js",
+        "model": "smollm2-135m-instruct.wasm.descriptor",
+        "outcome": "selected",
+        "reason": "ok"
+      }
+    ],
+    "navigations": 1,
+    "markerSurvived": true,
+    "loadIds": [
+      "38422de6607856ee",
+      "7aac1379dc417fc1"
+    ],
+    "failedEvents": [
+      {
+        "adapter": "transformers-js",
+        "model": "smollm2-135m-instruct.bad-webgpu.descriptor",
+        "device": "webgpu",
+        "code": "backend",
+        "loadId": "38422de6607856ee",
+        "host": "worker"
+      },
+      {
+        "adapter": "transformers-js",
+        "model": "smollm2-135m-instruct.wasm.descriptor",
+        "device": "webgpu",
+        "code": "bad_descriptor",
+        "loadId": "7d58371145b08168",
+        "host": "worker"
+      }
+    ],
+    "foreign": []
+  },
+  "egressProbes": {
+    "probes": {
+      "fetch": "refused:egress_refused",
+      "fetch-via-Request": "refused:egress_refused",
+      "xhr": "refused:egress_refused",
+      "websocket": "refused:egress_refused",
+      "websocketstream": "refused:egress_refused",
+      "eventsource": "refused:egress_refused",
+      "webtransport": "refused:egress_refused",
+      "worker": "refused:egress_refused",
+      "importScripts": "refused:egress_refused",
+      "cache.add": "refused:egress_refused",
+      "cache.addAll": "refused:egress_refused",
+      "dynamic-import": "refused:TypeError",
+      "fontface": "refused:19",
+      "navigator.sendBeacon": "returned:undefined-in-worker",
+      "hasServiceWorkerContainer": "false",
+      "serviceWorker.register": "returned:no-serviceWorker-in-worker",
+      "Request-with-cross-origin-in-importmap-none": "returned:n/a",
+      "fetchLocked": "true",
+      "fetchReassignHeld": "true",
+      "cspViolations": "[\"script-src-elem https://example.invalid/x.js\",\"font-src https://example.invalid/f\"]"
+    },
+    "egressRefusedEventCount": 12,
+    "egressRefusedAttrKeys": [
+      "adapter,origin"
+    ],
+    "egressRefusedSample": [
+      {
+        "adapter": "transformers-js",
+        "origin": "https://example.invalid"
+      },
+      {
+        "adapter": "transformers-js",
+        "origin": "https://example.invalid"
+      },
+      {
+        "adapter": "transformers-js",
+        "origin": "invalid"
+      }
+    ],
+    "egressRefusedOrigins": [
+      "https://example.invalid",
+      "invalid",
+      "wss://example.invalid"
+    ],
+    "eventSchemaErrors": [],
+    "cdpRequestsToExampleInvalid": [
+      "worker Script https://example.invalid/x.js",
+      "worker Font https://example.invalid/f"
+    ],
+    "cdpFailedExampleInvalid": [
+      {
+        "kind": "worker",
+        "url": "https://example.invalid/x.js",
+        "error": "",
+        "blockedReason": "csp"
+      },
+      {
+        "kind": "worker",
+        "url": "https://example.invalid/f",
+        "error": "",
+        "blockedReason": "csp"
+      }
+    ],
+    "cdpCspIssues": [],
+    "foreignNonProbeRequests": [],
+    "stagingPrefixRequests": 0,
+    "workerTargets": 1,
+    "pageWorkerCountPlaywright": 1
+  },
+  "serverLog": "range-server listening on http://127.0.0.1:60969 assets=hello-data=1048576 flags=test-endpoints\n"
+}

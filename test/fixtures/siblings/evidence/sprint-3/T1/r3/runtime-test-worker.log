@@ -1,0 +1,26 @@
+
+> @airplanemode/runtime@0.2.0-alpha.0 test:worker
+> playwright test -c test/browser/playwright.worker.config.ts
+
+[WebServer] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+Running 8 tests using 1 worker
+
+  ✓  1 test/browser/guard-order.spec.ts:17:1 › the built worker installs the egress guard before the engine host and before any dynamic import (3ms)
+  ✓  2 test/browser/guard-order.spec.ts:42:1 › the built worker, started as a module worker, has the guard installed and its globals locked (1.9s)
+  ✓  3 test/browser/isolation.spec.ts:19:1 › a WebGPU failure after session creation started does not poison WebAssembly in the same page (4.6s)
+  ✓  4 test/browser/tt.spec.ts:18:3 › webgpu: a load and an answer with Trusted Types required: 0 violations in the page and the worker, innerHTML throws (3.0s)
+  ✓  5 test/browser/tt.spec.ts:18:3 › wasm: a load and an answer with Trusted Types required: 0 violations in the page and the worker, innerHTML throws (3.9s)
+  ✓  6 test/browser/worker.spec.ts:31:1 › the engine answers from a worker on forced WebAssembly, observability comes from the worker host, probes in the worker are refused (4.3s)
+  ✓  7 test/browser/worker.spec.ts:195:1 › the longest main-thread long task during a 32-token WebAssembly answer is under 200 ms (5.3s)
+  ✓  8 test/browser/worker.spec.ts:217:1 › abort from a timer resolves abort within 500 ms in 5 of 5 runs, and the holds are released after terminate (49.8s)
+
+  8 passed (1.2m)
+real 75.18
+user 112.53
+sys 9.08
+EXIT 0

@@ -1,0 +1,31 @@
+
+> @airplanemode/dockit@0.1.0-dev test:browser
+> playwright test -c playwright.config.ts
+
+
+Running 21 tests using 1 worker
+
+  ✓   1 test/pwa.spec.ts:76:3 › dockit installable PWA › build output: non-empty precache list with a SHA-256 per entry (24ms)
+  ✓   2 test/pwa.spec.ts:88:3 › dockit installable PWA › CSP meta: no remote origin, no unsafe-inline, no unsafe-eval, no blob: in worker-src (10ms)
+  ✓   3 test/pwa.spec.ts:113:3 › dockit installable PWA › service worker registers, activates and precaches every entry; manifest is valid (207ms)
+  ✓   4 test/pwa.spec.ts:142:3 › dockit installable PWA › offline reload serves the app shell from the hash-verified cache (212ms)
+  ✓   5 test/pwa.spec.ts:159:3 › dockit installable PWA › third-party notices: precached, linked in the footer, and open offline (T3-S3-028) (174ms)
+  ✓   6 test/pwa.spec.ts:178:3 › dockit installable PWA › offline navigation to an uncached route returns offline.html (164ms)
+  ✓   7 test/pwa.spec.ts:192:3 › dockit installable PWA › Range requests and manifest.json bypass the cache and reach the server (144ms)
+  ✓   8 test/pwa.spec.ts:220:3 › dockit installable PWA › every request is same-origin (208ms)
+  ✓   9 test/pwa.spec.ts:233:3 › dockit installable PWA › a precached file altered on the server after install is never served unverified (144ms)
+  ✓  10 test/pwa.spec.ts:267:3 › dockit installable PWA › tampered precache entry: install fails, no worker, no controller, nothing cached (3.2s)
+  ✓  11 test/pwa.spec.ts:300:3 › dockit installable PWA › activating a build with a new hash removes the old cache (2.0s)
+  ✓  12 test/pwa.spec.ts:322:3 › Trusted Types (D5-02) › 0 TT or CSP violations, the worker registers, offline reload works, innerHTML throws (246ms)
+  ✓  13 test/subpath.spec.ts:52:3 › dockit under the /dockit/ sub-path › the server root is a 404 while /dockit/ renders (20ms)
+  ✓  14 test/subpath.spec.ts:59:3 › dockit under the /dockit/ sub-path › every request stays under /dockit/, no console errors, scope ends with /dockit/ (141ms)
+  ✓  15 test/subpath.spec.ts:97:3 › dockit under the /dockit/ sub-path › precache keys are all under /dockit/ and include the shell, offline page and manifest (134ms)
+  ✓  16 test/subpath.spec.ts:119:3 › dockit under the /dockit/ sub-path › web app manifest keeps start_url and scope relative (126ms)
+  ✓  17 test/subpath.spec.ts:130:3 › dockit under the /dockit/ sub-path › activate deletes only stale dockit-precache-* caches, never another demo's (155ms)
+  ✓  18 test/subpath.spec.ts:155:3 › dockit under the /dockit/ sub-path › offline.html loaded directly makes no request outside /dockit/ and logs no error (612ms)
+  ✓  19 test/subpath.spec.ts:186:3 › dockit under the /dockit/ sub-path › offline: a deep navigation gets a styled offline.html and a reload renders the shell (212ms)
+  ✓  20 test/subpath.spec.ts:241:3 › dockit under the /dockit/ sub-path › home screen states that document processing is not built and lists six stub stages (175ms)
+  ✓  21 test/subpath.spec.ts:291:3 › dockit under the /dockit/ sub-path › requirements are computed by feature detection, not a static list (145ms)
+
+  21 passed (11.0s)
+EXIT 0

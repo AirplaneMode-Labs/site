@@ -1,0 +1,20 @@
+
+> @airplanemode/runtime@0.2.0-alpha.0 test:devtools
+> playwright test -c test/browser/playwright.devtools.config.ts
+
+[WebServer] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+Running 2 tests using 1 worker
+
+  ✓  1 test/browser/devtools.spec.ts:128:1 › (a) renderer: a real load and answer, the page snapshot rendered by the extension panel page (4.1s)
+  ✓  2 test/browser/devtools.spec.ts:254:1 › (b) DevTools transport: the real Airplane Mode tab in an open DevTools window shows the load (5.4s)
+
+  2 passed (11.6s)
+real 11.86
+user 15.34
+sys 3.27
+EXIT 0

@@ -1,0 +1,1 @@
+- Contributions are accepted under the repository licence (Apache-2.0).

@@ -1,0 +1,51 @@
+// LOCAL ONLY (npm run test:siblings). Needs the sibling clones and the workspace evidence/ folder next to this
+// repository. It is not run by ci.yml or pages.yml, and `node --test` (what CI runs) finds this file but it does
+// nothing unless it is started with --live, so a hosted checkout is never affected.
+//
+//   1. It re-runs the whole site suite (test/build.test.mjs) with SITE_SIBLINGS=live, so every check that CI makes
+//      against a committed fixture is made again against the live sibling file.
+//   2. It re-derives every fixture from its recorded source (the commit for a repository file; the evidence or
+//      workspace file otherwise) and fails if a fixture is stale or does not match SOURCE.json.
+import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+
+if (!process.argv.includes('--live')) {
+  console.log('test/siblings.local.test.mjs is local-only: run `npm run test:siblings` in a workspace that has the sibling clones.');
+} else {
+  process.env.SITE_SIBLINGS = 'live';
+  const { SOURCE_JSON, FIXTURE_ROOT, WORKSPACE_ROOT, cutText, siblingPath } = await import('../scripts/sibling-fixtures.mjs');
+  const sha256 = (b) => createHash('sha256').update(b).digest('hex');
+  const src = JSON.parse(readFileSync(SOURCE_JSON, 'utf8'));
+
+  test('live siblings: every sibling folder and the evidence folder this suite reads is present', () => {
+    for (const repo of Object.keys(src.heads)) assert.ok(existsSync(join(WORKSPACE_ROOT, repo, '.git')), `${repo}: no clone next to this repository`);
+    assert.ok(existsSync(join(WORKSPACE_ROOT, 'evidence')), 'no workspace evidence folder');
+  });
+
+  for (const f of src.files.filter((x) => x.cut.mode !== 'generated')) {
+    test(`fixture ${f.repo}/${f.path} equals what its recorded source gives`, () => {
+      let text;
+      if (f.commit) {
+        const repoDir = join(WORKSPACE_ROOT, f.repo);
+        execFileSync('git', ['-C', repoDir, 'cat-file', '-e', `${f.commit}^{commit}`]);
+        text = execFileSync('git', ['-C', repoDir, 'show', `${f.commit}:${f.path}`], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+      } else {
+        // evidence and workspace files are not in a repository; a dockit benchmark CSV is read from its working tree until dockit is committed
+        // (SITE_SIBLINGS is 'live' here, so siblingPath gives the workspace file, or for sprint-5 evidence the lane scratch copy until wrap-up)
+        const file = siblingPath(f.repo, f.path);
+        text = readFileSync(file, 'utf8');
+      }
+      assert.equal(sha256(text), f.sourceSha256, 'the source changed since the fixture was cut: run node scripts/make-sibling-fixtures.mjs');
+      const fixture = readFileSync(join(FIXTURE_ROOT, f.repo, ...f.path.split('/')), 'utf8');
+      assert.equal(fixture, cutText(text, f.cut), 'the fixture is not the recorded cut of its source');
+      assert.equal(sha256(fixture), f.sha256);
+    });
+  }
+
+  // The same suite, reading the live files.
+  await import('./build.test.mjs');
+}

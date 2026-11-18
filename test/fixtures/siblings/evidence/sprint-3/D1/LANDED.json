@@ -1,0 +1,40 @@
+{
+  "worker": {
+    "status": "green",
+    "evidence": [
+      "<scratch>/sprint-3/D1/worker/worker-run.json",
+      "<scratch>/sprint-3/D1/test-worker-s3.log",
+      "<scratch>/sprint-3/D1/green-D1-04.log"
+    ],
+    "note": "engine in a dedicated module worker per load (createDefaultAdapters({workerUrl})); main-thread adapter still available; embeddings are not available through the worker host"
+  },
+  "webllm": {
+    "status": "not landed",
+    "evidence": ["<scratch>/sprint-3/D1/WEBLLM-NOT-LANDED.txt"],
+    "note": "carried to Sprint 4; spec R11 (staging) is published, no adapter, no dependency, no 360M MLC model fetch"
+  },
+  "trustedTypes": {
+    "status": "green",
+    "evidence": [
+      "<scratch>/sprint-3/D1/test-worker-s3.log",
+      "<scratch>/sprint-3/D1/green-D1-09.log"
+    ],
+    "note": "models.html requires Trusted Types for scripts with the single policy airplanemode-worker; 0 violations in page and worker on WebGPU and WebAssembly; dockit is D5's"
+  },
+  "ortOverride": {
+    "status": "green",
+    "evidence": [
+      "<scratch>/sprint-3/D1/ort-override.log",
+      "<scratch>/sprint-3/D1/test-model-s3.log"
+    ],
+    "note": "onnxruntime-web 1.31.1 (stable, override); test:model 9/9 on WebGPU and forced WebAssembly; PROVENANCE.json ort block written by DEMO_MODELS=1 builds"
+  },
+  "devtoolsTransport": {
+    "status": "green",
+    "evidence": [
+      "<scratch>/sprint-3/D1/devtools/devtools-figures.json",
+      "<scratch>/sprint-3/D1/devtools/devtools-window.png"
+    ],
+    "note": "headed run: the real Airplane Mode tab in an open Chrome 157 DevTools window showed five phase durations and page memory figures under the page snapshot's loadId; zero-permission manifest; T1 must repeat it independently"
+  }
+}

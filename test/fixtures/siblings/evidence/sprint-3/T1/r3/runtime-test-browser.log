@@ -1,0 +1,37 @@
+
+> @airplanemode/runtime@0.2.0-alpha.0 test:browser
+> playwright test -c test/browser/playwright.config.ts
+
+[WebServer] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+Running 12 tests using 1 worker
+
+
+  ✓   1 [chrome] › test/browser/asset.spec.ts:59:5 › store=opfs › downloads 64 MiB, verifies, and records the independent sha256 (1.0s)
+
+  ✓   2 [chrome] › test/browser/asset.spec.ts:67:5 › store=opfs › reload at 38-42 % then resume with exactly one Range request (2.4s)
+  ✓   3 [chrome] › test/browser/asset.spec.ts:88:5 › store=opfs › CDP origin quota: a + b, touch a, then c evicts exactly b (1.5s)
+
+  ✓   4 [chrome] › test/browser/asset.spec.ts:59:5 › store=indexeddb › downloads 64 MiB, verifies, and records the independent sha256 (661ms)
+
+  ✓   5 [chrome] › test/browser/asset.spec.ts:67:5 › store=indexeddb › reload at 38-42 % then resume with exactly one Range request (2.2s)
+  ✓   6 [chrome] › test/browser/asset.spec.ts:88:5 › store=indexeddb › quotaBytes injection: a + b, touch a, then c evicts exactly b (1.0s)
+
+  ✓   7 [chrome] › test/browser/asset.spec.ts:109:1 › corrupt manifest hash: hash_mismatch, no .bin, no row, getBlob not_verified (617ms)
+
+  ✓   8 [chrome] › test/browser/asset.spec.ts:134:1 › host that ignores Range: resume restarts from byte zero and still verifies (2.4s)
+  ✓   9 [chrome] › test/browser/asset.spec.ts:143:1 › truncated committed .bin: next getBlob rejects not_verified and the row is removed (624ms)
+
+  ✓  10 [chrome] › test/browser/asset.spec.ts:165:1 › egress: only demo files, /manifest.json and /assets/*; a foreign-origin entry is blocked before any request (226ms)
+  ✓  11 [chrome] › test/browser/asset.spec.ts:225:1 › range server rejects foreign Host and hides test endpoints without the flag (18ms)
+  ✓  12 [chrome] › test/browser/capability.spec.ts:69:1 › detectCapabilities() resolves within 2 s, validates against the schema, and leaks no fingerprint (103ms)
+
+  12 passed (15.8s)
+real 16.16
+user 19.70
+sys 7.57
+EXIT 0

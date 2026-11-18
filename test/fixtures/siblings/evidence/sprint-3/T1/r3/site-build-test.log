@@ -1,0 +1,16 @@
+build: 9 pages, 30 papers, 3 write-ups -> <workspace>/site/dist
+EXIT 0
+ok 40 - the home page repository table shows Sprint 3 statuses, not the Sprint 1 ones
+  ---
+  duration_ms: 2.065
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 128.152875

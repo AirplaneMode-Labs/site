@@ -1,0 +1,44 @@
+
+> @airplanemode/localdata@0.1.0-dev ci
+> npm run fmt:check && npm run typecheck && npm run test && npm run build
+
+
+> @airplanemode/localdata@0.1.0-dev fmt:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> @airplanemode/localdata@0.1.0-dev typecheck
+> tsc --noEmit && tsc --noEmit -p demo/tsconfig.json
+
+
+> @airplanemode/localdata@0.1.0-dev test
+> vitest run
+
+
+ RUN  v4.1.12 <workspace>/localdata
+
+
+ Test Files  5 passed (5)
+      Tests  144 passed | 13 skipped (157)
+   Start at  10:13:32
+   Duration  217ms (transform 290ms, setup 0ms, import 362ms, tests 110ms, environment 0ms)
+
+
+> @airplanemode/localdata@0.1.0-dev build
+> tsup --no-sourcemap
+
+CLI Building entry: src/index.ts
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.1
+CLI Using tsup config: <workspace>/localdata/tsup.config.ts
+CLI Target: es2022
+CLI Cleaning output folder
+ESM Build start
+ESM dist/index.js 38.46 KB
+ESM ⚡️ Build success in 59ms
+DTS Build start
+DTS ⚡️ Build success in 513ms
+DTS dist/index.d.ts 14.06 KB
+EXIT 0

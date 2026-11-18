@@ -11,6 +11,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "node --test",
+    "test:siblings": "node test/siblings.local.test.mjs --live",
     "ci": "node scripts/build.mjs && node --test"
   }
 }

@@ -3,12 +3,14 @@
 //   node scripts/build.mjs            -> dist/
 // Exports build({root, outDir}) for the tests. Refuses to emit any page that contains a
 // script tag, a stylesheet or script from a non-allowed host, or an inline style attribute.
+import { execFileSync } from 'node:child_process';
 import {
   copyFileSync,
   existsSync,
   mkdirSync,
   readdirSync,
   readFileSync,
+  realpathSync,
   rmSync,
   writeFileSync,
 } from 'node:fs';
@@ -49,9 +51,41 @@ export function checkOutput(html, name) {
   }
 }
 
-/** First 12 characters of GITHUB_SHA when it is exactly 40 lowercase hex, else 'local'. */
-export function buildId(sha = process.env.GITHUB_SHA) {
-  return typeof sha === 'string' && /^[0-9a-f]{40}$/.test(sha) ? sha.slice(0, 12) : 'local';
+const runGit = (root, args) =>
+  execFileSync('git', ['-C', root, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+
+/**
+ * The build id shown in every footer, the same convention as dockit and runtime's demo/build-id.ts buildLabel() (BUG-T1-S5-04, BUG-T1-S5-R2-04):
+ *   in CI on main (GITHUB_SHA is exactly 40 lowercase hex, and GITHUB_REF is refs/heads/main or unset)   'Built from main at <sha12>'
+ *   (a run on any other ref, such as a workflow_dispatch of pages.yml on a branch, is not 'main': it takes the git HEAD form below)
+ *   locally, from git HEAD of this folder            'Local build <sha12>' or 'Local build <sha12>-dirty' (a tracked file differs from HEAD)
+ *   anything else                                    'Local build unknown'
+ * The last line is the documented fallback for a lone checkout with no .git (and for no git at all). git is trusted only when the
+ * repository's top level is this very folder: a copy of the site inside another repository must not borrow that repository's HEAD.
+ * `git` is injectable for the tests.
+ */
+export function buildId({ sha = process.env.GITHUB_SHA, ref = process.env.GITHUB_REF, root, git = runGit } = {}) {
+  const onMain = ref === undefined || ref === '' || ref === 'refs/heads/main';
+  if (typeof sha === 'string' && /^[0-9a-f]{40}$/.test(sha) && onMain) return `Built from main at ${sha.slice(0, 12)}`;
+  try {
+    const here = root ?? join(dirname(fileURLToPath(import.meta.url)), '..');
+    const top = git(here, ['rev-parse', '--show-toplevel']);
+    const real = (p) => {
+      try {
+        return realpathSync(p);
+      } catch {
+        return p;
+      }
+    };
+    if (real(top) !== real(here)) return 'Local build unknown';
+    const head = git(here, ['rev-parse', 'HEAD']);
+    if (!/^[0-9a-f]{40}$/.test(head)) return 'Local build unknown';
+    // untracked files do not count: dist/ and node_modules are ignored or new, and a new source file shows as modified once added
+    const dirty = git(here, ['status', '--porcelain', '--untracked-files=no']).length > 0;
+    return `Local build ${head.slice(0, 12)}${dirty ? '-dirty' : ''}`;
+  } catch {
+    return 'Local build unknown';
+  }
 }
 
 const DRAFT_META = /<meta\s+name="draft"\s+content="true"\s*\/?>\s*\n?/i;
@@ -125,6 +159,88 @@ ${rows}
 </tbody>
 </table>
 </div>`;
+}
+
+const fmtNum = (n) => Number(n).toLocaleString('en-US');
+const mbOf = (bytes) => `${fmtNum(Math.round(bytes / 1048576))} MiB`;
+/** "median / worst" for a stat object, or 'not measured' when the figure is absent for some run of the group. */
+const medianWorst = (st, unit) => (st === null || st === undefined ? 'not measured' : unit === 'MiB' ? `${mbOf(st.median)} / ${mbOf(st.worst)}` : `${fmtNum(st.median)} ms / ${fmtNum(st.worst)} ms`);
+
+export const E2E_LIMITATIONS = [
+  'Text-layer PDFs only. OCR is not yet supported: a scanned PDF is refused, and image-only pages are skipped.',
+  'The model is Qwen3-0.6B, a small demo model, and not the pilot model (Qwen3-1.7B, hosted by the customer). Its answers can be wrong.',
+  'Single-threaded WebAssembly: the page is not cross-origin isolated (GitHub Pages cannot send the headers), so the engine runs on one thread.',
+  'The origin is shared: the demos of this lab all live on airplanemode-labs.github.io, so storage and quota are shared between them.',
+  'The test document is a synthetic English policy, and the question set is seven fixed questions over it. A result here says nothing about real documents.',
+  'Hindi answer quality is not measured: only the gate that tells clean from damaged Devanagari text layers is tested.',
+  'Not measured on 8 GB. Every figure here is from the machine named in its row; the 8 GB laptop column reads not measured on 8 GB.',
+];
+
+/** The dockit end-to-end section, built from data/e2e.json only: every number on it is a value of that file. */
+export function renderE2e(e2e) {
+  const g = e2e.groups;
+  const rows = g
+    .map(
+      (r) =>
+        `<tr><td>${esc(r.machine)}</td><td>${r.restart ? 'after a full Chrome restart, same profile' : 'one Chrome session, model cached'}</td><td>${fmtNum(r.runs)}</td>` +
+        `<td>${medianWorst(r.first_token_ms)}</td><td>${medianWorst(r.total_ms)}</td>` +
+        `<td>${medianWorst(r.process_rss_peak_bytes, 'MiB')}</td><td>${medianWorst(r.js_heap_peak_bytes, 'MiB')}</td><td>${medianWorst(r.wasm_memory_peak_bytes, 'MiB')}</td>` +
+        `<td>${medianWorst(r.storage_usage_bytes, 'MiB')}</td><td>${fmtNum(r.requests_after_offline.max)}</td>` +
+        `<td>${esc(r.model)}; ${esc(r.backend)}</td><td><code>${esc(e2e.command)}</code></td><td><code>${esc(r.commit)}</code>, ${esc(r.chrome)}</td><td>${esc(r.laptop8gb)}</td></tr>`,
+    )
+    .join('\n');
+  const q = e2e.questions;
+  const answerable = q.perQuestion.filter((x) => x.answerable);
+  return `<h2 id="dockit-e2e">dockit: an answer over a PDF, in the browser, offline</h2>
+<p>
+  <span class="tag">dockit</span> A PDF goes through pagetriage (what is on each page), text extraction, the glyphsift gate, localdata chunks and vectors, and a
+  small local model, in installed Chrome with the network blocked after the assets are cached. The command for every row is <code>${esc(e2e.command)}</code>;
+  the raw rows are in dockit's <code>${esc(e2e.source.csv)}</code> (sha256 <code>${esc(e2e.source.csvSha256.slice(0, 16))}</code>) and
+  <code>${esc(e2e.source.questionsCsv)}</code> (sha256 <code>${esc(e2e.source.questionsCsvSha256.slice(0, 16))}</code>), taken at commit <code>${esc(e2e.source.commit)}</code>.
+  Each time is the median and the worst of the runs in its row; no run was left out.
+</p>
+<div class="table-wrap">
+<table class="benchmarks e2e">
+<thead><tr><th>Machine</th><th>Run kind</th><th>Runs</th><th>Time to first token (median / worst)</th><th>Total, first question (median / worst)</th><th>Peak memory: Chrome process tree, summed resident size (median / worst)</th><th>JS heap peak, main thread (median / worst)</th><th>WebAssembly memory peak, workers (median / worst)</th><th>Storage used (median / worst)</th><th>Requests after offline</th><th>Model and backend</th><th>Command</th><th>Commit, Chrome</th><th>8 GB laptop</th></tr></thead>
+<tbody>
+${rows}
+</tbody>
+</table>
+</div>
+<p class="muted">
+  Peak memory is the peak summed resident size of the test Chrome's processes (browser, GPU, utility and renderer); a page shared between processes is
+  counted in each. The JS heap and the workers' WebAssembly memory are different figures and are shown under their own names.
+</p>
+<p class="muted">
+  Requests after offline counts application requests: those made by the page, its workers and its service worker, as the largest count of network requests
+  attempted after the network was blocked. The browser itself may still check /dockit/sw.js for an update and fetch the favicon; this count does not include
+  those two requests, and dockit's code makes neither of them.
+</p>
+<h3>Question set</h3>
+<p>
+  Seven fixed questions over a synthetic three-page policy, six with an answer on a known page and one with no answer in the document.
+  Correct means the answer holds the expected text and a source the answer cites names the page that holds it.
+  First run: <strong>${fmtNum(q.firstRun.correct)} of ${fmtNum(q.firstRun.of)}</strong> correct with the correct source page.
+  Over all ${fmtNum(q.all.runs)} runs, counting every run of every question with none selected: <strong>${fmtNum(q.all.correct)} of ${fmtNum(q.all.of)}</strong>.
+  The question with no answer was refused in ${fmtNum(q.unanswerable.refused)} of ${fmtNum(q.unanswerable.of)} runs.
+</p>
+<p>
+  Two page columns are kept apart. A cited source on the right page was shown in ${fmtNum(q.citedPage.ok)} of ${fmtNum(q.citedPage.of)} answerable rows: a refused answer cites nothing,
+  so it never counts there. The top-ranked retrieved passage was on the right page in ${fmtNum(q.topRetrieved.ok)} of ${fmtNum(q.topRetrieved.of)} (retrieval quality, reported on its own).
+</p>
+<div class="table-wrap">
+<table class="benchmarks">
+<thead><tr><th>Question</th><th>Runs</th><th>Answer correct</th><th>Cited source page correct</th><th>Top-ranked retrieved passage on the right page</th><th>Time to first token (median / worst)</th><th>8 GB laptop</th></tr></thead>
+<tbody>
+${answerable.map((x) => `<tr><td>${esc(x.qid)}</td><td>${fmtNum(x.runs)}</td><td>${fmtNum(x.answerOk)}</td><td>${fmtNum(x.pageOk)}</td><td>${fmtNum(x.topRetrievedOk)}</td><td>${medianWorst(x.first_token_ms)}</td><td>${esc(x.laptop8gb)}</td></tr>`).join('\n')}
+</tbody>
+</table>
+</div>
+<p class="box" id="dockit-done-when"><strong>Done-when:</strong> build done on Apple M5 Pro 48 GB; 8 GB Windows done-when NOT met (owner runbook step 5).</p>
+<h3>Limitations</h3>
+<ul>
+${E2E_LIMITATIONS.map((l) => `<li>${esc(l)}</li>`).join('\n')}
+</ul>`;
 }
 
 const GITHUB_ORG = 'https://github.com/AirplaneMode-Labs';
@@ -218,7 +334,7 @@ ${rows}
 export function build({ root, outDir }) {
   const srcDir = join(root, 'src');
   const layout = readFileSync(join(srcDir, 'templates', 'layout.html'), 'utf8');
-  const built = `${new Date().toISOString().slice(0, 10)} \u00b7 build ${buildId()}`;
+  const built = `${buildId({ root })} \u00b7 ${new Date().toISOString().slice(0, 10)}`;
   const outputs = [];
 
   const emit = (relPath, title, description, content, depth, active, draft = false) => {
@@ -234,6 +350,7 @@ export function build({ root, outDir }) {
   const benchmarks = JSON.parse(readFileSync(join(root, 'data', 'benchmarks.json'), 'utf8'));
   const demos = JSON.parse(readFileSync(join(root, 'data', 'demos.json'), 'utf8'));
   checkDemos(demos);
+  const e2e = JSON.parse(readFileSync(join(root, 'data', 'e2e.json'), 'utf8'));
   const licences = JSON.parse(readFileSync(join(root, 'data', 'licences.json'), 'utf8'));
   checkLicences(licences);
   for (const file of readdirSync(pagesDir).filter((f) => f.endsWith('.html')).sort()) {
@@ -244,6 +361,9 @@ export function build({ root, outDir }) {
     let content = stripMeta(fragment);
     if (content.includes('{{benchmarks-table}}')) {
       content = content.replace('{{benchmarks-table}}', () => renderBenchmarks(benchmarks));
+    }
+    if (content.includes('{{e2e-section}}')) {
+      content = content.replace('{{e2e-section}}', () => renderE2e(e2e));
     }
     if (content.includes('{{licences-table}}')) {
       content = content.replace('{{licences-table}}', () => renderLicences(licences));

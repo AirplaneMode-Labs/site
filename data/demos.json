@@ -2,37 +2,37 @@
   {
     "repo": "pagetriage",
     "url": "https://airplanemode-labs.github.io/pagetriage/",
-    "status": "Sprint 4 (14 Nov 2026): Working: the same page analysis as before, now with the footer NOTICE listing each MIT-only compiled crate with its copyright line and full MIT text, an attributed BSD-3-Clause paragraph for alloc-stdlib, and NOTICE inside the locally built wheel. Not yet: OCR, 8 GB figures (not measured on 8 GB), a signed release, a tag, a published package, Linux and Windows wheels (cut to Sprint 6).",
-    "writtenOn": "2026-11-14"
+    "status": "Sprint 5 (18 Nov 2026): Working: the same page analysis as before, now with the PDF structure call that the dockit demo uses documented (analyse_pdf_structure: which pages of a PDF hold a readable text layer), with its WebAssembly size and its timings measured in Chrome on a 48 GB Apple M5 Pro (not measured on 8 GB). Not yet: OCR, 8 GB figures (not measured on 8 GB), a signed release, a tag, a published package, Linux and Windows wheels (Sprint 6).",
+    "writtenOn": "2026-11-18"
   },
   {
     "repo": "runtime",
     "url": "https://airplanemode-labs.github.io/runtime/",
-    "status": "Sprint 4 (14 Nov 2026): Working: capability profile, signed-manifest verification, download, hash check and quota eviction of synthetic assets, resume, and a Tamper lab of thirteen cases (a changed entry byte, size or signature, a swapped key, a public-key mismatch, an untrusted key, a truncated file, a rollback, an expired manifest, a non-canonical signature, an asset byte flip, a truncated asset, and the valid manifest) that shows the exact refusal reason, with 0 requests after a manifest refusal; manifest spec v0.1 published in runtime/spec (committed; public after the owner's push). The test-model page, the engine picker and the worker host are as in Sprint 3, plus a Stop button on the test-model page. Not yet: WebLLM (cut from Sprint 4), Windows and 8 GB no-GPU measurements, embeddings through the worker host, key revocation, an expected-id check.",
-    "writtenOn": "2026-11-14"
+    "status": "Sprint 5 (18 Nov 2026): Working: runtime beta 0.3.0-beta.0 on spec release 0.5.0: capability profile, signed-manifest verification (now with an expected-id check that refuses a validly signed manifest of another product), download, hash check and quota eviction of synthetic assets, resume, and a Tamper lab of fourteen cases that shows the exact refusal reason, with 0 requests after a manifest refusal. The test-model page adds embeddings through the worker host, in-worker hashing of every model file, a token budget and Stop. This page's policy is now connect-src 'self': it can only reach its own origin. Not yet: WebLLM (cut), Windows and 8 GB measurements (not measured on 8 GB), key revocation, a real signing key.",
+    "writtenOn": "2026-11-18"
   },
   {
     "repo": "glyphsift",
     "url": "https://airplanemode-labs.github.io/glyphsift/",
-    "status": "Sprint 4 (14 Nov 2026): Working: paste, drop or choose a UTF-8 .txt file up to 1 MiB of Devanagari text and get a document score, a per-line strip and table, a per-cluster heatmap, and the count of each of the sixteen rules; a file that is not UTF-8 or is over 1 MiB is refused in plain text; computed in WebAssembly in the tab, with 0 requests after the page loads; the footer names the licence (Apache-2.0) and links the third-party notices (NOTICE.txt). Not yet: scripts other than Devanagari (Tamil is planned for v0.2 as a design note only, Bengali later), a published package or wheel (Linux and Windows wheels are built only by CI after the owner's push), 8 GB figures (not measured on 8 GB).",
-    "writtenOn": "2026-11-14"
+    "status": "Sprint 5 (18 Nov 2026): Working: everything from Sprint 4, plus a Gate tab that gives a pasted chunk of Devanagari text one of three answers, pass, hold or not scored (text that is not mostly Devanagari is passed through and not scored), with the score, the Devanagari share and a threshold you can change (975000 ppm by default), as the same canonical JSON the command line and the Python wheel print, computed in WebAssembly in the tab; text with an unpaired surrogate is refused in plain text; 0 requests after the page loads. Not yet: scripts other than Devanagari (Tamil is planned for v0.2 as a design note only, Bengali later), a published package or wheel, 8 GB figures (not measured on 8 GB).",
+    "writtenOn": "2026-11-18"
   },
   {
     "repo": "localdata",
     "url": "https://airplanemode-labs.github.io/localdata/",
-    "status": "Sprint 4 (14 Nov 2026). A flat vector index in OPFS or IndexedDB: build 10,000 or 100,000 synthetic rows, reload the page, run a cold query and see the measured time and a match against the naive reference; set/get/delete/list and the storage.* events, now including storage.query, storage.index.open and storage.index.write. Measured on an Apple M5 Pro 48 GB; not measured on 8 GB.",
-    "writtenOn": "2026-11-14"
+    "status": "Sprint 5 (18 Nov 2026): Working: a documents API (putDocument, queryChunks returning chunk text and source page, deleteDocument; all-or-nothing, with clear(ns) removing a document namespace physically), prototype-safe keys and values, size-checked OPFS reads, a sweep of unreferenced records on open, all on OPFS, IndexedDB and memory in Chrome on an Apple M5 Pro with 48 GB (not measured on 8 GB). Not yet: HNSW, quantisation, compaction, encryption at rest, an 8 GB measurement.",
+    "writtenOn": "2026-11-18"
   },
   {
     "repo": "dockit",
     "url": "https://airplanemode-labs.github.io/dockit/",
-    "status": "Sprint 4 (14 Nov 2026): Skeleton: installable PWA shell that works offline, with Trusted Types on for scripts and a third-party notices page that also opens offline. Contracts re-vendored from runtime spec release 0.4.0 (manifest spec v0.1 published in runtime/spec (committed; public after the owner's push)). The Answer card shows the planned model and the backend fallback chain as a plan and a prediction only (runtime 0.2.0-alpha.1 runs its engine in a worker); every pipeline stage is a stub, with no inference until Sprint 5. Not yet: document processing, a model, a wired capability card, a WebLLM rung (cut from Sprint 4).",
-    "writtenOn": "2026-11-14"
+    "status": "Sprint 5 (18 Nov 2026): Working: ask a question about a PDF and read an answer from a small local model (Qwen3-0.6B, WebAssembly) with the source pages shown; page triage (pagetriage), text-layer extraction (pdf.js in its own worker), a glyph gate for Devanagari text (glyphsift) with the reason shown when a passage is held back, chunks and vectors in localdata, and a capability card; scanned, oversize, corrupt and encrypted files and a missing or tampered model are refused in plain words; after the one-time model download no request leaves the page (proved on a local build in installed Chrome on an Apple M5 Pro 48 GB, not measured on 8 GB; the live page changes only after the owner pushes). Not yet: OCR, a Windows or 8 GB figure, the pilot model (Qwen3-1.7B), a real signing key, WebLLM (cut), multi-document chat.",
+    "writtenOn": "2026-11-18"
   },
   {
     "repo": "site",
     "url": "https://airplanemode-labs.github.io/site/",
-    "status": "Sprint 4 (14 Nov 2026): Live: paper tracker now 65 papers (35 added, each checked against its primary page on 14 Nov 2026, all to-read), benchmarks from named commands (Apple-silicon placeholders; the 8 GB laptop is not measured on 8 GB), two localdata vector-index rows (256-byte and 2,048-byte chunks) fed from localdata's benchmark CSV by an importer, which read not measured when that file is absent, the model-load timing and memory rows filled from the saved Sprint 3 DevTools figures, write-ups, this list, and a build id in the footer. No scripts.",
-    "writtenOn": "2026-11-14"
+    "status": "Sprint 5 (18 Nov 2026): Working: the benchmarks page now carries the dockit end-to-end rows (time to first token, total time, peak memory as the Chrome process tree, and the JS heap and WebAssembly memory under their own names, with the fixed question-set result as N of M correct with the correct source page), built only from committed data, with the done-when line, a limitations list and an 8 GB column that reads not measured on 8 GB; every check that read a sibling repository now reads a committed fixture, so CI runs from a lone checkout. No scripts. Not yet: 8 GB figures (not measured on 8 GB), a Windows measurement, a published Sprint 5 write-up (a skeleton only).",
+    "writtenOn": "2026-11-18"
   }
 ]

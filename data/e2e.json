@@ -1,0 +1,221 @@
+{
+  "spec": "airplanemode.site.e2e/1",
+  "command": "npm run bench:e2e",
+  "source": {
+    "csv": "docs/benchmarks/e2e.csv",
+    "csvSha256": "9c83ca474c74b242c5f4f059169a6f9970a6de8de723ee1c0bfa25ac5a8e3b9a",
+    "questionsCsv": "docs/benchmarks/e2e-questions.csv",
+    "questionsCsvSha256": "6c4a08d03cebb46c9194ca0dc4536a348816358b86376e4a0563caa83b60a149",
+    "commit": "4bc19e9ae858-dirty",
+    "date": "2026-11-18T09:22:15.591Z",
+    "rows": 6
+  },
+  "groups": [
+    {
+      "machine": "Apple M5 Pro 48 GB",
+      "restart": false,
+      "runs": 5,
+      "chrome": "Chrome/157.0.8103.79",
+      "commit": "4bc19e9ae858-dirty",
+      "pages": 3,
+      "chunks": 3,
+      "held": 0,
+      "first_token_ms": {
+        "median": 7763,
+        "worst": 7898
+      },
+      "total_ms": {
+        "median": 9337,
+        "worst": 9497
+      },
+      "process_rss_peak_bytes": {
+        "median": 6852313088,
+        "worst": 6950305792
+      },
+      "js_heap_peak_bytes": {
+        "median": 11091912,
+        "worst": 38533772
+      },
+      "wasm_memory_peak_bytes": {
+        "median": 2698903552,
+        "worst": 2698903552
+      },
+      "storage_usage_bytes": {
+        "median": 799385413,
+        "worst": 799385413
+      },
+      "requests_after_offline": {
+        "max": 0
+      },
+      "answer_ok_q1": {
+        "ok": 5,
+        "of": 5
+      },
+      "model": "Qwen3-0.6B q8 + multilingual-e5-small q8",
+      "backend": "transformers-js wasm (single-threaded)",
+      "laptop8gb": "not measured on 8 GB"
+    },
+    {
+      "machine": "Apple M5 Pro 48 GB",
+      "restart": true,
+      "runs": 1,
+      "chrome": "Chrome/157.0.8103.79",
+      "commit": "4bc19e9ae858-dirty",
+      "pages": 3,
+      "chunks": 3,
+      "held": 0,
+      "first_token_ms": {
+        "median": 7892,
+        "worst": 7892
+      },
+      "total_ms": {
+        "median": 9490,
+        "worst": 9490
+      },
+      "process_rss_peak_bytes": {
+        "median": 6721110016,
+        "worst": 6721110016
+      },
+      "js_heap_peak_bytes": {
+        "median": 35798150,
+        "worst": 35798150
+      },
+      "wasm_memory_peak_bytes": {
+        "median": 2698838016,
+        "worst": 2698838016
+      },
+      "storage_usage_bytes": {
+        "median": 799405842,
+        "worst": 799405842
+      },
+      "requests_after_offline": {
+        "max": 0
+      },
+      "answer_ok_q1": {
+        "ok": 1,
+        "of": 1
+      },
+      "model": "Qwen3-0.6B q8 + multilingual-e5-small q8",
+      "backend": "transformers-js wasm (single-threaded)",
+      "laptop8gb": "not measured on 8 GB"
+    }
+  ],
+  "questions": {
+    "perQuestion": [
+      {
+        "qid": "q1",
+        "runs": 6,
+        "answerOk": 6,
+        "pageOk": 6,
+        "topRetrievedOk": 6,
+        "answerable": true,
+        "first_token_ms": {
+          "median": 7764,
+          "worst": 7898
+        },
+        "laptop8gb": "not measured on 8 GB"
+      },
+      {
+        "qid": "q2",
+        "runs": 6,
+        "answerOk": 0,
+        "pageOk": 0,
+        "topRetrievedOk": 6,
+        "answerable": true,
+        "first_token_ms": {
+          "median": 7855,
+          "worst": 7863
+        },
+        "laptop8gb": "not measured on 8 GB"
+      },
+      {
+        "qid": "q3",
+        "runs": 6,
+        "answerOk": 6,
+        "pageOk": 6,
+        "topRetrievedOk": 6,
+        "answerable": true,
+        "first_token_ms": {
+          "median": 7766,
+          "worst": 7772
+        },
+        "laptop8gb": "not measured on 8 GB"
+      },
+      {
+        "qid": "q4",
+        "runs": 6,
+        "answerOk": 6,
+        "pageOk": 6,
+        "topRetrievedOk": 6,
+        "answerable": true,
+        "first_token_ms": {
+          "median": 7862,
+          "worst": 7868
+        },
+        "laptop8gb": "not measured on 8 GB"
+      },
+      {
+        "qid": "q5",
+        "runs": 6,
+        "answerOk": 6,
+        "pageOk": 6,
+        "topRetrievedOk": 6,
+        "answerable": true,
+        "first_token_ms": {
+          "median": 7837,
+          "worst": 7909
+        },
+        "laptop8gb": "not measured on 8 GB"
+      },
+      {
+        "qid": "q6",
+        "runs": 6,
+        "answerOk": 0,
+        "pageOk": 0,
+        "topRetrievedOk": 6,
+        "answerable": true,
+        "first_token_ms": {
+          "median": 7878,
+          "worst": 7883
+        },
+        "laptop8gb": "not measured on 8 GB"
+      },
+      {
+        "qid": "q7",
+        "runs": 6,
+        "answerOk": 6,
+        "pageOk": 0,
+        "topRetrievedOk": 0,
+        "answerable": false,
+        "first_token_ms": {
+          "median": 7830,
+          "worst": 7840
+        },
+        "laptop8gb": "not measured on 8 GB"
+      }
+    ],
+    "firstRun": {
+      "correct": 4,
+      "of": 6,
+      "run": 1
+    },
+    "all": {
+      "correct": 24,
+      "of": 36,
+      "runs": 6
+    },
+    "citedPage": {
+      "ok": 24,
+      "of": 36
+    },
+    "topRetrieved": {
+      "ok": 36,
+      "of": 36
+    },
+    "unanswerable": {
+      "refused": 6,
+      "of": 6
+    },
+    "selection": "none: every run of every question is counted"
+  }
+}

@@ -5,7 +5,17 @@ GitHub Pages (see Demo below).
 
 ## Status
 
-Live. Sprint 4 (14 Nov 2026, committed, not pushed; the live site shows Sprint 2 until the owner pushes).
+Sprint 5 (18 Nov 2026): Working: the benchmarks page now carries the dockit end-to-end rows (time to first token, total time, peak memory as the Chrome process tree, and the JS heap and WebAssembly memory under their own names, with the fixed question-set result as N of M correct with the correct source page), built only from committed data, with the done-when line, a limitations list and an 8 GB column that reads not measured on 8 GB; every check that read a sibling repository now reads a committed fixture, so CI runs from a lone checkout. No scripts. Not yet: 8 GB figures (not measured on 8 GB), a Windows measurement, a published Sprint 5 write-up (a skeleton only).
+
+Live. Sprint 5 (18 Nov 2026, committed, not pushed; the live site changes only after the owner pushes). Sprint 4 is not closed until this site's
+pages run is green: at the Sprint 4 head the `ci` and `pages` runs failed on all three operating systems because two tests read sibling repositories
+that a CI checkout does not have, so the live site still shows Sprint 2. Sprint 5 fixes that first: every check that read a sibling repository or the
+workspace evidence folder now reads a committed fixture under `test/fixtures/siblings/` (recorded in `SOURCE.json` with repo, commit, path and sha256),
+and `node scripts/build.mjs && node --test` passes in a copy of the repository that has no sibling folders (see Develop). The benchmarks page gains the
+dockit end-to-end section, built from `data/e2e.json` only (see Benchmarks). The demos list carries the six Sprint 5 status lines. The earlier status
+text follows.
+
+Sprint 4 (14 Nov 2026): pushed 15 Nov 2026 at 4bd3cb2; the pages run 43667716681 failed, so the live site still shows Sprint 2.
 The paper tracker holds 65 papers: the first 30 named or implied in the plans plus 35 added in Sprint 4,
 each checked against its primary page on 14 Nov 2026 and all still `to-read` (the research note's
 section 3 is the source list; the items that could not be confirmed, and the standards, are left out and
@@ -114,6 +124,14 @@ Live demo: <https://airplanemode-labs.github.io/site/>. Built from `main` by
 "What this demo does not do yet". It runs entirely in the browser: no upload, no analytics, no
 third-party scripts or fonts.
 
+Every page footer carries the build id, with the convention the other demos use: `Built from main at <sha12>`
+when GitHub Actions built it on main (`GITHUB_SHA` is a 40-hex commit and `GITHUB_REF` is `refs/heads/main` or unset; a run on
+any other ref, such as a manual run of `pages.yml` on a branch, is not main and reads like a local build), and
+`Local build <sha12>[-dirty]` from git HEAD for a local build (`-dirty` when a tracked file differs from HEAD). A lone checkout with no `.git` (or with no git
+at all) shows `Local build unknown`: that is the documented fallback, and it never fails the build or the tests. A
+copy of the site inside some other repository also reads `Local build unknown`, because the id is taken from git
+only when the repository's top level is this folder.
+
 The site is its own demo: the home page carries a Demos section and `/demos/` lists the six demo
 URLs (pagetriage, runtime, glyphsift, localdata, dockit, site) with a one-line status and the
 date it was written. Those statuses come from local builds served under `/<repo>/` on a
@@ -170,6 +188,17 @@ tests) and the demo statuses if they should mention the page.
 
 ## Benchmarks
 
+**dockit end-to-end (Sprint 5).** `node scripts/import-dockit-bench.mjs --from <e2e.csv> --questions <e2e-questions.csv>` reads dockit's two CSVs (written
+by `npm run bench:e2e`, never typed by hand) and writes `data/e2e.json`: medians and worst values per (machine, restart), the per-question results, the
+question-set result as "N of M correct with the correct source page" for the first run and over all runs (no run is selected), the source commit and both
+CSV sha256s; `--check` exits 1 when the file differs. Two page columns are kept apart: a cited source on the right page ("Cited source page correct": a
+refused answer cites nothing, so it never counts) and the top-ranked retrieved passage on the right page (retrieval quality); the N of M headline is still
+the answer being right and a cited source naming the page. The benchmarks page section is built from that file only, and a test parses the built HTML to prove
+that every number on it is a value of `data/e2e.json`. Each row names its machine and command; peak memory is the Chrome process tree's summed resident size
+and the JS heap and WebAssembly memory are shown under their own names; the 8 GB laptop column reads "not measured on 8 GB"; the done-when line reads
+"build done on Apple M5 Pro 48 GB; 8 GB Windows done-when NOT met (owner runbook step 5)"; the Limitations list names text-layer only, OCR not yet, the
+Qwen3-0.6B demo model, single-threaded WebAssembly, the shared origin, English synthetic fixtures and Hindi answer quality not measured.
+
 The 8 GB Windows no-GPU column reads `not measured` in every row, and prose says not measured on 8 GB. A
 figure appears only when a named command produced it on a named machine, with the saved output cited as
 `evidence/sprint-N/<lane>/...` or a committed CSV; Apple-silicon figures are labelled placeholders until
@@ -196,6 +225,12 @@ the 8 GB laptop has been measured. Today the page carries:
 
 ## Limitations
 
+- Sprint 5: the dockit rows are from one machine (an Apple M5 Pro with 48 GB) and one synthetic three-page English policy with seven fixed questions;
+  nothing is measured on 8 GB or on Windows, and the page says so. The question-set result is not a claim about real documents. The "top-ranked retrieved
+  passage on the right page" column is retrieval over three pages and four retrieved passages, so it is easy to satisfy and is not a retrieval benchmark.
+- Sprint 5: the fixtures under `test/fixtures/siblings/` are copies, current as of the commits in `SOURCE.json`; `npm run test:siblings` (local only)
+  is what notices a stale one, and CI cannot.
+
 - No search and no RSS feed.
 - The demo statuses on `/demos/` are hand-written and dated, not measured at the live URLs. The
   dockit and site lines are Sprint 4 lines (14 Nov 2026); the runtime, localdata, glyphsift and pagetriage
@@ -221,7 +256,7 @@ the 8 GB laptop has been measured. Today the page carries:
   `CLA or DCO [owner to confirm]` and `Trademark and name use. [owner to confirm]` remain, and the
   banner carries one more.
 - The Sprint 3 write-up is finished from `evidence/sprint-3/` only but is unlisted and `noindex` until
-  the owner approves it; it says it is committed on 14 Nov 2026, not pushed. The Sprint 4 write-up is a
+  the owner approves it; as of 14 Nov 2026, before the owner's push on 15 Nov, it says it is committed, not pushed. The Sprint 4 write-up is a
   skeleton, every section marked `[product owner to finish at close-out]`.
 - Four of the Sprint 4 papers (the Update Framework paper, Sigstore, reciprocal rank fusion and
   local-first software) have a claim written from the title, because no abstract was fetched; their notes
@@ -246,6 +281,21 @@ these rules. See SECURITY.md for the disclosure policy.
 
 ## Develop
 
+**Tests read fixtures, not sibling repositories.** CI checks out this repository only, so `node --test` never touches `../<repo>` or `../evidence`. The
+files the tests compare against (licence heads and cited licence lines, two benchmark CSVs, saved evidence figures and logs, the lanes' status lines,
+dockit's two end-to-end CSVs) are committed under `test/fixtures/siblings/<repo>/<path>`, each recorded in `test/fixtures/siblings/SOURCE.json` with the
+commit it was cut from (or, for the evidence folder, which is not a repository, the sha256 of the source file) and how it was cut: a whole file, or the
+lines of a file that a test needs, never over 100 KB. A missing fixture is a failure, never a skip; a guard test fails if `test/build.test.mjs` reads
+outside the repository. `node scripts/make-sibling-fixtures.mjs` re-cuts them from a workspace that has the siblings.
+
+`npm run test:siblings` (local only, not run by `ci.yml` or `pages.yml`) needs the sibling clones and `evidence/` next to this repository. It runs the
+whole suite again with `SITE_SIBLINGS=live`, so each check is made against the live sibling file, and it re-derives every fixture from its recorded source
+and fails if one is stale. `node --test` finds `test/siblings.local.test.mjs` too and reports it as a pass that does nothing: the file starts its tests
+only with `--live`.
+
+`node scripts/sync-demo-status.mjs [--check] [--from <dir>]` rewrites the six lines of `data/demos.json` from the lanes' `status-line.txt` files
+(`evidence/sprint-5` by default, or a scratch folder); the lines are never typed here.
+
 ```sh
 node scripts/build.mjs          # build to dist/
 node scripts/build.mjs /tmp/out # build elsewhere
@@ -253,7 +303,7 @@ node --test                     # run test/build.test.mjs
 ```
 
 CI runs the same two commands on Linux, macOS and Windows; the Pages workflow builds, tests and
-deploys `dist/` from `main`. For the Sprint 4 work: tests-first evidence Done (red/green logs); local macOS green; CI on three OSes configured, pending the owner's push.
+deploys `dist/` from `main`. For the Sprint 4 work: pushed 15 Nov 2026 at 4bd3cb2; CI and pages at that head red: runs 43667716669 and 43667716681; the live site still shows Sprint 2; open until the owner pushes the Sprint 5 fix and reads green runs.
 
 ## Licence
 

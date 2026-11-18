@@ -9,7 +9,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Sprint 4 (14 Nov 2026, committed, not pushed): 35 papers added to the tracker from `research/plan-validation-2026-11-14.md`
+- Sprint 5 (18 Nov 2026, committed, not pushed): the public benchmark page carries the dockit end-to-end section, built only from `data/e2e.json` (written by
+  `scripts/import-dockit-bench.mjs` from dockit's two CSVs, with `--check`): time to first token, total, peak memory as the Chrome process tree, the JS heap and
+  WebAssembly memory under their own names, storage, requests after offline, the question-set result as N of M, the done-when line, the limitations and an
+  8 GB column that reads not measured on 8 GB. (D5-02)
+- `test/fixtures/siblings/` with `SOURCE.json`, `scripts/sibling-fixtures.mjs` and `scripts/make-sibling-fixtures.mjs`: every check that read a sibling repository
+  or the workspace evidence folder reads a committed fixture, so `node scripts/build.mjs && node --test` passes in a lone checkout (no test skipped for a missing
+  sibling; a guard test and a fixture-integrity test). `npm run test:siblings` (local only) re-runs the suite against the live siblings and re-derives each fixture. (D5-01)
+- `scripts/sync-demo-status.mjs`: the six demo lines of `data/demos.json` come from the lanes' `status-line.txt` files. (D5-09)
+- Fix round 1 (18 Nov 2026): the benchmarks page and `scripts/import-dockit-bench.mjs` take the `laptop_8gb` column of dockit's two CSVs (every row must read
+  `not measured on 8 GB`; the importer refuses anything else) and show it in the run table and in the question table. (D5-FIX1-06)
+- A test greps every committed file for a home directory or a scratch path; `cut.redact: "paths"` in `SOURCE.json` and `scripts/sibling-fixtures.mjs` rewrite them in the
+  fixtures that held them (`<workspace>`, `<projects>`, `<scratch>/sprint-N`, `<home>`). (D5-FIX1-13)
+
+### Changed
+
+- The six lines of `data/demos.json` and the home page repository rows show Sprint 5 (written on 18 Nov 2026). (D5-09)
+
+### Fixed
+
+- The footer build id follows the other demos: `Built from main at <sha12>` in CI, `Local build <sha12>[-dirty]` from git HEAD locally, and `Local build unknown` for a lone
+  checkout with no `.git` (or a copy inside another repository). It used to read `build local` everywhere outside CI. (D5-FIX1-03)
+- README: section 1 carries the site line of `data/demos.json` verbatim (a test compares them), and the Sprint 4 state reads as it is: pushed 15 Nov at `4bd3cb2`, `ci` and
+  `pages` red, the live site still Sprint 2, open until the owner pushes the Sprint 5 fix and reads green runs. (D5-FIX1-04, D5-FIX1-15)
+- The benchmarks page says what "requests after offline" counts: application requests from the page, its workers and its service worker, not the browser's own `sw.js` check
+  and favicon fetch. (D5-FIX1-07)
+- Site `ci` and `pages` runs 43667716669 and 43667716681 (all three operating systems): test 47 (licensing citations) and test 58 (the localdata CSV importer) read
+  `../localdata` and the cited sibling files. The tests now read committed fixtures. The CI leg that proves it is `check` on ubuntu, macos and windows, and `pages`.
+  BUG-T1-S4-R2-01 and -02 were confirmed fixed at `4bd3cb2` and their tests kept. (D5-01)
+
+- Fix round 2 (18 Nov 2026): the footer build id says `Built from main at <sha12>` only when `GITHUB_SHA` is 40-hex AND `GITHUB_REF` is `refs/heads/main` (or unset), the same
+  rule as runtime's `demo/build-id.ts`; a run of `pages.yml` on another ref reads `Local build <sha12>[-dirty]` or `Local build unknown`. (BUG-T1-S5-R2-04, D5-FIX2-03)
+- The question table and the importer keep two page columns apart (TD-59): `Cited source page correct` (a cited source names the page; a refused answer cites nothing, so it is
+  never counted) and `Top-ranked retrieved passage on the right page` (retrieval quality, from dockit's new `top_retrieved_page_ok` column). The headline N of M keeps its
+  definition. A file where the two columns disagree about which rows have a page is refused. (BUG-T1-S5-R2-05, D5-FIX2-04)
+- README and CHANGELOG: the Sprint 4 history that was accurate on 14 Nov is dated "As of 14 Nov 2026, before the owner's push on 15 Nov", so no current-looking sentence says Sprint 4
+  is unpushed. (T3-R1-05, D5-FIX2-05)
+
+### Earlier entries
+
+- As of 14 Nov 2026, before the owner's push on 15 Nov: Sprint 4 (14 Nov 2026, committed, not pushed): 35 papers added to the tracker from `research/plan-validation-2026-11-14.md`
   section 3, each tagged with the repo it informs and each checked against its primary page (arxiv.org,
   doi.org, the USENIX or NeurIPS proceedings page) on 14 Nov 2026; all `to-read`. FineWeb2 is recorded under
   the ID its own page confirms (the research list gave a different paper's ID). Standards and items that
@@ -21,7 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `../localdata/docs/benchmarks/vector-index.csv`, citing the CSV path, the commit column as written and
   `npm run bench:vectors`; with no CSV the rows read `not measured`; a row whose `match` is not true is refused.
   Tests use `test/fixtures/vector-index.csv`. (D5-05)
-- Sprint 3 write-up finished from `evidence/sprint-3/` only (each figure next to its evidence path, checked by a
+- As of 14 Nov 2026, before the owner's push on 15 Nov: Sprint 3 write-up finished from `evidence/sprint-3/` only (each figure next to its evidence path, checked by a
   test against the saved files; says it is committed on 14 Nov 2026, not pushed); Sprint 4 write-up skeleton
   with five sections marked for the product owner. Both unlisted, `noindex` and unlinked. (D5-04)
 - Tests: licensing marks and sources, the demos lines, the WebLLM and spec wording, and a sweep that no page,

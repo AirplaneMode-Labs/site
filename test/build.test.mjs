@@ -545,6 +545,12 @@ test('pagetriage and localdata lines no longer carry the Sprint 3 wording (the d
 
 // BUG-T1-S5-04: the same convention as dockit: 'Built from main at <sha12>' in CI, 'Local build <sha12>[-dirty]' from git HEAD locally, and a
 // documented fallback ('Local build unknown') for a lone checkout that has no .git.
+//
+// These tests must give the same answer on a laptop and on a GitHub Actions runner, where GITHUB_ACTIONS, CI, GITHUB_SHA, GITHUB_REF and
+// GITHUB_REF_NAME are all set (and GITHUB_REF is refs/pull/<n>/merge on a pull request, refs/heads/main on a push to main). So none of them
+// reads the ambient environment by accident: a call either passes `env` (`{}` is "not in CI") or runs inside withEnv(), which clears every CI
+// variable, sets only the ones the test names, and restores the originals afterwards. The one test that calls buildId() with the real
+// environment says so and accepts both well-formed shapes.
 const SHA40 = 'abcdef0123456789abcdef0123456789abcdef01';
 const gitStub = (answers) => (_root, args) => {
   const key = args.join(' ');
@@ -552,12 +558,72 @@ const gitStub = (answers) => (_root, args) => {
   return answers[key];
 };
 const TOP = '/work/site';
+const LOCAL_SHAPE = /^Local build (?:[0-9a-f]{12}(?:-dirty)?|unknown)$/;
+const CI_SHAPE = /^Built from main at [0-9a-f]{12}$/;
+const CI_ENV_VARS = ['GITHUB_ACTIONS', 'CI', 'GITHUB_SHA', 'GITHUB_REF', 'GITHUB_REF_NAME'];
+/** What a push to main on GitHub Actions sets (the subset build.mjs and these tests care about). */
+const ciMain = (sha = SHA40) => ({ GITHUB_ACTIONS: 'true', CI: 'true', GITHUB_SHA: sha, GITHUB_REF_NAME: 'main', GITHUB_REF: 'refs/heads/main' });
+/** What a pull_request run sets: same SHA variable, but the ref is the merge ref. */
+const ciPullRequest = (sha = SHA40) => ({ GITHUB_ACTIONS: 'true', CI: 'true', GITHUB_SHA: sha, GITHUB_REF_NAME: '7/merge', GITHUB_REF: 'refs/pull/7/merge' });
+
+/** Run fn with every CI variable removed from process.env except those in `vars`; always restore the originals. */
+function withEnv(vars, fn) {
+  const prev = Object.fromEntries(CI_ENV_VARS.map((k) => [k, process.env[k]]));
+  try {
+    for (const k of CI_ENV_VARS) delete process.env[k];
+    for (const [k, v] of Object.entries(vars)) process.env[k] = v;
+    return fn();
+  } finally {
+    for (const k of CI_ENV_VARS) {
+      if (prev[k] === undefined) delete process.env[k];
+      else process.env[k] = prev[k];
+    }
+  }
+}
+
+test('withEnv clears every CI variable, sets only the named ones and restores the originals', () => {
+  const before = Object.fromEntries(CI_ENV_VARS.map((k) => [k, process.env[k]]));
+  withEnv(ciMain(), () => {
+    assert.equal(process.env.GITHUB_SHA, SHA40);
+    withEnv({}, () => {
+      for (const k of CI_ENV_VARS) assert.equal(process.env[k], undefined, k);
+    });
+    assert.equal(process.env.GITHUB_SHA, SHA40, 'the inner call restored the outer environment');
+    withEnv({ GITHUB_SHA: SHA40 }, () => {
+      assert.equal(process.env.GITHUB_REF, undefined, 'a variable the test did not name is not inherited from the runner');
+    });
+  });
+  assert.throws(() => withEnv(ciMain(), () => { throw new Error('boom'); }), /boom/);
+  for (const k of CI_ENV_VARS) assert.equal(process.env[k], before[k], `${k} restored`);
+});
 
 test('buildId: a 40-hex GITHUB_SHA reads Built from main at <sha12>; anything else is not CI', () => {
-  assert.equal(buildId({ sha: SHA40, root: TOP, git: gitStub({}) }), 'Built from main at abcdef012345');
+  assert.equal(buildId({ env: { GITHUB_SHA: SHA40 }, root: TOP, git: gitStub({}) }), 'Built from main at abcdef012345');
   for (const bad of ['', 'abc123', SHA40.toUpperCase(), `${SHA40}0`, `<script>alert(1)</script>${'a'.repeat(20)}`]) {
-    assert.equal(buildId({ sha: bad, root: TOP, git: gitStub({}) }), 'Local build unknown', JSON.stringify(bad));
+    assert.equal(buildId({ env: { GITHUB_SHA: bad }, root: TOP, git: gitStub({}) }), 'Local build unknown', JSON.stringify(bad));
   }
+});
+
+// The CI branch, asserted on its own: the environment a GitHub Actions push to main really sets. git is not consulted at all (the stub throws
+// and counts), so the answer cannot come from the runner's checkout, and it is the same whether or not the tree is dirty.
+test('buildId: with the GitHub Actions push-to-main environment the CI branch answers and git is never asked', () => {
+  let asked = 0;
+  const git = () => {
+    asked += 1;
+    throw new Error('git must not be consulted in CI');
+  };
+  assert.equal(buildId({ env: ciMain(), root: TOP, git }), 'Built from main at abcdef012345');
+  assert.equal(buildId({ env: ciMain('c0ffee0123456789c0ffee0123456789c0ffee01'), root: TOP, git }), 'Built from main at c0ffee012345');
+  assert.equal(asked, 0);
+  // CI=true and GITHUB_ACTIONS=true alone (no usable SHA) is not enough for 'Built from main'
+  assert.equal(buildId({ env: { GITHUB_ACTIONS: 'true', CI: 'true', GITHUB_REF: 'refs/heads/main' }, root: TOP, git: gitStub({}) }), 'Local build unknown');
+});
+
+test('buildId: with the pull_request environment (GITHUB_REF=refs/pull/<n>/merge) it is a local-form id, never "Built from main"', () => {
+  const head = '0123456789abcdef0123456789abcdef01234567';
+  const git = gitStub({ 'rev-parse --show-toplevel': TOP, 'rev-parse HEAD': head, 'status --porcelain --untracked-files=no': '' });
+  assert.equal(buildId({ env: ciPullRequest(), root: TOP, git }), 'Local build 0123456789ab');
+  assert.equal(buildId({ env: ciPullRequest(), root: TOP, git: gitStub({}) }), 'Local build unknown');
 });
 
 // BUG-T1-S5-R2-04: the same rule as runtime demo/build-id.ts buildLabel(): 'Built from main' needs a 40-hex GITHUB_SHA AND GITHUB_REF of
@@ -566,51 +632,37 @@ test('buildId: GITHUB_REF other than refs/heads/main is not "Built from main" (f
   const head = '0123456789abcdef0123456789abcdef01234567';
   const git = gitStub({ 'rev-parse --show-toplevel': TOP, 'rev-parse HEAD': head, 'status --porcelain --untracked-files=no': '' });
   for (const ref of ['refs/heads/feature', 'refs/tags/v1', 'refs/pull/7/merge', 'main', 'refs/heads/main2', ' refs/heads/main']) {
-    assert.equal(buildId({ sha: SHA40, ref, root: TOP, git }), 'Local build 0123456789ab', ref);
-    assert.equal(buildId({ sha: SHA40, ref, root: TOP, git: gitStub({}) }), 'Local build unknown', `${ref} (no git)`);
+    const env = { GITHUB_SHA: SHA40, GITHUB_REF: ref };
+    assert.equal(buildId({ env, root: TOP, git }), 'Local build 0123456789ab', ref);
+    assert.equal(buildId({ env, root: TOP, git: gitStub({}) }), 'Local build unknown', `${ref} (no git)`);
   }
 });
 
 test('buildId: GITHUB_REF of refs/heads/main, empty or unset still reads Built from main at <sha12>', () => {
   for (const ref of ['refs/heads/main', '', undefined]) {
-    assert.equal(buildId({ sha: SHA40, ref, root: TOP, git: gitStub({}) }), 'Built from main at abcdef012345', String(ref));
+    const env = ref === undefined ? { GITHUB_SHA: SHA40 } : { GITHUB_SHA: SHA40, GITHUB_REF: ref };
+    assert.equal(buildId({ env, root: TOP, git: gitStub({}) }), 'Built from main at abcdef012345', String(ref));
   }
 });
 
-test('buildId: GITHUB_REF is read from the environment when no ref is passed', () => {
-  const prev = { sha: process.env.GITHUB_SHA, ref: process.env.GITHUB_REF };
-  try {
-    process.env.GITHUB_SHA = SHA40;
-    process.env.GITHUB_REF = 'refs/heads/feature';
-    assert.match(buildId({ root: TOP, git: gitStub({}) }), /^Local build unknown$/);
-    process.env.GITHUB_REF = 'refs/heads/main';
-    assert.equal(buildId({ root: TOP, git: gitStub({}) }), 'Built from main at abcdef012345');
-    delete process.env.GITHUB_REF;
-    assert.equal(buildId({ root: TOP, git: gitStub({}) }), 'Built from main at abcdef012345');
-  } finally {
-    for (const [k, v] of [['GITHUB_SHA', prev.sha], ['GITHUB_REF', prev.ref]]) {
-      if (v === undefined) delete process.env[k];
-      else process.env[k] = v;
-    }
-  }
+test('buildId: with no env passed it reads process.env (GITHUB_SHA and GITHUB_REF)', () => {
+  const answer = (vars) => withEnv(vars, () => buildId({ root: TOP, git: gitStub({}) }));
+  assert.equal(answer({ GITHUB_SHA: SHA40, GITHUB_REF: 'refs/heads/feature' }), 'Local build unknown');
+  assert.equal(answer({ GITHUB_SHA: SHA40, GITHUB_REF: 'refs/heads/main' }), 'Built from main at abcdef012345');
+  assert.equal(answer({ GITHUB_SHA: SHA40 }), 'Built from main at abcdef012345');
+  assert.equal(answer({}), 'Local build unknown');
 });
 
 test('every page footer says Local build, not Built from main, when GITHUB_REF is another ref', () => {
-  const prev = { sha: process.env.GITHUB_SHA, ref: process.env.GITHUB_REF };
-  try {
-    process.env.GITHUB_SHA = SHA40;
-    process.env.GITHUB_REF = 'refs/heads/feature';
-    const { out } = buildToTemp();
-    for (const file of walk(out).filter((f) => f.endsWith('.html'))) {
-      const html = readFileSync(file, 'utf8');
-      assert.doesNotMatch(html, /Built from main/, file);
-      assert.match(html, /Local build (?:[0-9a-f]{12}(?:-dirty)?|unknown)/, file);
-    }
-  } finally {
-    for (const [k, v] of [['GITHUB_SHA', prev.sha], ['GITHUB_REF', prev.ref]]) {
-      if (v === undefined) delete process.env[k];
-      else process.env[k] = v;
-    }
+  for (const vars of [{ GITHUB_SHA: SHA40, GITHUB_REF: 'refs/heads/feature' }, ciPullRequest()]) {
+    withEnv(vars, () => {
+      const { out } = buildToTemp();
+      for (const file of walk(out).filter((f) => f.endsWith('.html'))) {
+        const html = readFileSync(file, 'utf8');
+        assert.doesNotMatch(html, /Built from main/, file);
+        assert.match(html, /Local build (?:[0-9a-f]{12}(?:-dirty)?|unknown)/, file);
+      }
+    });
   }
 });
 
@@ -618,15 +670,15 @@ test('buildId: locally it reads git HEAD, with -dirty when a tracked file differ
   const head = '0123456789abcdef0123456789abcdef01234567';
   const base = { 'rev-parse --show-toplevel': TOP, 'rev-parse HEAD': head };
   assert.equal(
-    buildId({ sha: undefined, root: TOP, git: gitStub({ ...base, 'status --porcelain --untracked-files=no': '' }) }),
+    buildId({ env: {}, root: TOP, git: gitStub({ ...base, 'status --porcelain --untracked-files=no': '' }) }),
     'Local build 0123456789ab',
   );
   assert.equal(
-    buildId({ sha: undefined, root: TOP, git: gitStub({ ...base, 'status --porcelain --untracked-files=no': ' M scripts/build.mjs' }) }),
+    buildId({ env: {}, root: TOP, git: gitStub({ ...base, 'status --porcelain --untracked-files=no': ' M scripts/build.mjs' }) }),
     'Local build 0123456789ab-dirty',
   );
   // no .git (a lone checkout): the documented fallback, never an error
-  assert.equal(buildId({ sha: undefined, root: TOP, git: gitStub({}) }), 'Local build unknown');
+  assert.equal(buildId({ env: {}, root: TOP, git: gitStub({}) }), 'Local build unknown');
 });
 
 test('buildId: a copy of the site inside ANOTHER repository does not borrow that repository\'s HEAD', () => {
@@ -635,11 +687,26 @@ test('buildId: a copy of the site inside ANOTHER repository does not borrow that
     'rev-parse HEAD': '1111111111111111111111111111111111111111',
     'status --porcelain --untracked-files=no': '',
   };
-  assert.equal(buildId({ sha: undefined, root: '/srv/work/other-repo/lone/site', git: gitStub(answers) }), 'Local build unknown');
+  assert.equal(buildId({ env: {}, root: '/srv/work/other-repo/lone/site', git: gitStub(answers) }), 'Local build unknown');
 });
 
-test('buildId: the real call (git in this folder, or none in a lone checkout) gives a well-formed id', () => {
-  assert.match(buildId({ sha: undefined, root }), /^Local build (?:[0-9a-f]{12}(?:-dirty)?|unknown)$/);
+test('buildId: the real git call with no CI environment (git in this folder, or none in a lone checkout) gives a well-formed local id', () => {
+  assert.match(buildId({ env: {}, root }), LOCAL_SHAPE);
+});
+
+// This one deliberately uses the REAL process environment, so it accepts both well-formed shapes: the CI shape on a GitHub Actions push to
+// main (or whenever GITHUB_SHA is a 40-hex SHA and GITHUB_REF is main or unset) and the local shape everywhere else, and it cross-checks which.
+test('buildId: the real call with the real environment gives a well-formed id of either shape, consistent with that environment', () => {
+  const id = buildId({ root });
+  assert.match(id, /^(?:Built from main at [0-9a-f]{12}|Local build (?:[0-9a-f]{12}(?:-dirty)?|unknown))$/);
+  const { GITHUB_SHA: sha, GITHUB_REF: ref } = process.env;
+  const ci = typeof sha === 'string' && /^[0-9a-f]{40}$/.test(sha) && (ref === undefined || ref === '' || ref === 'refs/heads/main');
+  if (ci) {
+    assert.match(id, CI_SHAPE);
+    assert.equal(id, `Built from main at ${sha.slice(0, 12)}`);
+  } else {
+    assert.match(id, LOCAL_SHAPE);
+  }
 });
 
 test('every page footer shows the build id: Built from main at <sha12> in CI, else Local build <sha12>[-dirty] or Local build unknown', () => {
@@ -652,11 +719,9 @@ test('every page footer shows the build id: Built from main at <sha12> in CI, el
     [`<script>alert(1)</script>${'a'.repeat(20)}`, /Local build (?:[0-9a-f]{12}(?:-dirty)?|unknown)/],
     [SHA40, /Built from main at abcdef012345\b/],
   ];
-  const prev = process.env.GITHUB_SHA;
-  try {
-    for (const [val, want] of cases) {
-      if (val === undefined) delete process.env.GITHUB_SHA;
-      else process.env.GITHUB_SHA = val;
+  for (const [val, want] of cases) {
+    // GITHUB_REF is cleared too (withEnv), so a runner on refs/pull/<n>/merge cannot turn the SHA40 case into a local-form footer
+    withEnv(val === undefined ? {} : { GITHUB_SHA: val }, () => {
       const { out } = buildToTemp();
       for (const file of walk(out).filter((f) => f.endsWith('.html'))) {
         const html = readFileSync(file, 'utf8');
@@ -665,13 +730,23 @@ test('every page footer shows the build id: Built from main at <sha12> in CI, el
         assert.match(m[1], want, `${file} (${val}): build id`);
         assert.match(m[1], /\d{4}-\d{2}-\d{2}/, `${file}: the build date stays`);
         assert.doesNotMatch(html, /<script/i);
-        assert.doesNotMatch(m[1], /\u00b7 build |^Built \d/, `${file}: the old '<date> · build <id>' form is gone`);
+        assert.doesNotMatch(m[1], /· build |^Built \d/, `${file}: the old '<date> · build <id>' form is gone`);
       }
-    }
-  } finally {
-    if (prev === undefined) delete process.env.GITHUB_SHA;
-    else process.env.GITHUB_SHA = prev;
+    });
   }
+});
+
+test('every page footer reads Built from main at <sha12> under the full GitHub Actions push-to-main environment', () => {
+  withEnv(ciMain('c0ffee0123456789c0ffee0123456789c0ffee01'), () => {
+    const { out } = buildToTemp();
+    const pages = walk(out).filter((f) => f.endsWith('.html'));
+    assert.ok(pages.length >= 5);
+    for (const file of pages) {
+      const html = readFileSync(file, 'utf8');
+      assert.match(html, /No scripts, no tracking, no cookies\. Built from main at c0ffee012345 · \d{4}-\d{2}-\d{2}\.\s*<\/p>/, file);
+      assert.doesNotMatch(html, /Local build/, file);
+    }
+  });
 });
 
 test('the README documents the build id convention and the no-.git fallback', () => {

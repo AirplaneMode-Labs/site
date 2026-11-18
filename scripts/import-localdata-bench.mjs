@@ -90,7 +90,7 @@ const notMeasured = (chunk) => ({
   repo: 'localdata',
   command: COMMAND,
   dev: 'not measured',
-  laptop: 'not measured',
+  laptop: 'not measured on 8 GB',
   notes: `Sprint 4 done-when row. Filled by scripts/import-localdata-bench.mjs from ${CSV_CITE} once that file exists; no figure is typed by hand. The row is not measured on 8 GB: the 8 GB Windows laptop is the owner's step.`,
 });
 
@@ -137,7 +137,7 @@ export function buildLocaldataRows(csvText) {
         repo: 'localdata',
         command: COMMAND,
         dev: `${machine}: median ${fmtInt(median(ms))} ms / worst ${fmtInt(Math.max(...ms))} ms of ${cold.length} cold runs; ${restartText}`,
-        laptop: 'not measured',
+        laptop: 'not measured on 8 GB',
       },
     };
   });

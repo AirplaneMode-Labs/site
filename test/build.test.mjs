@@ -426,7 +426,7 @@ test('benchmarks.json: the two Sprint 2 slots carry their reproduce commands; a 
   assert.match(rt.benchmark, /SmolLM2-135M/);
   for (const r of data.rows) {
     // The 8 GB Windows no-GPU laptop has not been measured: no figure may appear in that column.
-    assert.equal(r.laptop, 'not measured', `${r.benchmark}: laptop`);
+    assert.equal(r.laptop, 'not measured on 8 GB', `${r.benchmark}: laptop`);
     if (r.dev !== 'not measured') {
       assert.match(r.evidence ?? '', /^(evidence\/sprint-\d\/|localdata\/docs\/benchmarks\/vector-index\.csv$)/, `${r.benchmark}: a figure without evidence`);
       assert.ok(r.command, `${r.benchmark}: a figure without a command`);
@@ -453,7 +453,7 @@ test('the demos page not-yet box lists the four site limits and the page text de
   // Sprint 2 and 3 put figures on the benchmarks page, so 'every cell reads not measured' would be false.
   assert.match(html, /Most benchmarks are unmeasured/);
   assert.doesNotMatch(html, /every cell on the benchmarks page reads/);
-  assert.match(html, /8 GB Windows no-GPU column reads "not measured" in every\s+row/);
+  assert.match(html, /8 GB Windows no-GPU column reads "not measured on 8 GB" in\s+every\s+row/);
   assert.match(html, /hand-written and dated/);
   assert.doesNotMatch(html, /\{\{/, 'unreplaced placeholder');
 });
@@ -934,7 +934,7 @@ test('Sprint 3 slots are filled from the saved DevTools-panel figures, command R
   for (const r of [timing, mem]) {
     assert.equal(r.repo, 'runtime');
     assert.equal(r.command, 'RUNTIME_MODEL=1 npm run test:devtools (headed)');
-    assert.equal(r.laptop, 'not measured', 'the 8 GB cell stays not measured');
+    assert.equal(r.laptop, 'not measured on 8 GB', 'the 8 GB cell stays not measured on 8 GB');
     assert.match(r.dev, /^Apple silicon, Chrome 157\.0\.8103\.79/);
     assert.equal(r.evidence, 'evidence/sprint-3/D1/devtools/devtools-figures.json and evidence/sprint-3/T1/r3/devtools/devtools-figures-t1.json');
     assert.match(r.notes, /placeholder until the 8 GB laptop is measured/);
@@ -973,7 +973,7 @@ test('glyphsift score-versus-noise row carries the mixed means recomputed from t
     `Mixed-family mean, ppm, at p = 0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.4: ${FIGURES.join('; ')}. Falls at every step.`,
   );
   assert.equal(gs.evidence, 'evidence/sprint-3/D3/bench-s3.log and docs/score-vs-noise.csv');
-  assert.equal(gs.laptop, 'not measured');
+  assert.equal(gs.laptop, 'not measured on 8 GB');
   for (const old of ['998,454', '996,931', '991,588', '983,739', '967,065', '932,405']) {
     assert.ok(!gs.dev.includes(old), `stale Sprint 2 figure ${old} still in the row`);
   }
@@ -1194,7 +1194,7 @@ test('importer: with the fixture CSV both chunk-size rows carry median and worst
   for (const r of rows) {
     assert.equal(r.repo, 'localdata');
     assert.equal(r.command, 'npm run bench:vectors');
-    assert.equal(r.laptop, 'not measured');
+    assert.equal(r.laptop, 'not measured on 8 GB');
     assert.equal(r.evidence, 'localdata/docs/benchmarks/vector-index.csv');
     assert.match(r.notes, /uncommitted working tree based on abc1234 \(commit column: abc1234-dirty\)/);
     assert.match(r.notes, /not measured on 8 GB/);
@@ -1230,13 +1230,13 @@ test('importer: a restart=true row is never counted as a cold run (real localdat
   assert.match(s256.dev, /worst 1,500 ms of 5 cold runs; browser-restart run 9,999 ms/);
 });
 
-test('importer: no CSV means both rows read not measured, in both columns, with no figure and no evidence', async () => {
+test('importer: no CSV means both rows read not measured (the 8 GB column: not measured on 8 GB), with no figure and no evidence', async () => {
   const { buildLocaldataRows } = await bench();
   const rows = buildLocaldataRows(undefined);
   assert.deepEqual(rows.map((r) => r.benchmark), [LABEL_256, LABEL_2048]);
   for (const r of rows) {
     assert.equal(r.dev, 'not measured');
-    assert.equal(r.laptop, 'not measured');
+    assert.equal(r.laptop, 'not measured on 8 GB');
     assert.equal(r.command, 'npm run bench:vectors');
     assert.equal(r.evidence, undefined);
     assert.match(r.notes, /not measured on 8 GB/);
@@ -1285,11 +1285,11 @@ test('benchmarks.json: the two localdata rows equal the importer output for the 
   const mine = data.rows.filter((r) => /^localdata flat index/.test(r.benchmark));
   assert.equal(mine.length, 2, 'both chunk-size rows must exist');
   assert.ok(/256-byte/.test(mine[0].benchmark) && /2,048-byte/.test(mine[1].benchmark));
-  for (const r of mine) assert.equal(r.laptop, 'not measured');
+  for (const r of mine) assert.equal(r.laptop, 'not measured on 8 GB');
   assert.deepEqual(mine, buildLocaldataRows(readSibling('localdata', 'docs/benchmarks/vector-index.csv')), 'run: node scripts/import-localdata-bench.mjs (against the localdata CSV; then re-cut the fixtures)');
 });
 
-test('the built benchmarks page shows both localdata chunk-size rows, and every 8 GB cell in them reads not measured', () => {
+test('the built benchmarks page shows both localdata chunk-size rows, and every 8 GB cell in them reads not measured on 8 GB', () => {
   const { out } = buildToTemp();
   const html = readFileSync(join(out, 'benchmarks', 'index.html'), 'utf8');
   const rows = [...html.matchAll(/<tr><td>localdata flat index.*?<\/tr>/gs)].map((m) => m[0]);
@@ -1298,9 +1298,27 @@ test('the built benchmarks page shows both localdata chunk-size rows, and every 
   assert.match(rows[1], /2,048-byte synthetic chunks/);
   for (const row of rows) {
     const cells = [...row.matchAll(/<td>(.*?)<\/td>/gs)].map((m) => m[1]);
-    assert.equal(cells[4], 'not measured', 'the 8 GB Windows no-GPU laptop cell');
+    assert.equal(cells[4], 'not measured on 8 GB', 'the 8 GB Windows no-GPU laptop cell');
     assert.match(row, /npm run bench:vectors/);
     assert.match(row, /not measured on 8 GB/);
+  }
+});
+
+test('T3-R2-04: no 8 GB cell of the older benchmarks table reads the bare phrase "not measured", in the data or on the built page', () => {
+  const data = JSON.parse(readFileSync(join(root, 'data', 'benchmarks.json'), 'utf8'));
+  assert.equal(data.columns[4], '8 GB Windows no-GPU laptop');
+  assert.ok(data.rows.length >= 14);
+  for (const r of data.rows) assert.equal(r.laptop, 'not measured on 8 GB', `${r.benchmark}: 8 GB cell in data/benchmarks.json`);
+  const { out } = buildToTemp();
+  const html = readFileSync(join(out, 'benchmarks', 'index.html'), 'utf8');
+  // the older table is everything before the dockit end-to-end section
+  const older = html.split('<h2 id="dockit-e2e">')[0];
+  const rows = [...older.matchAll(/<tr><td>.*?<\/tr>/gs)].map((m) => m[0]);
+  assert.equal(rows.length, data.rows.length, 'one rendered row per data row');
+  for (const row of rows) {
+    const cells = [...row.matchAll(/<td>(.*?)<\/td>/gs)].map((m) => m[1]);
+    assert.notEqual(cells[4], 'not measured', `bare "not measured" in an 8 GB cell: ${row}`);
+    assert.equal(cells[4], 'not measured on 8 GB', `8 GB cell: ${row}`);
   }
 });
 

@@ -25,9 +25,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The six lines of `data/demos.json` and the home page repository rows show Sprint 5 (written on 18 Nov 2026). (D5-09)
+- The dockit end-to-end section and its committed CSV fixtures come from dockit's re-measured CSVs (commit column `0282d19da192`, a clean commit built from a fresh
+  clone; the CSVs are committed in dockit `f8abddc`, which changes no code). Apple M5 Pro 48 GB, not measured on 8 GB. The sibling fixtures are re-cut at the
+  committed Sprint 5 heads (`test/fixtures/siblings/SOURCE.json`).
 
 ### Fixed
 
+- T3-R2-04 / BUG-T1-S5-R3-01: every 8 GB cell of the older benchmarks table (`data/benchmarks.json`, 14 rows, and the localdata importer) reads
+  `not measured on 8 GB`, not the bare `not measured`; the demos and benchmarks pages say so, and a test fails on the bare phrase in that column.
 - The footer build id follows the other demos: `Built from main at <sha12>` in CI, `Local build <sha12>[-dirty]` from git HEAD locally, and `Local build unknown` for a lone
   checkout with no `.git` (or a copy inside another repository). It used to read `build local` everywhere outside CI. (D5-FIX1-03)
 - README: section 1 carries the site line of `data/demos.json` verbatim (a test compares them), and the Sprint 4 state reads as it is: pushed 15 Nov at `4bd3cb2`, `ci` and

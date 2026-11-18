@@ -1,17 +1,17 @@
 {
   "note": "Fixtures cut from the sibling repositories and the workspace evidence folder by scripts/make-sibling-fixtures.mjs. sha256 is the hash of the fixture file; sourceSha256 is the hash of the whole source file at the commit; cut says how the fixture was taken from it. npm run test:siblings (local only) re-derives every fixture from its source.",
   "heads": {
-    "pagetriage": "b290cc84c08d9874d5d6d569e7a2bf7e0acfc0df",
-    "glyphsift": "5ff0c47ec1fcb0b8d1c80f0029aa89ab78e03d2e",
-    "localdata": "39d59a01aa49d4e66a38b0828c0d8b2d622ee76d",
-    "runtime": "3bf53c6f801c2da928dcae69e087221fb757ecd4",
-    "dockit": "4bc19e9ae8587549894975f87334102d7f8c73fc",
-    "control-plane": "f311b42c89ffe4d688caea3bf8d0bdc0cfda33af"
+    "pagetriage": "1de5ff58785f7ffc4a61154f20f5794745922903",
+    "glyphsift": "b3ea291cc610b16fac6a4fc943bf62df0623a486",
+    "localdata": "da39477efae49759e5c3d5841c52db178a9ce2a3",
+    "runtime": "4f5b0116b07627c8278efc88a563621a2b5437a2",
+    "dockit": "f8abddcc3a6000d60ceb0c8f2566a687410181f5",
+    "control-plane": "436ecb5d813daeba040049762d7b45c1bd89eb13"
   },
   "files": [
     {
       "repo": "control-plane",
-      "commit": "f311b42c89ffe4d688caea3bf8d0bdc0cfda33af",
+      "commit": "436ecb5d813daeba040049762d7b45c1bd89eb13",
       "path": "CONTRIBUTING.md",
       "cut": {
         "mode": "lines",
@@ -26,7 +26,7 @@
     },
     {
       "repo": "control-plane",
-      "commit": "f311b42c89ffe4d688caea3bf8d0bdc0cfda33af",
+      "commit": "436ecb5d813daeba040049762d7b45c1bd89eb13",
       "path": "LICENSE",
       "cut": {
         "mode": "lines",
@@ -47,7 +47,7 @@
     },
     {
       "repo": "dockit",
-      "commit": "4bc19e9ae8587549894975f87334102d7f8c73fc",
+      "commit": "f8abddcc3a6000d60ceb0c8f2566a687410181f5",
       "path": "CONTRIBUTING.md",
       "cut": {
         "mode": "lines",
@@ -62,7 +62,7 @@
     },
     {
       "repo": "dockit",
-      "commit": "4bc19e9ae8587549894975f87334102d7f8c73fc",
+      "commit": "f8abddcc3a6000d60ceb0c8f2566a687410181f5",
       "path": "LICENSE",
       "cut": {
         "mode": "lines",
@@ -82,27 +82,25 @@
     },
     {
       "repo": "dockit",
-      "commit": null,
-      "origin": "working-tree",
+      "commit": "f8abddcc3a6000d60ceb0c8f2566a687410181f5",
       "path": "docs/benchmarks/e2e-questions.csv",
       "cut": {
         "mode": "whole"
       },
-      "bytes": 5132,
-      "sha256": "6c4a08d03cebb46c9194ca0dc4536a348816358b86376e4a0563caa83b60a149",
-      "sourceSha256": "6c4a08d03cebb46c9194ca0dc4536a348816358b86376e4a0563caa83b60a149"
+      "bytes": 4880,
+      "sha256": "502b8aa50903c1de24a36b2693f3ac50334b303298617cf006382edb6ee14c59",
+      "sourceSha256": "502b8aa50903c1de24a36b2693f3ac50334b303298617cf006382edb6ee14c59"
     },
     {
       "repo": "dockit",
-      "commit": null,
-      "origin": "working-tree",
+      "commit": "f8abddcc3a6000d60ceb0c8f2566a687410181f5",
       "path": "docs/benchmarks/e2e.csv",
       "cut": {
         "mode": "whole"
       },
-      "bytes": 2156,
-      "sha256": "9c83ca474c74b242c5f4f059169a6f9970a6de8de723ee1c0bfa25ac5a8e3b9a",
-      "sourceSha256": "9c83ca474c74b242c5f4f059169a6f9970a6de8de723ee1c0bfa25ac5a8e3b9a"
+      "bytes": 2120,
+      "sha256": "1bbe066f768889ca3d10d1949ca2b46dcf152d7fde0f6df0a20a2665cfeec084",
+      "sourceSha256": "1bbe066f768889ca3d10d1949ca2b46dcf152d7fde0f6df0a20a2665cfeec084"
     },
     {
       "repo": "evidence",
@@ -361,7 +359,6 @@
     {
       "repo": "evidence",
       "commit": null,
-      "origin": "scratch",
       "path": "sprint-5/D1/status-line.txt",
       "cut": {
         "mode": "whole"
@@ -373,7 +370,6 @@
     {
       "repo": "evidence",
       "commit": null,
-      "origin": "scratch",
       "path": "sprint-5/D2/status-line.txt",
       "cut": {
         "mode": "whole"
@@ -385,7 +381,6 @@
     {
       "repo": "evidence",
       "commit": null,
-      "origin": "scratch",
       "path": "sprint-5/D3/status-line.txt",
       "cut": {
         "mode": "whole"
@@ -397,7 +392,6 @@
     {
       "repo": "evidence",
       "commit": null,
-      "origin": "scratch",
       "path": "sprint-5/D4/status-line.txt",
       "cut": {
         "mode": "whole"
@@ -409,7 +403,6 @@
     {
       "repo": "evidence",
       "commit": null,
-      "origin": "scratch",
       "path": "sprint-5/D5/dockit-status-line.txt",
       "cut": {
         "mode": "whole"
@@ -421,7 +414,6 @@
     {
       "repo": "evidence",
       "commit": null,
-      "origin": "scratch",
       "path": "sprint-5/D5/site-status-line.txt",
       "cut": {
         "mode": "whole"
@@ -432,7 +424,7 @@
     },
     {
       "repo": "glyphsift",
-      "commit": "5ff0c47ec1fcb0b8d1c80f0029aa89ab78e03d2e",
+      "commit": "b3ea291cc610b16fac6a4fc943bf62df0623a486",
       "path": "CONTRIBUTING.md",
       "cut": {
         "mode": "lines",
@@ -447,7 +439,7 @@
     },
     {
       "repo": "glyphsift",
-      "commit": "5ff0c47ec1fcb0b8d1c80f0029aa89ab78e03d2e",
+      "commit": "b3ea291cc610b16fac6a4fc943bf62df0623a486",
       "path": "LICENSE",
       "cut": {
         "mode": "lines",
@@ -467,7 +459,7 @@
     },
     {
       "repo": "glyphsift",
-      "commit": "5ff0c47ec1fcb0b8d1c80f0029aa89ab78e03d2e",
+      "commit": "b3ea291cc610b16fac6a4fc943bf62df0623a486",
       "path": "docs/score-vs-noise.csv",
       "cut": {
         "mode": "whole"
@@ -478,7 +470,7 @@
     },
     {
       "repo": "localdata",
-      "commit": "39d59a01aa49d4e66a38b0828c0d8b2d622ee76d",
+      "commit": "da39477efae49759e5c3d5841c52db178a9ce2a3",
       "path": "CONTRIBUTING.md",
       "cut": {
         "mode": "lines",
@@ -493,7 +485,7 @@
     },
     {
       "repo": "localdata",
-      "commit": "39d59a01aa49d4e66a38b0828c0d8b2d622ee76d",
+      "commit": "da39477efae49759e5c3d5841c52db178a9ce2a3",
       "path": "LICENSE",
       "cut": {
         "mode": "lines",
@@ -513,7 +505,7 @@
     },
     {
       "repo": "localdata",
-      "commit": "39d59a01aa49d4e66a38b0828c0d8b2d622ee76d",
+      "commit": "da39477efae49759e5c3d5841c52db178a9ce2a3",
       "path": "docs/benchmarks/vector-index.csv",
       "cut": {
         "mode": "whole"
@@ -524,7 +516,7 @@
     },
     {
       "repo": "pagetriage",
-      "commit": "b290cc84c08d9874d5d6d569e7a2bf7e0acfc0df",
+      "commit": "1de5ff58785f7ffc4a61154f20f5794745922903",
       "path": "CONTRIBUTING.md",
       "cut": {
         "mode": "lines",
@@ -539,7 +531,7 @@
     },
     {
       "repo": "pagetriage",
-      "commit": "b290cc84c08d9874d5d6d569e7a2bf7e0acfc0df",
+      "commit": "1de5ff58785f7ffc4a61154f20f5794745922903",
       "path": "Cargo.toml",
       "cut": {
         "mode": "lines",
@@ -554,7 +546,7 @@
     },
     {
       "repo": "pagetriage",
-      "commit": "b290cc84c08d9874d5d6d569e7a2bf7e0acfc0df",
+      "commit": "1de5ff58785f7ffc4a61154f20f5794745922903",
       "path": "LICENSE-APACHE",
       "cut": {
         "mode": "lines",
@@ -574,7 +566,7 @@
     },
     {
       "repo": "pagetriage",
-      "commit": "b290cc84c08d9874d5d6d569e7a2bf7e0acfc0df",
+      "commit": "1de5ff58785f7ffc4a61154f20f5794745922903",
       "path": "LICENSE-MIT",
       "cut": {
         "mode": "lines",
@@ -594,7 +586,7 @@
     },
     {
       "repo": "runtime",
-      "commit": "3bf53c6f801c2da928dcae69e087221fb757ecd4",
+      "commit": "4f5b0116b07627c8278efc88a563621a2b5437a2",
       "path": "CONTRIBUTING.md",
       "cut": {
         "mode": "lines",
@@ -609,7 +601,7 @@
     },
     {
       "repo": "runtime",
-      "commit": "3bf53c6f801c2da928dcae69e087221fb757ecd4",
+      "commit": "4f5b0116b07627c8278efc88a563621a2b5437a2",
       "path": "LICENSE",
       "cut": {
         "mode": "lines",
@@ -629,7 +621,7 @@
     },
     {
       "repo": "runtime",
-      "commit": "3bf53c6f801c2da928dcae69e087221fb757ecd4",
+      "commit": "4f5b0116b07627c8278efc88a563621a2b5437a2",
       "path": "spec/README.md",
       "cut": {
         "mode": "lines",
@@ -640,7 +632,7 @@
       },
       "bytes": 94,
       "sha256": "b64aa18d7162c38be7b8c9545479f484f84e51feace698cf063c984356bd591d",
-      "sourceSha256": "3b9ab2826c7aba7d8a9294dc43cfcfb1c1bb647294a1db493ce9b52c173ded4c"
+      "sourceSha256": "cff6dda60ad6dbe99c4fe891bb5ecb365ead9b7fa24e9a21c087d843959a5b71"
     },
     {
       "repo": "workspace",

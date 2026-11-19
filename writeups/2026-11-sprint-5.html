@@ -1,32 +1,104 @@
-<!-- title: Sprint 5: write-up skeleton (draft) -->
+<!-- title: Sprint 5: an offline PDF answer, and what it costs in memory (draft) -->
 <!-- date: 2026-11-18 -->
-<!-- description: Draft skeleton of the Sprint 5 write-up of Airplane Mode Labs. No content until the product owner fills it from evidence at close-out. -->
+<!-- description: Draft write-up of Sprint 5 of Airplane Mode Labs, written from the saved Sprint 5 evidence and the Sprint 5 report only. Unlisted: the owner decides when it goes public. -->
 <meta name="draft" content="true" />
-<h1>Sprint 5: write-up skeleton (draft)</h1>
+<h1>Sprint 5: an offline PDF answer, and what it costs in memory (draft)</h1>
 <p class="lede">
-  Sprint 5 (planned 4 January 2027 to 17 January 2027, build work started early on 18 November 2026 by the owner's
-  choice). This page is a skeleton: the product owner finishes every section from the saved evidence
-  and from nothing else. It is not listed and asks search engines not to index it.
+  Sprint 5 (planned 4 January 2027 to 17 January 2027, build work started early on 18 November 2026
+  by the owner's choice). Finished on 19 November 2026 from the saved evidence and the Sprint 5
+  report, and from nothing else. This page is a draft for owner approval: it is not listed and asks
+  search engines not to index it.
 </p>
 <p class="muted">
-  Rules for finishing it: every figure is quoted with the command that produced it, the machine it ran
-  on and the evidence path; an Apple-silicon figure is not an 8 GB figure and says not measured on
-  8 GB; the Sprint 5 done-when is quoted only as "build done on Apple M5 Pro 48 GB; 8 GB Windows done-when
-  NOT met (owner runbook step 5)"; a dropped item is written as cut, never as
-  half-landed.
+  Rules this page follows: every figure sits next to the file it was read from, and a build test
+  recomputes it from that file. The Sprint 5 done-when is quoted only as: build done on Apple M5
+  Pro 48 GB; 8 GB Windows done-when NOT met (owner runbook step 5). Anything about the 8 GB laptop
+  is not measured on 8 GB.
 </p>
 
 <h2>What we tried</h2>
-<p data-slot="tried">[product owner to finish at close-out]</p>
+<ul>
+  <li>
+    One offline path in a browser tab: triage a PDF with pagetriage, read its text layer with pdf.js
+    in a worker of its own, gate Devanagari text with glyphsift, keep chunks and vectors in
+    localdata, and answer with a small local model (Qwen3-0.6B) that names its source pages
+    (evidence/sprint-5/ARCH/fresh-deps/logs/e2e.log).
+  </li>
+  <li>
+    A signed model bundle that the page verifies before it loads anything, downloaded once and then
+    read from the device, with the network blocked afterwards
+    (evidence/sprint-5/ARCH/fresh-deps/logs/bench-e2e.log).
+  </li>
+  <li>
+    Stop that really stops: the engine is ended on Stop and loaded again for the next question
+    (evidence/sprint-5/ARCH/fresh-deps/logs/e2e.log).
+  </li>
+</ul>
 
 <h2>What held up</h2>
-<p data-slot="held-up">[product owner to finish at close-out]</p>
+<ul>
+  <li>
+    The answer to the grace-period question was right and cited the right page in 6 of 6 runs, five
+    in one session and one after a full Chrome restart, with 0 requests after the network was
+    blocked in every run (evidence/sprint-5/ARCH/fresh-deps/logs/bench-e2e.log).
+  </li>
+  <li>
+    The browser end-to-end suite passed: 23 passed, and the Devanagari gate test passed: 2 passed
+    (evidence/sprint-5/ARCH/fresh-deps/logs/e2e.log and
+    evidence/sprint-5/ARCH/fresh-deps/logs/gate.log). The unit suite passed: 515 tests
+    (evidence/sprint-5/ARCH/fresh-deps/logs/final-dockit-ci.log).
+  </li>
+  <li>
+    The built page measured 821,731,328 bytes by the du figure that the size guard of pages.yml
+    reads, against a guard of 1,000,000,000 bytes
+    (evidence/sprint-5/ARCH/fresh-deps/logs/size.txt).
+  </li>
+</ul>
 
 <h2>What did not</h2>
-<p data-slot="did-not">[product owner to finish at close-out]</p>
+<ul>
+  <li>
+    The fixed question set scored 24 of 36 answerable rows right with the right source page over
+    the 6 runs, and 4 of 6 on the first run. The same two questions were wrong in every run
+    (evidence/sprint-5/ARCH/fresh-deps/logs/bench-e2e.log).
+  </li>
+  <li>
+    Memory is the open risk. The Chrome process tree peaked at a median of 6,283 MiB and at worst
+    6,377 MiB (about 6.2 GiB) during one question. Whether that fits an 8 GB laptop is not measured
+    on 8 GB (evidence/sprint-5/ARCH/fresh-deps/logs/bench-e2e.log).
+  </li>
+  <li>
+    Four repositories went red in CI after the first push on 18 November 2026, and the fixes were
+    pushed the same day (SPRINT-5-REPORT.md).
+  </li>
+</ul>
 
 <h2>Numbers (Apple M5 Pro; not measured on 8 GB)</h2>
-<p data-slot="numbers">[product owner to finish at close-out] The dockit end-to-end rows are on the benchmarks page.</p>
+<ul>
+  <li>
+    Time to first token for the first question: median 7,731 ms, worst 7,861 ms. Total: median
+    9,280 ms, worst 9,435 ms. Command npm run bench:e2e in dockit, machine Apple M5 Pro 48 GB, 5
+    runs in one session
+    (evidence/sprint-5/ARCH/fresh-deps/logs/bench-e2e.log).
+  </li>
+  <li>
+    Peak memory of the Chrome process tree: median 6,283 MiB, worst 6,377 MiB
+    (evidence/sprint-5/ARCH/fresh-deps/logs/bench-e2e.log).
+  </li>
+</ul>
 
 <h2>Limitations</h2>
-<p data-slot="limitations">[product owner to finish at close-out] The 8 GB Windows no-GPU laptop is not measured on 8 GB.</p>
+<ul>
+  <li>
+    The 8 GB Windows laptop is not measured on 8 GB: every figure above is from one Apple M5 Pro
+    48 GB machine, and nothing has run on Windows.
+  </li>
+  <li>
+    Text-layer PDFs only: a scanned PDF is refused, and OCR is not yet supported. The answer model
+    is a small demo model and can be wrong, so the source pages are shown.
+  </li>
+  <li>
+    The engine runs on one thread, because GitHub Pages cannot send the headers a faster path
+    needs, so an answer takes seconds.
+  </li>
+</ul>

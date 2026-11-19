@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [0.1.0-dev] - 2026-11-19 (untagged)
+
+Sprint 6 (19 Nov 2026; version 0.1.0-dev, TD-69; not published, not tagged, not pushed).
+
+### Added
+
+- The benchmarks page has a "Memory hardening (Sprint 6)" section: dockit's memory before and after (peak memory as the Chrome process tree, time to first token, the total for the first question
+  and for every question, the question set as N of M, requests after offline) built from `data/e2e.json`, which now carries the baseline pair, the TD-66 target and the timing of every question row;
+  the outcome of the target is computed from the data and worded without "met". `scripts/import-dockit-bench.mjs` takes `--baseline-from` and `--baseline-questions`. (D5-08, TD-77)
+- A "Vector search: flat against HNSW at 100,000 x 384" section built from `data/ann.json`, written by `scripts/import-localdata-bench.mjs --ann` from localdata's `ann.csv` (build, p50, p95, recall@10,
+  index and graph bytes, JS heap, WebAssembly memory; the TD-65 recall target computed). Every 8 GB cell reads "not measured on 8 GB"; a CSV row that does not is refused. (D5-08, TD-76)
+- Test: every number in both new sections is a value of its data file, a MiB conversion or a difference; the built page makes no cost, compliance or "free RAM" claim; a lone copy with no sibling folders
+  passes under a pull-request environment (`GITHUB_SHA`, `GITHUB_REF=refs/pull/1/merge`). (D5-08)
+- The Sprint 4 and Sprint 5 write-ups, finished from `evidence/sprint-4`, `evidence/sprint-5` and the two reports (unlisted `noindex` drafts for the owner), with tests that recompute each figure from a
+  committed fixture of the file it cites; a Sprint 6 write-up skeleton. (D5-09)
+- `SPRINT` (one constant in `scripts/sibling-fixtures.mjs`) names the sprint whose evidence folder the demo-status checks read; `scripts/sync-demo-status.mjs` defaults to it, falls back to the lane scratch
+  folder until the architect copies it, and writes each `writtenOn` from the date inside the line (TD-78). Fixtures of the six lines are committed under `test/fixtures/siblings/evidence/sprint-6/`. (D5-01)
+
+### Changed
+
+- `data/demos.json` carries the six Sprint 6 status lines; the dockit line no longer says that the live page changes only after the owner pushes (Part A). The home page rows name the TD-69 versions
+  (runtime 0.3.0-beta.1 on spec release 0.6.0, localdata 0.4.0-alpha.0 with an optional HNSW graph, glyphsift 0.1.2, dockit 0.3.0-dev). (D5-01, D5-10)
+- The sibling fixture generator reads a benchmark CSV that is new or edited in a repository's working tree from the working tree (the architect commits it at wrap-up), and records which. (D5-08)
+
+### Fixed
+
+- The memory fall on the benchmarks page is computed from the exact medians and rounded once (the same rule as dockit's `scripts/memory-figures.mjs`), so it can differ by 1 MiB from subtracting
+  the rounded figures (BUG-T1-S6-04).
+- `data/ann.json` is re-imported from the final 20-row `ann.csv` of localdata, and the table and the equality test follow it (BUG-T3-S6-03).
+
+### Security
+
+- No script, no external origin and no new dependency; the site stays zero-dependency. A fixture whose source holds a home or scratch path is still cut with `redact: "paths"`.
+
+## Earlier sprints (Sprints 1 to 5, pushed 18 Nov 2026)
+
+As they were written; the site's version was 0.1.0-dev throughout.
+
 ### Added
 
 - Sprint 5 (18 Nov 2026, committed, not pushed): the public benchmark page carries the dockit end-to-end section, built only from `data/e2e.json` (written by

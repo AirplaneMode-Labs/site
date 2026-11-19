@@ -1,38 +1,105 @@
-<!-- title: Sprint 4: write-up skeleton (draft) -->
+<!-- title: Sprint 4: a 100,000-vector index that survives a restart (draft) -->
 <!-- date: 2026-11-14 -->
-<!-- description: Draft skeleton of the Sprint 4 write-up of Airplane Mode Labs. No content until the product owner fills it from evidence at close-out. -->
+<!-- description: Draft write-up of Sprint 4 of Airplane Mode Labs, written from the saved Sprint 4 evidence and the Sprint 4 report only. Unlisted: the owner decides when it goes public. -->
 <meta name="draft" content="true" />
-<h1>Sprint 4: write-up skeleton (draft)</h1>
+<h1>Sprint 4: a 100,000-vector index that survives a restart (draft)</h1>
 <p class="lede">
   Sprint 4 (planned 21 December 2026 to 3 January 2027, build work started early on 14 November 2026
-  by the owner's choice). This page is a skeleton: the product owner finishes every section at
-  close-out from the saved evidence and from nothing else. It is not listed and asks search engines
-  not to index it.
+  by the owner's choice). Finished on 19 November 2026 from the saved evidence and the Sprint 4
+  report, and from nothing else. This page is a draft for owner approval: it is not listed and asks
+  search engines not to index it.
 </p>
 <p class="muted">
-  Rules for finishing it: every figure is quoted with the command that produced it, the machine it
-  ran on and the evidence path; an Apple-silicon figure is not an 8 GB figure and says not measured
-  on 8 GB; when the spec is mentioned the wording is "manifest spec v0.1 published in runtime/spec
-  (committed; public after the owner's push)". A dropped item is written as cut to Sprint 5, never
-  as half-landed.
+  Rules this page follows: every figure sits next to the file it was read from, and a build test
+  recomputes it from that file. Every Apple-silicon figure is a development-machine figure, and
+  anything about the 8 GB Windows laptop is not measured on 8 GB.
 </p>
 
 <h2>What we tried</h2>
-<p data-slot="tried">[product owner to finish at close-out]</p>
+<ul>
+  <li>
+    A flat vector index written in Rust, compiled to WebAssembly and saved in the browser's private
+    file store (OPFS), so that a page reopens it without rebuilding it. The test sizes were 10,000
+    and 100,000 vectors of 384 dimensions (localdata/docs/benchmarks/vector-index.csv).
+  </li>
+  <li>
+    A Tamper lab in the runtime demo that feeds bad manifests and bad files to the verifier and
+    shows the exact refusal reason (evidence/sprint-4/D1/test-demo-fix2.log).
+  </li>
+  <li>
+    The manifest spec v0.1 published in runtime/spec as spec release 0.4.0
+    (evidence/sprint-4/D1/SPEC-LANDED.txt).
+  </li>
+  <li>A WebLLM engine rung. It was cut, not half-landed (SPRINT-4-REPORT.md, TD-08).</li>
+</ul>
 
 <h2>What held up</h2>
-<p data-slot="held-up">[product owner to finish at close-out]</p>
+<ul>
+  <li>
+    Opening the 100,000-vector index and answering the first query took a median of 186.1 ms and at
+    worst 195.3 ms with 256-byte chunks, and a median of 181.3 ms and at worst 182.6 ms with
+    2,048-byte chunks, over 5 runs each in one session. Apple silicon; not measured on 8 GB
+    (localdata/docs/benchmarks/vector-index.csv).
+  </li>
+  <li>
+    The 100,000-vector index was still found and gave the same answer after a full browser restart,
+    for both chunk sizes (localdata/docs/benchmarks/vector-index.csv, the restart rows).
+  </li>
+  <li>
+    The runtime demo's browser tests passed: 6 passed, including the check that every Tamper lab
+    case is refused with its documented reason (evidence/sprint-4/D1/test-demo-fix2.log).
+  </li>
+  <li>
+    The spec release was recorded as 122 sha256 values, one per published file
+    (evidence/sprint-4/D1/SPEC-LANDED.txt).
+  </li>
+</ul>
 
 <h2>What did not</h2>
-<p data-slot="did-not">[product owner to finish at close-out]</p>
+<ul>
+  <li>
+    WebLLM was cut from the sprint rather than landed half-way. It stays out until a measurement on
+    the 8 GB laptop says it is needed (SPRINT-4-REPORT.md, TD-08).
+  </li>
+  <li>
+    The sprint was pushed on 15 November 2026 and three repositories went red in CI: runtime (run
+    43667709960), pagetriage (run 43667700010) and the site (runs 43667716669 and 43667716681). The
+    live site still showed Sprint 2, so the sprint was not done until the fixes were pushed on
+    18 November 2026 (SPRINT-4-REPORT.md).
+  </li>
+  <li>
+    Review found one High: unsigned data riding on a member named __proto__ of a validly signed
+    manifest (S1-099). It was fixed in both verifiers before the contract left the machine
+    (SPRINT-4-REPORT.md).
+  </li>
+</ul>
 
 <h2>Numbers (Apple M5 Pro; not measured on 8 GB)</h2>
-<p data-slot="numbers">
-  [product owner to finish at close-out] Cold open plus the first query for both chunk sizes and
-  the memory budget table, each with its command and the CSV path.
-</p>
+<ul>
+  <li>
+    100,000 x 384, 256-byte chunks, cold open plus first query: median 186.1 ms, worst 195.3 ms.
+    Command npm run bench:vectors in localdata, machine Apple M5 Pro 48 GB
+    (localdata/docs/benchmarks/vector-index.csv).
+  </li>
+  <li>
+    100,000 x 384, 2,048-byte chunks, cold open plus first query: median 181.3 ms, worst 182.6 ms
+    (localdata/docs/benchmarks/vector-index.csv).
+  </li>
+</ul>
 
 <h2>Limitations</h2>
-<p data-slot="limitations">
-  [product owner to finish at close-out] The 8 GB Windows no-GPU laptop is not measured on 8 GB.
-</p>
+<ul>
+  <li>
+    The 8 GB Windows laptop is not measured on 8 GB: every figure above is from one Apple M5 Pro
+    48 GB machine.
+  </li>
+  <li>
+    The index is a flat scan. It is exact, and its cost grows with the number of vectors; an
+    approximate graph index is planned for Sprint 6.
+  </li>
+  <li>
+    The benchmark rows carry the commit label 0390d65-dirty: they were measured from a tree with
+    uncommitted changes (localdata/docs/benchmarks/vector-index.csv).
+  </li>
+  <li>Chrome only: Firefox and Safari were not tested.</li>
+</ul>

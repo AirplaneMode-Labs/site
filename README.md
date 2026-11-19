@@ -5,15 +5,14 @@ GitHub Pages (see Demo below).
 
 ## Status
 
-Sprint 5 (18 Nov 2026): Working: the benchmarks page now carries the dockit end-to-end rows (time to first token, total time, peak memory as the Chrome process tree, and the JS heap and WebAssembly memory under their own names, with the fixed question-set result as N of M correct with the correct source page), built only from committed data, with the done-when line, a limitations list and an 8 GB column that reads not measured on 8 GB; every check that read a sibling repository now reads a committed fixture, so CI runs from a lone checkout. No scripts. Not yet: 8 GB figures (not measured on 8 GB), a Windows measurement, a published Sprint 5 write-up (a skeleton only).
+Sprint 6 (19 Nov 2026): Working: the benchmarks page now carries a Memory hardening table with the dockit memory before and after (peak memory as the Chrome process tree, time to first token, the total for the first question and for every question, and the fixed question set as N of M, with the outcome of the TD-66 target computed from the data) and a Vector search table with flat against HNSW at 100,000 x 384 (build, query p50 and p95, recall@10, index and graph bytes, JS heap and WebAssembly memory, with the outcome of the TD-65 recall target computed from the data), both built only from committed data with an 8 GB column that reads not measured on 8 GB; the Sprint 4 and Sprint 5 write-ups are finished from their evidence as unlisted drafts for the owner, and a Sprint 6 skeleton exists; the six demo status lines come from one sprint constant. No scripts. Not yet: 8 GB figures (not measured on 8 GB), a Windows measurement, a published Sprint 6 write-up (a skeleton only).
 
-Live. Sprint 5 (18 Nov 2026, committed, not pushed; the live site changes only after the owner pushes). Sprint 4 is not closed until this site's
-pages run is green: at the Sprint 4 head the `ci` and `pages` runs failed on all three operating systems because two tests read sibling repositories
-that a CI checkout does not have, so the live site still shows Sprint 2. Sprint 5 fixes that first: every check that read a sibling repository or the
-workspace evidence folder now reads a committed fixture under `test/fixtures/siblings/` (recorded in `SOURCE.json` with repo, commit, path and sha256),
-and `node scripts/build.mjs && node --test` passes in a copy of the repository that has no sibling folders (see Develop). The benchmarks page gains the
-dockit end-to-end section, built from `data/e2e.json` only (see Benchmarks). The demos list carries the six Sprint 5 status lines. The earlier status
-text follows.
+Live since the owner's push of 18 Nov 2026 (the site `pages` run 44335118288 was green and the footer read "Built from main at fe2b00b5f027"). Sprint 6 (19 Nov 2026) is local
+until the owner pushes it, so the live site shows Sprint 5 until then. Sprint 6 adds two sections to the benchmarks page, both built from committed data only: a Memory hardening
+table (the dockit memory before and after, from dockit's two CSV pairs, with the outcome of the TD-66 target computed from them, not typed) and a Vector search table (flat against
+HNSW at 100,000 x 384, from localdata's `ann.csv`, with the outcome of the TD-65 recall target computed). It finishes the Sprint 4 and Sprint 5 write-ups from their saved evidence and
+the two reports, short and factual, as unlisted `noindex` drafts (taking the draft marker off is the owner's publishing step, as for Sprint 3), adds a Sprint 6 skeleton, and reads the
+six demo status lines through one `SPRINT` constant (TD-78). The earlier status text follows.
 
 Sprint 4 (14 Nov 2026): pushed 15 Nov 2026 at 4bd3cb2; the pages run 43667716681 failed, so the live site still shows Sprint 2.
 The paper tracker holds 65 papers: the first 30 named or implied in the plans plus 35 added in Sprint 4,
@@ -199,6 +198,17 @@ and the JS heap and WebAssembly memory are shown under their own names; the 8 GB
 "build done on Apple M5 Pro 48 GB; 8 GB Windows done-when NOT met (owner runbook step 5)"; the Limitations list names text-layer only, OCR not yet, the
 Qwen3-0.6B demo model, single-threaded WebAssembly, the shared origin, English synthetic fixtures and Hindi answer quality not measured.
 
+**Memory hardening, before and after (Sprint 6).** `node scripts/import-dockit-bench.mjs --from <e2e.csv> --questions <e2e-questions.csv> --baseline-from <e2e-s6-baseline.csv>
+--baseline-questions <e2e-questions-s6-baseline.csv>` writes the baseline pair under `baseline` in `data/e2e.json` next to the after pair, plus the TD-66 target as data (a median peak of at most
+5,120 MiB, the question set no worse than 24 of 36 and 4 of 6, a median per-question total of at most 12,500 ms) and the timing of every question row. The "Memory hardening (Sprint 6)" section
+of the page shows one row before and one after and states whether the target was reached, in words that are not "met", computed from the two sets; a test parses the built HTML and proves that
+every number on it is a value of the data, a MiB conversion of one, or a difference of two. The 8 GB column reads "not measured on 8 GB".
+
+**Flat against HNSW at 100,000 x 384 (Sprint 6).** `node scripts/import-localdata-bench.mjs --ann <ann.csv>` reads localdata's `docs/benchmarks/ann.csv` (written by `npm run bench:ann`, TD-76) into
+`data/ann.json`: one group per data set, index kind and ef, each the median and the worst of its runs (the lowest for recall), with the TD-65 recall target as data and every row's machine,
+command, commit and `eight_gb` cell (the importer refuses a row that does not read "not measured on 8 GB"). The "Vector search" section shows build time, query p50 and p95, recall@10, the index
+and graph bytes, the JS heap and the WebAssembly memory, and computes whether the recall target was reached. Quantisation, compaction and encryption at rest are not yet.
+
 The 8 GB Windows no-GPU column reads `not measured` in every row, and prose says not measured on 8 GB. A
 figure appears only when a named command produced it on a named machine, with the saved output cited as
 `evidence/sprint-N/<lane>/...` or a committed CSV; Apple-silicon figures are labelled placeholders until
@@ -294,7 +304,8 @@ and fails if one is stale. `node --test` finds `test/siblings.local.test.mjs` to
 only with `--live`.
 
 `node scripts/sync-demo-status.mjs [--check] [--from <dir>]` rewrites the six lines of `data/demos.json` from the lanes' `status-line.txt` files
-(`evidence/sprint-5` by default, or a scratch folder); the lines are never typed here.
+(`evidence/sprint-<SPRINT>` by default, where `SPRINT` is the one constant in `scripts/sibling-fixtures.mjs`, falling back to the lane scratch folder of that sprint until the architect has copied it; or
+`--from <dir>`); the lines are never typed here, and each `writtenOn` is the date inside its line (TD-78).
 
 ```sh
 node scripts/build.mjs          # build to dist/

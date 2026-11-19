@@ -15,3 +15,8 @@ in `test/fixtures/siblings/dockit/docs/benchmarks/`.
 A fixture whose source holds the owner's home directory or a sprint's scratch folder is cut with `redact: "paths"`: after the cut
 those paths read `<workspace>`, `<projects>`, `<scratch>/sprint-N` and `<home>`, and nothing else changes, so the values a test asserts stay
 as they were. A test greps every committed file of this repository for a home or scratch path and fails on any hit.
+
+`ann.csv` is synthetic as well: it has the columns of localdata's `docs/benchmarks/ann.csv` (the last one, `eight_gb`, reads `not measured on 8 GB` on every
+row and the importer refuses anything else) and exists only to exercise `scripts/import-localdata-bench.mjs --ann`. The machine column reads `synthetic fixture`;
+none of the figures was measured. Do not quote them. The real rows live in `localdata/docs/benchmarks/ann.csv` and, as a committed copy for CI, in
+`test/fixtures/siblings/localdata/docs/benchmarks/ann.csv`.

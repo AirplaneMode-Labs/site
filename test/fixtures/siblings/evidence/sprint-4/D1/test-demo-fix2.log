@@ -1,0 +1,21 @@
+
+> @airplanemode/runtime@0.2.0-alpha.1 test:demo
+> playwright test -c test/browser/playwright.demo.config.ts
+
+[WebServer] 
+[WebServer] (!) Some chunks are larger than 500 kB after minification. Consider:
+[WebServer] - Using dynamic import() to code-split the application
+[WebServer] - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+[WebServer] - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+Running 6 tests using 1 worker
+
+  ✓  1 test/browser/demo.spec.ts:28:3 › the picker choice auto answers the prompt from the hosted path /runtime/, with the worker line and the read-out (3.6s)
+  ✓  2 test/browser/demo.spec.ts:28:3 › the picker choice webgpu answers the prompt from the hosted path /runtime/, with the worker line and the read-out (3.5s)
+  ✓  3 test/browser/demo.spec.ts:28:3 › the picker choice wasm answers the prompt from the hosted path /runtime/, with the worker line and the read-out (4.6s)
+  ✓  4 test/browser/stop.spec.ts:27:1 › Stop is enabled only while the model answers, lands within 1000 ms and says Stopped (8.2s)
+  ✓  5 test/browser/tamper.spec.ts:74:1 › allowTestKeys: true appears only in the lab module of the shipped page code (grep) (1ms)
+  ✓  6 test/browser/tamper.spec.ts:98:1 › every Tamper lab case is refused with its documented reason, and nothing leaks (11.4s)
+
+  6 passed (33.4s)
+demo-exit=0

@@ -1,0 +1,53 @@
+
+> @airplanemode/dockit@0.2.0-dev ci
+> npm run fmt:check && npm run typecheck && npm run test && npm run build:check
+
+
+> @airplanemode/dockit@0.2.0-dev fmt:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> @airplanemode/dockit@0.2.0-dev typecheck
+> tsc --noEmit
+
+
+> @airplanemode/dockit@0.2.0-dev test
+> vitest run
+
+
+ RUN  v4.1.12 <workspace>/dockit
+
+
+ Test Files  36 passed (36)
+      Tests  515 passed (515)
+   Start at  20:00:18
+   Duration  2.47s (transform 1.36s, setup 0ms, import 1.82s, tests 4.78s, environment 1ms)
+
+
+> @airplanemode/dockit@0.2.0-dev build:check
+> node scripts/build-check.mjs
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 77 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../var/folders/jp/590tyhv109z0dh8qjbk6cz900000gn/T/dockit-stub-BWLWkh/app/engine-worker-DW5Xz38b.js        0.07 kB
+../../../../../var/folders/jp/590tyhv109z0dh8qjbk6cz900000gn/T/dockit-stub-BWLWkh/.vite/manifest.json                  0.44 kB │ gzip:   0.22 kB
+../../../../../var/folders/jp/590tyhv109z0dh8qjbk6cz900000gn/T/dockit-stub-BWLWkh/index.html                           1.29 kB │ gzip:   0.62 kB
+../../../../../var/folders/jp/590tyhv109z0dh8qjbk6cz900000gn/T/dockit-stub-BWLWkh/app/analysis-worker-CsZSIm8F.js      2.30 kB
+../../../../../var/folders/jp/590tyhv109z0dh8qjbk6cz900000gn/T/dockit-stub-BWLWkh/app/pdf-worker-B2ppNBNb.js       1,220.45 kB
+../../../../../var/folders/jp/590tyhv109z0dh8qjbk6cz900000gn/T/dockit-stub-BWLWkh/app/index-C1k-VJ_j.css               3.74 kB │ gzip:   1.40 kB
+../../../../../var/folders/jp/590tyhv109z0dh8qjbk6cz900000gn/T/dockit-stub-BWLWkh/app/index-BQqGNttk.js              282.10 kB │ gzip:  89.84 kB
+../../../../../var/folders/jp/590tyhv109z0dh8qjbk6cz900000gn/T/dockit-stub-BWLWkh/app/pdf-CSBJaSV9.js                450.84 kB │ gzip: 135.42 kB
+✓ built in 1.70s
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 1 modules transformed.
+rendering chunks...
+computing gzip size...
+../../../../../var/folders/jp/590tyhv109z0dh8qjbk6cz900000gn/T/dockit-stub-BWLWkh/sw-logic.iife.js  4.12 kB │ gzip: 1.31 kB
+✓ built in 22ms
+inject-precache: build c7529b849f1cc4d4, 199 precache entries

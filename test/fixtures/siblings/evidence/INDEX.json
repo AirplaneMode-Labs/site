@@ -1,5 +1,5 @@
 {
-  "note": "Every evidence/sprint-3 path the Sprint 3 write-up cites, recorded when the fixtures were cut. Existence checks in CI read this index, not the disk.",
+  "note": "Every evidence path the Sprint 3, 4 and 5 write-ups cite, recorded when the fixtures were cut. Existence checks in CI read this index, not the disk.",
   "files": {
     "sprint-3/D1/LANDED.json": {
       "size": 1962,
@@ -100,6 +100,34 @@
     "sprint-3/T2/r2/pt-wheel-proof.log": {
       "size": 684,
       "sha256": "2d09f7c6c5851e8ba743d68bbfe3851a35040c205b9f1919684fedca92bfa1a2"
+    },
+    "sprint-4/D1/SPEC-LANDED.txt": {
+      "size": 12302,
+      "sha256": "82453e85ba9fa9c7017ac63737680a153ee85826ad5753af177b96c17be8ec4f"
+    },
+    "sprint-4/D1/test-demo-fix2.log": {
+      "size": 1461,
+      "sha256": "5fc10d8107aebca2ed314a0ff5c00e2d59f7aa93d486700f972cf1bf78d7712b"
+    },
+    "sprint-5/ARCH/fresh-deps/logs/bench-e2e.log": {
+      "size": 5468,
+      "sha256": "6dab19d136c091258ac830734462f7e81bdf12b4557813c9da20a4eb43527882"
+    },
+    "sprint-5/ARCH/fresh-deps/logs/e2e.log": {
+      "size": 4108,
+      "sha256": "21a57a00b6664ed88cf05bd44ea735d72f72cd9deb9cb135940d6dd5c31d17ae"
+    },
+    "sprint-5/ARCH/fresh-deps/logs/final-dockit-ci.log": {
+      "size": 2317,
+      "sha256": "babfe9c565e82b5f841171d4ecf5beb5256f9877fd419c529c50f3599a6f1f8f"
+    },
+    "sprint-5/ARCH/fresh-deps/logs/gate.log": {
+      "size": 343,
+      "sha256": "6d13a5fef7b48a405f9c0dfeaeb1f3b1529f01131eafdbbd87e4919af82b520e"
+    },
+    "sprint-5/ARCH/fresh-deps/logs/size.txt": {
+      "size": 200,
+      "sha256": "6d9232d6e5ffaa4d30eaf5cb1cd93f0e6f8d053199cb8a87efeaa8c0dab6e300"
     }
   }
 }

@@ -1,0 +1,4 @@
+dist total (du -sk x 1024, the guard's figure): 821731328 bytes
+dist total (sum of file sizes): 799175873 bytes in 228 files
+guard: 1,000,000,000 bytes (1 GB); 1 GiB = 1,073,741,824 bytes
+guard: pass

@@ -1,0 +1,59 @@
+
+> @airplanemode/dockit@0.2.0-dev bench:e2e
+> node scripts/bench-e2e.mjs
+
+bench-e2e: Apple M5 Pro 48 GB, commit 0282d19da192, serving http://127.0.0.1:4417/dockit/, profile /var/folders/jp/590tyhv109z0dh8qjbk6cz900000gn/T/chrome-profile-f8tZPE
+bench-e2e: downloading the model (online, once)...
+cache phase done
+  [14:21:23] run 1 q1: answer ok, cited page ok, top-ranked ok, first token 7861 ms, total 9435 ms
+  [14:21:32] run 1 q2: answer NOT ok, cited page NOT ok, top-ranked ok, first token 7823 ms, total 8656 ms
+  [14:21:42] run 1 q3: answer ok, cited page ok, top-ranked ok, first token 7743 ms, total 9385 ms
+  [14:21:51] run 1 q4: answer ok, cited page ok, top-ranked ok, first token 7823 ms, total 9107 ms
+  [14:22:00] run 1 q5: answer ok, cited page ok, top-ranked ok, first token 7803 ms, total 9268 ms
+  [14:22:09] run 1 q6: answer NOT ok, cited page NOT ok, top-ranked ok, first token 7840 ms, total 8673 ms
+  [14:22:18] run 1 q7: answer ok, first token 7795 ms, total 8626 ms
+run 1: q1 first token 7861 ms, total 9435 ms, requests after offline 0, process RSS peak 6590185472 bytes (267 samples)
+  [14:22:28] run 2 q1: answer ok, cited page ok, top-ranked ok, first token 7732 ms, total 9280 ms
+  [14:22:37] run 2 q2: answer NOT ok, cited page NOT ok, top-ranked ok, first token 7817 ms, total 8652 ms
+  [14:22:47] run 2 q3: answer ok, cited page ok, top-ranked ok, first token 7732 ms, total 9370 ms
+  [14:22:56] run 2 q4: answer ok, cited page ok, top-ranked ok, first token 7820 ms, total 9108 ms
+  [14:23:05] run 2 q5: answer ok, cited page ok, top-ranked ok, first token 7803 ms, total 9271 ms
+  [14:23:14] run 2 q6: answer NOT ok, cited page NOT ok, top-ranked ok, first token 7838 ms, total 8670 ms
+  [14:23:23] run 2 q7: answer ok, first token 7796 ms, total 8624 ms
+run 2: q1 first token 7732 ms, total 9280 ms, requests after offline 0, process RSS peak 6587826176 bytes (257 samples)
+  [14:23:33] run 3 q1: answer ok, cited page ok, top-ranked ok, first token 7726 ms, total 9277 ms
+  [14:23:42] run 3 q2: answer NOT ok, cited page NOT ok, top-ranked ok, first token 7816 ms, total 8647 ms
+  [14:23:52] run 3 q3: answer ok, cited page ok, top-ranked ok, first token 7733 ms, total 9370 ms
+  [14:24:01] run 3 q4: answer ok, cited page ok, top-ranked ok, first token 7821 ms, total 9107 ms
+  [14:24:10] run 3 q5: answer ok, cited page ok, top-ranked ok, first token 7804 ms, total 9272 ms
+  [14:24:19] run 3 q6: answer NOT ok, cited page NOT ok, top-ranked ok, first token 7840 ms, total 8672 ms
+  [14:24:28] run 3 q7: answer ok, first token 7799 ms, total 8629 ms
+run 3: q1 first token 7726 ms, total 9277 ms, requests after offline 0, process RSS peak 6686900224 bytes (257 samples)
+  [14:24:38] run 4 q1: answer ok, cited page ok, top-ranked ok, first token 7727 ms, total 9278 ms
+  [14:24:47] run 4 q2: answer NOT ok, cited page NOT ok, top-ranked ok, first token 7818 ms, total 8651 ms
+  [14:24:57] run 4 q3: answer ok, cited page ok, top-ranked ok, first token 7736 ms, total 9378 ms
+  [14:25:06] run 4 q4: answer ok, cited page ok, top-ranked ok, first token 7822 ms, total 9110 ms
+  [14:25:15] run 4 q5: answer ok, cited page ok, top-ranked ok, first token 7801 ms, total 9266 ms
+  [14:25:24] run 4 q6: answer NOT ok, cited page NOT ok, top-ranked ok, first token 7839 ms, total 8673 ms
+  [14:25:33] run 4 q7: answer ok, first token 7799 ms, total 8632 ms
+run 4: q1 first token 7727 ms, total 9278 ms, requests after offline 0, process RSS peak 6565036032 bytes (257 samples)
+  [14:25:43] run 5 q1: answer ok, cited page ok, top-ranked ok, first token 7731 ms, total 9280 ms
+  [14:25:52] run 5 q2: answer NOT ok, cited page NOT ok, top-ranked ok, first token 7819 ms, total 8651 ms
+  [14:26:02] run 5 q3: answer ok, cited page ok, top-ranked ok, first token 7736 ms, total 9373 ms
+  [14:26:11] run 5 q4: answer ok, cited page ok, top-ranked ok, first token 7825 ms, total 9114 ms
+  [14:26:20] run 5 q5: answer ok, cited page ok, top-ranked ok, first token 7800 ms, total 9267 ms
+  [14:26:29] run 5 q6: answer NOT ok, cited page NOT ok, top-ranked ok, first token 7840 ms, total 8671 ms
+  [14:26:38] run 5 q7: answer ok, first token 7803 ms, total 8637 ms
+run 5: q1 first token 7731 ms, total 9280 ms, requests after offline 0, process RSS peak 6482935808 bytes (257 samples)
+  [14:26:51] run 6 q1: answer ok, cited page ok, top-ranked ok, first token 7861 ms, total 9440 ms
+  [14:27:00] run 6 q2: answer NOT ok, cited page NOT ok, top-ranked ok, first token 7833 ms, total 8670 ms
+  [14:27:10] run 6 q3: answer ok, cited page ok, top-ranked ok, first token 7741 ms, total 9388 ms
+  [14:27:19] run 6 q4: answer ok, cited page ok, top-ranked ok, first token 7827 ms, total 9117 ms
+  [14:27:28] run 6 q5: answer ok, cited page ok, top-ranked ok, first token 7815 ms, total 9281 ms
+  [14:27:37] run 6 q6: answer NOT ok, cited page NOT ok, top-ranked ok, first token 7852 ms, total 8684 ms
+  [14:27:46] run 6 q7: answer ok, first token 7804 ms, total 8639 ms
+run 6 (after a Chrome restart): q1 first token 7861 ms, total 9440 ms, requests after offline 0, process RSS peak 6445694976 bytes (267 samples)
+wrote 6 rows to <scratch>/sprint-5/ARCH/fresh-deps/dockit/docs/benchmarks/e2e.csv
+wrote 42 rows to <scratch>/sprint-5/ARCH/fresh-deps/dockit/docs/benchmarks/e2e-questions.csv
+question set: 24 of 36 answerable questions correct with the correct source page, over all 6 runs (not selected)
+exit=0

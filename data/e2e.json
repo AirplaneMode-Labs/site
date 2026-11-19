@@ -3,11 +3,11 @@
   "command": "npm run bench:e2e",
   "source": {
     "csv": "docs/benchmarks/e2e.csv",
-    "csvSha256": "1bbe066f768889ca3d10d1949ca2b46dcf152d7fde0f6df0a20a2665cfeec084",
+    "csvSha256": "0fa9d5237c85dd0dbf8e009ff3e5a71bec5a717ed50c269f4028fdd135cd29bb",
     "questionsCsv": "docs/benchmarks/e2e-questions.csv",
-    "questionsCsvSha256": "502b8aa50903c1de24a36b2693f3ac50334b303298617cf006382edb6ee14c59",
-    "commit": "0282d19da192",
-    "date": "2026-11-18T14:21:06.012Z",
+    "questionsCsvSha256": "f101a8c34122696d6b1e2f6eda3c5ae61947a92340c5072dc4f1d38a94b657b7",
+    "commit": "840ec8b0eba4-dirty",
+    "date": "2026-11-19T13:50:00.612Z",
     "rows": 6
   },
   "groups": [
@@ -16,33 +16,33 @@
       "restart": false,
       "runs": 5,
       "chrome": "Chrome/157.0.8103.79",
-      "commit": "0282d19da192",
+      "commit": "840ec8b0eba4-dirty",
       "pages": 3,
       "chunks": 3,
       "held": 0,
       "first_token_ms": {
-        "median": 7731,
-        "worst": 7861
+        "median": 8092,
+        "worst": 8180
       },
       "total_ms": {
-        "median": 9280,
-        "worst": 9435
+        "median": 11982,
+        "worst": 12283
       },
       "process_rss_peak_bytes": {
-        "median": 6587826176,
-        "worst": 6686900224
+        "median": 5705089024,
+        "worst": 5742116864
       },
       "js_heap_peak_bytes": {
-        "median": 11072485,
-        "worst": 32039846
+        "median": 37305051,
+        "worst": 53762001
       },
       "wasm_memory_peak_bytes": {
-        "median": 2698903552,
-        "worst": 2698903552
+        "median": 2349596672,
+        "worst": 2349596672
       },
       "storage_usage_bytes": {
-        "median": 799385925,
-        "worst": 799385925
+        "median": 799436101,
+        "worst": 799436101
       },
       "requests_after_offline": {
         "max": 0
@@ -60,33 +60,33 @@
       "restart": true,
       "runs": 1,
       "chrome": "Chrome/157.0.8103.79",
-      "commit": "0282d19da192",
+      "commit": "840ec8b0eba4-dirty",
       "pages": 3,
       "chunks": 3,
       "held": 0,
       "first_token_ms": {
-        "median": 7861,
-        "worst": 7861
+        "median": 8397,
+        "worst": 8397
       },
       "total_ms": {
-        "median": 9440,
-        "worst": 9440
+        "median": 12385,
+        "worst": 12385
       },
       "process_rss_peak_bytes": {
-        "median": 6445694976,
-        "worst": 6445694976
+        "median": 5481725952,
+        "worst": 5481725952
       },
       "js_heap_peak_bytes": {
-        "median": 34828441,
-        "worst": 34828441
+        "median": 34274213,
+        "worst": 34274213
       },
       "wasm_memory_peak_bytes": {
-        "median": 2698838016,
-        "worst": 2698838016
+        "median": 2349596672,
+        "worst": 2349596672
       },
       "storage_usage_bytes": {
-        "median": 799406354,
-        "worst": 799406354
+        "median": 799436562,
+        "worst": 799436562
       },
       "requests_after_offline": {
         "max": 0
@@ -110,8 +110,8 @@
         "topRetrievedOk": 6,
         "answerable": true,
         "first_token_ms": {
-          "median": 7732,
-          "worst": 7861
+          "median": 8107,
+          "worst": 8397
         },
         "laptop8gb": "not measured on 8 GB"
       },
@@ -123,8 +123,8 @@
         "topRetrievedOk": 6,
         "answerable": true,
         "first_token_ms": {
-          "median": 7819,
-          "worst": 7833
+          "median": 8261,
+          "worst": 8716
         },
         "laptop8gb": "not measured on 8 GB"
       },
@@ -136,8 +136,8 @@
         "topRetrievedOk": 6,
         "answerable": true,
         "first_token_ms": {
-          "median": 7736,
-          "worst": 7743
+          "median": 8182,
+          "worst": 8658
         },
         "laptop8gb": "not measured on 8 GB"
       },
@@ -149,8 +149,8 @@
         "topRetrievedOk": 6,
         "answerable": true,
         "first_token_ms": {
-          "median": 7823,
-          "worst": 7827
+          "median": 8261,
+          "worst": 9203
         },
         "laptop8gb": "not measured on 8 GB"
       },
@@ -162,8 +162,8 @@
         "topRetrievedOk": 6,
         "answerable": true,
         "first_token_ms": {
-          "median": 7803,
-          "worst": 7815
+          "median": 8193,
+          "worst": 8576
         },
         "laptop8gb": "not measured on 8 GB"
       },
@@ -175,8 +175,8 @@
         "topRetrievedOk": 6,
         "answerable": true,
         "first_token_ms": {
-          "median": 7840,
-          "worst": 7852
+          "median": 8204,
+          "worst": 8684
         },
         "laptop8gb": "not measured on 8 GB"
       },
@@ -188,8 +188,8 @@
         "topRetrievedOk": 0,
         "answerable": false,
         "first_token_ms": {
-          "median": 7799,
-          "worst": 7804
+          "median": 8150,
+          "worst": 8592
         },
         "laptop8gb": "not measured on 8 GB"
       }
@@ -216,6 +216,254 @@
       "refused": 6,
       "of": 6
     },
+    "timing": {
+      "rows": 42,
+      "first_token_ms": {
+        "median": 8177,
+        "worst": 9203
+      },
+      "total_ms": {
+        "median": 11950,
+        "worst": 13281
+      }
+    },
     "selection": "none: every run of every question is counted"
+  },
+  "baseline": {
+    "source": {
+      "csv": "docs/benchmarks/e2e-s6-baseline.csv",
+      "csvSha256": "511269dde40170a62e43d274615a39bf8860d61ba60f5d21d599a1f8b2914bc8",
+      "questionsCsv": "docs/benchmarks/e2e-questions-s6-baseline.csv",
+      "questionsCsvSha256": "0dbe2231ac34819c3868a4851707e1d2476799eafd2591394497f8edbeaa3113",
+      "commit": "840ec8b0eba4",
+      "date": "2026-11-19T12:59:19.777Z",
+      "rows": 6
+    },
+    "groups": [
+      {
+        "machine": "Apple M5 Pro 48 GB",
+        "restart": false,
+        "runs": 5,
+        "chrome": "Chrome/157.0.8103.79",
+        "commit": "840ec8b0eba4",
+        "pages": 3,
+        "chunks": 3,
+        "held": 0,
+        "first_token_ms": {
+          "median": 7857,
+          "worst": 7927
+        },
+        "total_ms": {
+          "median": 9500,
+          "worst": 9544
+        },
+        "process_rss_peak_bytes": {
+          "median": 6613876736,
+          "worst": 6643630080
+        },
+        "js_heap_peak_bytes": {
+          "median": 10873104,
+          "worst": 53373287
+        },
+        "wasm_memory_peak_bytes": {
+          "median": 2698903552,
+          "worst": 2698903552
+        },
+        "storage_usage_bytes": {
+          "median": 799385925,
+          "worst": 799385925
+        },
+        "requests_after_offline": {
+          "max": 0
+        },
+        "answer_ok_q1": {
+          "ok": 5,
+          "of": 5
+        },
+        "model": "Qwen3-0.6B q8 + multilingual-e5-small q8",
+        "backend": "transformers-js wasm (single-threaded)",
+        "laptop8gb": "not measured on 8 GB"
+      },
+      {
+        "machine": "Apple M5 Pro 48 GB",
+        "restart": true,
+        "runs": 1,
+        "chrome": "Chrome/157.0.8103.79",
+        "commit": "840ec8b0eba4",
+        "pages": 3,
+        "chunks": 3,
+        "held": 0,
+        "first_token_ms": {
+          "median": 9029,
+          "worst": 9029
+        },
+        "total_ms": {
+          "median": 10878,
+          "worst": 10878
+        },
+        "process_rss_peak_bytes": {
+          "median": 6341853184,
+          "worst": 6341853184
+        },
+        "js_heap_peak_bytes": {
+          "median": 34881165,
+          "worst": 34881165
+        },
+        "wasm_memory_peak_bytes": {
+          "median": 2698838016,
+          "worst": 2698838016
+        },
+        "storage_usage_bytes": {
+          "median": 799406354,
+          "worst": 799406354
+        },
+        "requests_after_offline": {
+          "max": 0
+        },
+        "answer_ok_q1": {
+          "ok": 1,
+          "of": 1
+        },
+        "model": "Qwen3-0.6B q8 + multilingual-e5-small q8",
+        "backend": "transformers-js wasm (single-threaded)",
+        "laptop8gb": "not measured on 8 GB"
+      }
+    ],
+    "questions": {
+      "perQuestion": [
+        {
+          "qid": "q1",
+          "runs": 6,
+          "answerOk": 6,
+          "pageOk": 6,
+          "topRetrievedOk": 6,
+          "answerable": true,
+          "first_token_ms": {
+            "median": 7857,
+            "worst": 9029
+          },
+          "laptop8gb": "not measured on 8 GB"
+        },
+        {
+          "qid": "q2",
+          "runs": 6,
+          "answerOk": 0,
+          "pageOk": 0,
+          "topRetrievedOk": 6,
+          "answerable": true,
+          "first_token_ms": {
+            "median": 7965,
+            "worst": 8622
+          },
+          "laptop8gb": "not measured on 8 GB"
+        },
+        {
+          "qid": "q3",
+          "runs": 6,
+          "answerOk": 6,
+          "pageOk": 6,
+          "topRetrievedOk": 6,
+          "answerable": true,
+          "first_token_ms": {
+            "median": 7807,
+            "worst": 8340
+          },
+          "laptop8gb": "not measured on 8 GB"
+        },
+        {
+          "qid": "q4",
+          "runs": 6,
+          "answerOk": 6,
+          "pageOk": 6,
+          "topRetrievedOk": 6,
+          "answerable": true,
+          "first_token_ms": {
+            "median": 7924,
+            "worst": 8075
+          },
+          "laptop8gb": "not measured on 8 GB"
+        },
+        {
+          "qid": "q5",
+          "runs": 6,
+          "answerOk": 6,
+          "pageOk": 6,
+          "topRetrievedOk": 6,
+          "answerable": true,
+          "first_token_ms": {
+            "median": 7927,
+            "worst": 8645
+          },
+          "laptop8gb": "not measured on 8 GB"
+        },
+        {
+          "qid": "q6",
+          "runs": 6,
+          "answerOk": 0,
+          "pageOk": 0,
+          "topRetrievedOk": 6,
+          "answerable": true,
+          "first_token_ms": {
+            "median": 8130,
+            "worst": 8978
+          },
+          "laptop8gb": "not measured on 8 GB"
+        },
+        {
+          "qid": "q7",
+          "runs": 6,
+          "answerOk": 6,
+          "pageOk": 0,
+          "topRetrievedOk": 0,
+          "answerable": false,
+          "first_token_ms": {
+            "median": 8250,
+            "worst": 8940
+          },
+          "laptop8gb": "not measured on 8 GB"
+        }
+      ],
+      "firstRun": {
+        "correct": 4,
+        "of": 6,
+        "run": 1
+      },
+      "all": {
+        "correct": 24,
+        "of": 36,
+        "runs": 6
+      },
+      "citedPage": {
+        "ok": 24,
+        "of": 36
+      },
+      "topRetrieved": {
+        "ok": 36,
+        "of": 36
+      },
+      "unanswerable": {
+        "refused": 6,
+        "of": 6
+      },
+      "timing": {
+        "rows": 42,
+        "first_token_ms": {
+          "median": 7927,
+          "worst": 9029
+        },
+        "total_ms": {
+          "median": 9391,
+          "worst": 10878
+        }
+      },
+      "selection": "none: every run of every question is counted"
+    }
+  },
+  "target": {
+    "decision": "TD-66",
+    "rssMedianMiB": 5120,
+    "totalMedianMs": 12500,
+    "questionFirstRunMin": 4,
+    "questionAllMin": 24
   }
 }

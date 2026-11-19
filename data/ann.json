@@ -1,0 +1,473 @@
+{
+  "spec": "airplanemode.site.ann/1",
+  "source": {
+    "csv": "docs/benchmarks/ann.csv",
+    "csvSha256": "b02f8734f81a81708753d913e3f05e8c8a7e576a6b0a54665eadbba68ea57a35",
+    "commit": "da39477-dirty",
+    "date": "2026-11-19T13:58:52.672Z",
+    "rows": 20
+  },
+  "target": {
+    "decision": "TD-65",
+    "recallAtTenMin": 0.9,
+    "ef": 128
+  },
+  "groups": [
+    {
+      "data": "clustered",
+      "index": "flat",
+      "ef": null,
+      "m": null,
+      "ef_construction": null,
+      "rows": 100000,
+      "dim": 384,
+      "k": 10,
+      "runs": 4,
+      "driver": "opfs",
+      "machine": "Apple M5 Pro, 48 GB",
+      "chrome": "Chrome/157.0.8103.79",
+      "command": "npm run bench:ann",
+      "commit": "da39477-dirty",
+      "build_ms": {
+        "median": 876.7,
+        "worst": 8464.1
+      },
+      "cold_open_ms": {
+        "median": 207.95,
+        "worst": 2474.2
+      },
+      "query_p50_ms": {
+        "median": 3.65,
+        "worst": 37.9
+      },
+      "query_p95_ms": {
+        "median": 3.8,
+        "worst": 40.6
+      },
+      "recall_at_10": {
+        "median": 1,
+        "worst": 1
+      },
+      "js_heap_peak_bytes": {
+        "median": 92043855,
+        "worst": 550900641
+      },
+      "wasm_memory_bytes": {
+        "median": 157810688,
+        "worst": 1565982720
+      },
+      "index_bytes": {
+        "median": 156412608,
+        "worst": 1564125388
+      },
+      "ann_bytes": {
+        "median": 0,
+        "worst": 0
+      },
+      "storage_usage_bytes": {
+        "median": 167002852,
+        "worst": 1671599716
+      },
+      "eight_gb": "not measured on 8 GB"
+    },
+    {
+      "data": "clustered",
+      "index": "hnsw",
+      "ef": 32,
+      "m": 16,
+      "ef_construction": 200,
+      "rows": 100000,
+      "dim": 384,
+      "k": 10,
+      "runs": 4,
+      "driver": "opfs",
+      "machine": "Apple M5 Pro, 48 GB",
+      "chrome": "Chrome/157.0.8103.79",
+      "command": "npm run bench:ann",
+      "commit": "da39477-dirty",
+      "build_ms": {
+        "median": 43650.15,
+        "worst": 800451.5
+      },
+      "cold_open_ms": {
+        "median": 212.55,
+        "worst": 2363.9
+      },
+      "query_p50_ms": {
+        "median": 0.1,
+        "worst": 0.2
+      },
+      "query_p95_ms": {
+        "median": 0.2,
+        "worst": 0.4
+      },
+      "recall_at_10": {
+        "median": 0.9965,
+        "worst": 0.9035
+      },
+      "js_heap_peak_bytes": {
+        "median": 92044231,
+        "worst": 583587849
+      },
+      "wasm_memory_bytes": {
+        "median": 183566336,
+        "worst": 1824391168
+      },
+      "index_bytes": {
+        "median": 156412608,
+        "worst": 1564125388
+      },
+      "ann_bytes": {
+        "median": 10590216,
+        "worst": 107474300
+      },
+      "storage_usage_bytes": {
+        "median": 167002852,
+        "worst": 1671599716
+      },
+      "eight_gb": "not measured on 8 GB"
+    },
+    {
+      "data": "clustered",
+      "index": "hnsw",
+      "ef": 64,
+      "m": 16,
+      "ef_construction": 200,
+      "rows": 100000,
+      "dim": 384,
+      "k": 10,
+      "runs": 4,
+      "driver": "opfs",
+      "machine": "Apple M5 Pro, 48 GB",
+      "chrome": "Chrome/157.0.8103.79",
+      "command": "npm run bench:ann",
+      "commit": "da39477-dirty",
+      "build_ms": {
+        "median": 43650.15,
+        "worst": 800451.5
+      },
+      "cold_open_ms": {
+        "median": 212.55,
+        "worst": 2363.9
+      },
+      "query_p50_ms": {
+        "median": 0.1,
+        "worst": 0.3
+      },
+      "query_p95_ms": {
+        "median": 0.2,
+        "worst": 0.5
+      },
+      "recall_at_10": {
+        "median": 1,
+        "worst": 0.98
+      },
+      "js_heap_peak_bytes": {
+        "median": 92044231,
+        "worst": 583587849
+      },
+      "wasm_memory_bytes": {
+        "median": 183566336,
+        "worst": 1824391168
+      },
+      "index_bytes": {
+        "median": 156412608,
+        "worst": 1564125388
+      },
+      "ann_bytes": {
+        "median": 10590216,
+        "worst": 107474300
+      },
+      "storage_usage_bytes": {
+        "median": 167002852,
+        "worst": 1671599716
+      },
+      "eight_gb": "not measured on 8 GB"
+    },
+    {
+      "data": "clustered",
+      "index": "hnsw",
+      "ef": 128,
+      "m": 16,
+      "ef_construction": 200,
+      "rows": 100000,
+      "dim": 384,
+      "k": 10,
+      "runs": 4,
+      "driver": "opfs",
+      "machine": "Apple M5 Pro, 48 GB",
+      "chrome": "Chrome/157.0.8103.79",
+      "command": "npm run bench:ann",
+      "commit": "da39477-dirty",
+      "build_ms": {
+        "median": 43650.15,
+        "worst": 800451.5
+      },
+      "cold_open_ms": {
+        "median": 212.55,
+        "worst": 2363.9
+      },
+      "query_p50_ms": {
+        "median": 0.25,
+        "worst": 0.5
+      },
+      "query_p95_ms": {
+        "median": 0.4,
+        "worst": 0.8
+      },
+      "recall_at_10": {
+        "median": 1,
+        "worst": 1
+      },
+      "js_heap_peak_bytes": {
+        "median": 92044231,
+        "worst": 583587849
+      },
+      "wasm_memory_bytes": {
+        "median": 183566336,
+        "worst": 1824391168
+      },
+      "index_bytes": {
+        "median": 156412608,
+        "worst": 1564125388
+      },
+      "ann_bytes": {
+        "median": 10590216,
+        "worst": 107474300
+      },
+      "storage_usage_bytes": {
+        "median": 167002852,
+        "worst": 1671599716
+      },
+      "eight_gb": "not measured on 8 GB"
+    },
+    {
+      "data": "uniform",
+      "index": "flat",
+      "ef": null,
+      "m": null,
+      "ef_construction": null,
+      "rows": 100000,
+      "dim": 384,
+      "k": 10,
+      "runs": 1,
+      "driver": "opfs",
+      "machine": "Apple M5 Pro, 48 GB",
+      "chrome": "Chrome/157.0.8103.79",
+      "command": "npm run bench:ann",
+      "commit": "da39477-dirty",
+      "build_ms": {
+        "median": 717,
+        "worst": 717
+      },
+      "cold_open_ms": {
+        "median": 175.5,
+        "worst": 175.5
+      },
+      "query_p50_ms": {
+        "median": 3.6,
+        "worst": 3.6
+      },
+      "query_p95_ms": {
+        "median": 3.7,
+        "worst": 3.7
+      },
+      "recall_at_10": {
+        "median": 1,
+        "worst": 1
+      },
+      "js_heap_peak_bytes": {
+        "median": 92047165,
+        "worst": 92047165
+      },
+      "wasm_memory_bytes": {
+        "median": 157810688,
+        "worst": 157810688
+      },
+      "index_bytes": {
+        "median": 156412608,
+        "worst": 156412608
+      },
+      "ann_bytes": {
+        "median": 0,
+        "worst": 0
+      },
+      "storage_usage_bytes": {
+        "median": 168027940,
+        "worst": 168027940
+      },
+      "eight_gb": "not measured on 8 GB"
+    },
+    {
+      "data": "uniform",
+      "index": "hnsw",
+      "ef": 32,
+      "m": 16,
+      "ef_construction": 200,
+      "rows": 100000,
+      "dim": 384,
+      "k": 10,
+      "runs": 1,
+      "driver": "opfs",
+      "machine": "Apple M5 Pro, 48 GB",
+      "chrome": "Chrome/157.0.8103.79",
+      "command": "npm run bench:ann",
+      "commit": "da39477-dirty",
+      "build_ms": {
+        "median": 83768.5,
+        "worst": 83768.5
+      },
+      "cold_open_ms": {
+        "median": 196.6,
+        "worst": 196.6
+      },
+      "query_p50_ms": {
+        "median": 0.2,
+        "worst": 0.2
+      },
+      "query_p95_ms": {
+        "median": 0.3,
+        "worst": 0.3
+      },
+      "recall_at_10": {
+        "median": 0.045,
+        "worst": 0.045
+      },
+      "js_heap_peak_bytes": {
+        "median": 92018513,
+        "worst": 92018513
+      },
+      "wasm_memory_bytes": {
+        "median": 184614912,
+        "worst": 184614912
+      },
+      "index_bytes": {
+        "median": 156412608,
+        "worst": 156412608
+      },
+      "ann_bytes": {
+        "median": 11615304,
+        "worst": 11615304
+      },
+      "storage_usage_bytes": {
+        "median": 168027940,
+        "worst": 168027940
+      },
+      "eight_gb": "not measured on 8 GB"
+    },
+    {
+      "data": "uniform",
+      "index": "hnsw",
+      "ef": 64,
+      "m": 16,
+      "ef_construction": 200,
+      "rows": 100000,
+      "dim": 384,
+      "k": 10,
+      "runs": 1,
+      "driver": "opfs",
+      "machine": "Apple M5 Pro, 48 GB",
+      "chrome": "Chrome/157.0.8103.79",
+      "command": "npm run bench:ann",
+      "commit": "da39477-dirty",
+      "build_ms": {
+        "median": 83768.5,
+        "worst": 83768.5
+      },
+      "cold_open_ms": {
+        "median": 196.6,
+        "worst": 196.6
+      },
+      "query_p50_ms": {
+        "median": 0.3,
+        "worst": 0.3
+      },
+      "query_p95_ms": {
+        "median": 0.4,
+        "worst": 0.4
+      },
+      "recall_at_10": {
+        "median": 0.0755,
+        "worst": 0.0755
+      },
+      "js_heap_peak_bytes": {
+        "median": 92018513,
+        "worst": 92018513
+      },
+      "wasm_memory_bytes": {
+        "median": 184614912,
+        "worst": 184614912
+      },
+      "index_bytes": {
+        "median": 156412608,
+        "worst": 156412608
+      },
+      "ann_bytes": {
+        "median": 11615304,
+        "worst": 11615304
+      },
+      "storage_usage_bytes": {
+        "median": 168027940,
+        "worst": 168027940
+      },
+      "eight_gb": "not measured on 8 GB"
+    },
+    {
+      "data": "uniform",
+      "index": "hnsw",
+      "ef": 128,
+      "m": 16,
+      "ef_construction": 200,
+      "rows": 100000,
+      "dim": 384,
+      "k": 10,
+      "runs": 1,
+      "driver": "opfs",
+      "machine": "Apple M5 Pro, 48 GB",
+      "chrome": "Chrome/157.0.8103.79",
+      "command": "npm run bench:ann",
+      "commit": "da39477-dirty",
+      "build_ms": {
+        "median": 83768.5,
+        "worst": 83768.5
+      },
+      "cold_open_ms": {
+        "median": 196.6,
+        "worst": 196.6
+      },
+      "query_p50_ms": {
+        "median": 0.6,
+        "worst": 0.6
+      },
+      "query_p95_ms": {
+        "median": 0.7,
+        "worst": 0.7
+      },
+      "recall_at_10": {
+        "median": 0.1375,
+        "worst": 0.1375
+      },
+      "js_heap_peak_bytes": {
+        "median": 92018513,
+        "worst": 92018513
+      },
+      "wasm_memory_bytes": {
+        "median": 184614912,
+        "worst": 184614912
+      },
+      "index_bytes": {
+        "median": 156412608,
+        "worst": 156412608
+      },
+      "ann_bytes": {
+        "median": 11615304,
+        "worst": 11615304
+      },
+      "storage_usage_bytes": {
+        "median": 168027940,
+        "worst": 168027940
+      },
+      "eight_gb": "not measured on 8 GB"
+    }
+  ]
+}

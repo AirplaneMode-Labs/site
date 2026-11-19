@@ -247,6 +247,119 @@ ${E2E_LIMITATIONS.map((l) => `<li>${esc(l)}</li>`).join('\n')}
 </ul>`;
 }
 
+/** The first-session group of a set (the five-run row, not the run after a Chrome restart). */
+const sessionGroup = (set) => set.groups.find((g) => g.restart === false);
+const mibOf = (bytes) => Math.round(bytes / 1048576);
+
+/**
+ * The memory hardening section (B1, TD-66): the dockit baseline taken before the measures and the after set, from data/e2e.json only. The outcome of
+ * the target is computed from the two sets and worded without the word "met" (nothing on the benchmarks page may call a done-when met).
+ */
+export function renderMemory(e2e) {
+  const base = e2e.baseline;
+  const t = e2e.target;
+  if (!base || !t) throw new Error('data/e2e.json has no baseline and target: run scripts/import-dockit-bench.mjs with --baseline-from');
+  const rowOf = (label, set) => {
+    const g = sessionGroup(set);
+    const q = set.questions;
+    return (
+      `<tr><td>${esc(label)}</td><td>${fmtNum(g.runs)}</td>` +
+      `<td>${medianWorst(g.process_rss_peak_bytes, 'MiB')}</td><td>${medianWorst(g.first_token_ms)}</td><td>${medianWorst(g.total_ms)}</td>` +
+      `<td>${medianWorst(q.timing.total_ms)}</td>` +
+      `<td>${fmtNum(q.firstRun.correct)} of ${fmtNum(q.firstRun.of)} first run, ${fmtNum(q.all.correct)} of ${fmtNum(q.all.of)} over all runs</td>` +
+      `<td>${fmtNum(g.requests_after_offline.max)}</td><td><code>${esc(e2e.command)}</code></td><td><code>${esc(g.commit)}</code></td><td>${esc(g.laptop8gb)}</td></tr>`
+    );
+  };
+  const b = sessionGroup(base);
+  const a = sessionGroup(e2e);
+  // BUG-T1-S6-04: one rounding rule: the fall and its percentage come from the exact medians (bytes, then MiB), and are rounded only when written
+  const baseMib = mibOf(b.process_rss_peak_bytes.median);
+  const afterMib = mibOf(a.process_rss_peak_bytes.median);
+  const baseExact = b.process_rss_peak_bytes.median / 1048576;
+  const diffExact = baseExact - a.process_rss_peak_bytes.median / 1048576;
+  const diff = Math.round(diffExact);
+  const pct = baseExact === 0 ? '0' : ((Math.abs(diffExact) / baseExact) * 100).toFixed(1);
+  const rssReached = a.process_rss_peak_bytes.median / 1048576 <= t.rssMedianMiB;
+  const timeReached = e2e.questions.timing.total_ms.median <= t.totalMedianMs;
+  const qa = e2e.questions;
+  const questionsOk = qa.firstRun.correct >= t.questionFirstRunMin && qa.all.correct >= t.questionAllMin;
+  const noRequests = [...base.groups, ...e2e.groups].every((g) => g.requests_after_offline.max === 0);
+  return `<h2 id="memory-hardening">Memory hardening (Sprint 6)</h2>
+<p>
+  <span class="tag">dockit</span> Sprint 6 loads one model at a time: the search model is unloaded before the answer model is loaded and the answer model before the next
+  question, and the analysis and PDF workers end when their stage ends. Before and after were measured on the same machine with the same command, <code>${esc(e2e.command)}</code>;
+  the raw rows are in dockit's <code>${esc(base.source.csv)}</code> (sha256 <code>${esc(base.source.csvSha256.slice(0, 16))}</code>) before and
+  <code>${esc(e2e.source.csv)}</code> (sha256 <code>${esc(e2e.source.csvSha256.slice(0, 16))}</code>) after. Each row is the median and the worst of the runs of one Chrome session; no run was left out.
+</p>
+<div class="table-wrap">
+<table class="benchmarks memory">
+<thead><tr><th>Run</th><th>Runs</th><th>Peak memory: Chrome process tree, summed resident size (median / worst)</th><th>Time to first token (median / worst)</th><th>Total, first question (median / worst)</th><th>Per-question total, every question of every run (median / worst)</th><th>Question set</th><th>Requests after offline</th><th>Command</th><th>Commit</th><th>8 GB laptop</th></tr></thead>
+<tbody>
+${rowOf('Before: the Sprint 5 pipeline, both models loaded together', base)}
+${rowOf('After: one model at a time', e2e)}
+</tbody>
+</table>
+</div>
+<p>
+  The target stated before measuring (TD-66) was a median peak of at most ${fmtNum(t.rssMedianMiB)} MiB, with the question set no worse than ${fmtNum(t.questionAllMin)} of 36 over all runs and ${fmtNum(t.questionFirstRunMin)} of 6 on the first run, and a median per-question total of at most ${fmtNum(t.totalMedianMs)} ms.
+  The median peak went from ${fmtNum(baseMib)} MiB to ${fmtNum(afterMib)} MiB, a ${diffExact >= 0 ? 'fall' : 'rise'} of ${fmtNum(Math.abs(diff))} MiB (${pct} percent). Each median is the median of the ${fmtNum(a.runs)} in-session runs; the run after a Chrome restart is shown separately. Differences and percentages are computed from the exact medians (the exact fall is ${diffExact.toFixed(1)} MiB, shown as ${fmtNum(diff)}) and then rounded, so a difference can differ by 1 MiB from the subtraction of the two rounded medians.
+  ${rssReached ? 'The target was reached' : 'The target was not reached'} for memory; the question set was ${questionsOk ? 'not worse than the floor' : 'worse than the floor'}; the time guard was ${timeReached ? 'reached' : 'not reached'}; ${noRequests ? 'every run made 0 requests after the network was blocked' : 'a run made a request after the network was blocked'}.
+</p>
+<p>
+  Process-tree peaks are comparable only between runs on a quiet host: a run taken while the machine is busy (a high load average, recorded in the host_load_1m_start and host_load_1m_end columns of newer CSVs) can read lower or higher than the same build on a quiet host. The stated figure is the quiet-host one.
+</p>
+<p class="muted">
+  These are figures from one Apple M5 Pro 48 GB, with Chrome's processes summed and a page shared between processes counted in each. They say nothing about an 8 GB laptop:
+  the 8 GB column reads not measured on 8 GB in every row, and whether the demo fits an 8 GB Windows laptop is exactly what the owner's run measures.
+</p>`;
+}
+
+const fmtAnn = (n) => (Number.isInteger(n) ? fmtNum(n) : String(Number(n.toFixed(4))));
+/** "median unit / worst unit" for a data-file stat, or 'not measured' when a run of the group lacks the figure. */
+const annPair = (st, unit) => (st === null || st === undefined ? 'not measured' : unit === 'MiB' ? `${mbOf(st.median)} / ${mbOf(st.worst)}` : unit === 'bytes' ? `${fmtNum(st.median)} B / ${fmtNum(st.worst)} B` : unit === '' ? `${fmtAnn(st.median)} / ${fmtAnn(st.worst)}` : `${fmtAnn(st.median)} ${unit} / ${fmtAnn(st.worst)} ${unit}`);
+
+/**
+ * The flat-against-HNSW section (B2, TD-65, TD-76), from data/ann.json only. The recall target is a number of the data (fixed by TD-65 before anything was
+ * measured) and its outcome is computed from the clustered group at the target ef, in words that are not "met".
+ */
+export function renderAnn(ann) {
+  const rows = ann.groups
+    .map(
+      (g) =>
+        `<tr><td>${esc(g.data)}</td><td>${g.index === 'flat' ? 'flat' : `hnsw, ef ${fmtNum(g.ef)}`}</td><td>${fmtNum(g.runs)}</td>` +
+        `<td>${annPair(g.build_ms, 'ms')}</td><td>${annPair(g.query_p50_ms, 'ms')}</td><td>${annPair(g.query_p95_ms, 'ms')}</td><td>${annPair(g.recall_at_10, '')}</td>` +
+        `<td>${annPair(g.index_bytes, 'MiB')}</td><td>${annPair(g.ann_bytes, 'MiB')}</td><td>${annPair(g.js_heap_peak_bytes, 'MiB')}</td><td>${annPair(g.wasm_memory_bytes, 'MiB')}</td>` +
+        `<td>${esc(g.machine)}, ${esc(g.chrome)}</td><td><code>${esc(g.command)}</code></td><td><code>${esc(g.commit)}</code></td><td>${esc(g.eight_gb)}</td></tr>`,
+    )
+    .join('\n');
+  const t = ann.target;
+  const at = ann.groups.find((g) => g.data === 'clustered' && g.index === 'hnsw' && g.ef === t.ef);
+  const outcome = at === undefined || at.recall_at_10 === null ? 'The recall target was not measured' : at.recall_at_10.median >= t.recallAtTenMin ? 'The recall target was reached' : 'The recall target was not reached';
+  return `<h2 id="vector-search">Vector search: flat against HNSW at 100,000 x 384</h2>
+<p>
+  <span class="tag">localdata</span> The flat index scans every vector and is exact; the HNSW graph is a derived index that the caller builds, that answers from a few hundred candidates, and that
+  falls back to the flat scan when it is missing, stale or refused. Every HNSW hit is scored again with the flat scoring function, so a hit is a row of the true ranking with its exact
+  score and recall is the only difference. Recall@10 is measured against the flat scan as the ground truth. The raw rows are in localdata's <code>${esc(ann.source.csv)}</code>
+  (sha256 <code>${esc(ann.source.csvSha256.slice(0, 16))}</code>), taken at commit <code>${esc(ann.source.commit)}</code>. Each row is the median and the worst of its runs; for recall the worst is the lowest.
+</p>
+<div class="table-wrap">
+<table class="benchmarks ann">
+<thead><tr><th>Data</th><th>Index</th><th>Runs</th><th>Build, flat write or graph build (median / worst)</th><th>Query p50 (median / worst)</th><th>Query p95 (median / worst)</th><th>Recall@10 (median / lowest)</th><th>Index bytes, vectors (median / worst)</th><th>Graph bytes (median / worst)</th><th>JS heap peak (median / worst)</th><th>WebAssembly memory (median / worst)</th><th>Machine, Chrome</th><th>Command</th><th>Commit</th><th>8 GB laptop</th></tr></thead>
+<tbody>
+${rows}
+</tbody>
+</table>
+</div>
+<p>
+  The recall target fixed by ${esc(t.decision)} before anything was measured was a recall@10 of at least ${t.recallAtTenMin.toFixed(2)} at ef ${fmtNum(t.ef)} on the clustered set.
+  ${outcome}${at && at.recall_at_10 ? `: the median recall at ef ${fmtNum(t.ef)} was ${fmtAnn(at.recall_at_10.median)} and the lowest of its runs ${fmtAnn(at.recall_at_10.worst)}` : ''}.
+  The clustered set is the test set fixed in advance; the uniform set, where it appears, is the worst case for any graph index and has no floor.
+</p>
+<p class="muted">
+  Quantisation, compaction and encryption at rest are not yet. The figures are from one Apple-silicon machine: the 8 GB column reads not measured on 8 GB in every row, and nothing here is a figure for an 8 GB laptop.
+</p>`;
+}
+
 const GITHUB_ORG = 'https://github.com/AirplaneMode-Labs';
 const DEMO_URL = /^https:\/\/airplanemode-labs\.github\.io\/[a-z]+\/$/;
 
@@ -368,6 +481,12 @@ export function build({ root, outDir }) {
     }
     if (content.includes('{{e2e-section}}')) {
       content = content.replace('{{e2e-section}}', () => renderE2e(e2e));
+    }
+    if (content.includes('{{memory-section}}')) {
+      content = content.replace('{{memory-section}}', () => renderMemory(e2e));
+    }
+    if (content.includes('{{ann-section}}')) {
+      content = content.replace('{{ann-section}}', () => renderAnn(JSON.parse(readFileSync(join(root, 'data', 'ann.json'), 'utf8'))));
     }
     if (content.includes('{{licences-table}}')) {
       content = content.replace('{{licences-table}}', () => renderLicences(licences));

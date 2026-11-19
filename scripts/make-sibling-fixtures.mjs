@@ -12,6 +12,8 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync, existsSync, statSync } 
 import { dirname, join, sep } from 'node:path';
 import {
   FIXTURE_ROOT,
+  SPRINT,
+  SPRINT_SCRATCH,
   SOURCE_JSON,
   SITE_ROOT,
   WORKSPACE_ROOT,
@@ -69,34 +71,55 @@ for (const f of ['cargo-test-glyphsift.full.log', 'cargo-test-pagetriage.full.lo
 }
 lines('evidence', `${E3}/S1/rv2/rv2-findings-append.md`, { fragments: ['glyphsift v0.1.0 tag NO-GO'] });
 
-// evidence/sprint-4: D1's LANDED.json (the demos tests merge it with Sprint 3's).
+// evidence/sprint-4: D1's LANDED.json (the demos tests merge it with Sprint 3's), and the files the Sprint 4 write-up quotes.
 whole('evidence', 'sprint-4/D1/LANDED.json');
-// evidence/sprint-5: the status line of each demo (the architect copies the lane scratch folders to evidence/sprint-5 at wrap-up; until then they are read from scratch).
-for (const f of ['D1/status-line.txt', 'D2/status-line.txt', 'D3/status-line.txt', 'D4/status-line.txt', 'D5/dockit-status-line.txt', 'D5/site-status-line.txt']) whole('evidence', `sprint-5/${f}`);
+whole('evidence', 'sprint-4/D1/SPEC-LANDED.txt');
+whole('evidence', 'sprint-4/D1/test-demo-fix2.log');
+// evidence/sprint-5: the files the Sprint 5 write-up quotes (the clean-commit simulation of the Pages build and its benchmark run).
+for (const f of ['bench-e2e.log', 'e2e.log', 'gate.log', 'final-dockit-ci.log', 'size.txt']) whole('evidence', `sprint-5/ARCH/fresh-deps/logs/${f}`);
+// the two reports the Sprint 4 and Sprint 5 write-ups quote for what happened after a push
+// BUG-T3-S6-R2-07: the site repository is public and the two sprint reports are internal. The fixtures are EXCERPTS: only the lines test/build.test.mjs
+// reads (run ids, the push date, the sentences it matches), picked by fragment, so no narrative or owner decision is carried. A test caps each at 4 KB.
+lines('workspace', 'SPRINT-4-REPORT.md', {
+  fragments: ['Sprints 3 and 4 were pushed on 15 Nov 2026', 'run 43667709960', 'run 43667700010', 'runs 43667716669', 'WebLLM was cut, not half-landed', 'S1-099, unsigned'],
+});
+lines('workspace', 'SPRINT-5-REPORT.md', {
+  fragments: ['1de5ff5..eb28e49', '5974bb6..fe2b00b', '44325732090', '44325740893', '44325772916', '44325781731', 'done-when NOT met (owner runbook step 5)'],
+});
+// evidence/sprint-<SPRINT>: the status line of each demo (the architect copies the lane scratch folders to evidence/sprint-<SPRINT> at wrap-up; until then they are read from scratch).
+for (const f of ['D1/status-line.txt', 'D2/status-line.txt', 'D3/status-line.txt', 'D4/status-line.txt', 'D5/dockit-status-line.txt', 'D5/site-status-line.txt']) whole('evidence', `sprint-${SPRINT}/${f}`);
 // dockit's real benchmark CSVs: from the commit once dockit is committed, from its working tree until then (the entry says which).
 whole('dockit', 'docs/benchmarks/e2e.csv');
 whole('dockit', 'docs/benchmarks/e2e-questions.csv');
+// Sprint 6 (B1, TD-77): the baseline pair taken before the memory measures, and localdata's flat-against-HNSW rows (TD-76). Both are benchmark CSVs the
+// architect commits at wrap-up; until then the working-tree file is the source (the entry says so).
+whole('dockit', 'docs/benchmarks/e2e-s6-baseline.csv');
+whole('dockit', 'docs/benchmarks/e2e-questions-s6-baseline.csv');
+// ann.csv exists once localdata's lane has written it; from then on it is a required fixture (a test reads data/ann.json)
+if (existsSync(join(WORKSPACE_ROOT, 'localdata', 'docs', 'benchmarks', 'ann.csv'))) whole('localdata', 'docs/benchmarks/ann.csv');
 
 // ---- cut ----------------------------------------------------------------------------------------------------
 
-// the lane scratch folder (built from parts: this file must not carry the prefix itself, a test greps the repository for it)
-const SCRATCH = process.env.AMLABS_SCRATCH ?? join(sep, 'private', 'tmp', 'airplanemode-team', 'sprint-5');
+// the lane scratch folder of the current sprint comes from sibling-fixtures.mjs (built from parts: this file must not carry the prefix itself, a test greps the repository for it)
+const SCRATCH = SPRINT_SCRATCH;
 
 function readSource(repo, path) {
   if (repo === 'evidence' || repo === 'workspace') {
     const file = repo === 'evidence' ? join(WORKSPACE_ROOT, 'evidence', ...path.split('/')) : join(WORKSPACE_ROOT, ...path.split('/'));
     if (existsSync(file)) return { text: readFileSync(file, 'utf8'), commit: null, origin: 'file' };
-    // Sprint 5 evidence is copied from the lane scratch folders at wrap-up; until then the scratch copy is the source
-    const scratch = repo === 'evidence' && path.startsWith('sprint-5/') ? join(SCRATCH, ...path.slice('sprint-5/'.length).split('/')) : undefined;
+    // the current sprint's evidence is copied from the lane scratch folders at wrap-up; until then the scratch copy is the source
+    const prefix = `sprint-${SPRINT}/`;
+    const scratch = repo === 'evidence' && path.startsWith(prefix) ? join(SCRATCH, ...path.slice(prefix.length).split('/')) : undefined;
     if (scratch && existsSync(scratch)) return { text: readFileSync(scratch, 'utf8'), commit: null, origin: 'scratch' };
     throw new Error(`source missing: ${repo}/${path}`);
   }
   if (!REPOS.includes(repo)) throw new Error(`unknown repo ${repo}`);
   const commit = git(repo, 'rev-parse', 'HEAD').trim();
-  if (repo === 'dockit') {
-    // dockit's benchmark CSVs are committed by the architect at wrap-up; before that the working-tree file is the source
+  // a benchmark CSV is committed by the architect at wrap-up: while it is new or edited in the working tree, the working-tree file is the source
+  if ((repo === 'dockit' || repo === 'localdata') && /^docs\/benchmarks\/[a-z0-9-]+\.csv$/.test(path)) {
     const at = execFileSync('git', ['-C', join(WORKSPACE_ROOT, repo), 'ls-tree', '--name-only', commit, '--', path], { encoding: 'utf8' }).trim();
-    if (at === '') return { text: readFileSync(join(WORKSPACE_ROOT, repo, ...path.split('/')), 'utf8'), commit: null, origin: 'working-tree' };
+    const changed = execFileSync('git', ['-C', join(WORKSPACE_ROOT, repo), 'status', '--porcelain', '--', path], { encoding: 'utf8' }).trim() !== '';
+    if (at === '' || changed) return { text: readFileSync(join(WORKSPACE_ROOT, repo, ...path.split('/')), 'utf8'), commit: null, origin: 'working-tree' };
   }
   const dirty = execFileSync('git', ['-C', join(WORKSPACE_ROOT, repo), 'status', '--porcelain', '--', path], { encoding: 'utf8' }).trim();
   // A file another lane has edited and not yet committed is still cut from its commit (that is what the fixture records); the live check
@@ -129,16 +152,18 @@ for (const [key, cut] of [...want].sort(([a], [b]) => (a < b ? -1 : 1))) {
   });
 }
 
-// Index of every evidence path the Sprint 3 write-up cites (existence is checked against this, not the disk).
-const writeup = readFileSync(join(SITE_ROOT, 'writeups', '2026-11-sprint-3.html'), 'utf8');
-const cited = [...new Set([...writeup.matchAll(/evidence\/(sprint-3\/[A-Za-z0-9_./-]+[A-Za-z0-9_])/g)].map((m) => m[1]))].sort();
+// Index of every evidence path the Sprint 3, 4 and 5 write-ups cite (existence is checked against this, not the disk).
 const files = {};
-for (const rel of cited) {
-  const file = join(WORKSPACE_ROOT, 'evidence', ...rel.split('/'));
-  if (!existsSync(file)) throw new Error(`the Sprint 3 write-up cites a missing evidence file: ${rel}`);
-  files[rel] = statSync(file).isDirectory() ? { directory: true } : { size: statSync(file).size, sha256: sha256(readFileSync(file)) };
+for (const n of [3, 4, 5]) {
+  const writeup = readFileSync(join(SITE_ROOT, 'writeups', `2026-11-sprint-${n}.html`), 'utf8');
+  const cited = [...new Set([...writeup.matchAll(/evidence\/(sprint-\d\/[A-Za-z0-9_./-]+[A-Za-z0-9_])/g)].map((m) => m[1]))].sort();
+  for (const rel of cited) {
+    const file = join(WORKSPACE_ROOT, 'evidence', ...rel.split('/'));
+    if (!existsSync(file)) throw new Error(`the Sprint ${n} write-up cites a missing evidence file: ${rel}`);
+    files[rel] = statSync(file).isDirectory() ? { directory: true } : { size: statSync(file).size, sha256: sha256(readFileSync(file)) };
+  }
 }
-const index = { note: 'Every evidence/sprint-3 path the Sprint 3 write-up cites, recorded when the fixtures were cut. Existence checks in CI read this index, not the disk.', files };
+const index = { note: 'Every evidence path the Sprint 3, 4 and 5 write-ups cite, recorded when the fixtures were cut. Existence checks in CI read this index, not the disk.', files };
 const indexBody = `${JSON.stringify(index, null, 2)}\n`;
 writeFileSync(join(FIXTURE_ROOT, 'evidence', 'INDEX.json'), indexBody);
 entries.push({ repo: 'evidence', commit: null, path: 'INDEX.json', cut: { mode: 'generated' }, bytes: Buffer.byteLength(indexBody), sha256: sha256(indexBody), sourceSha256: null });

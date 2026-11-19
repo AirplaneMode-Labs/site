@@ -34,16 +34,24 @@ export function splitCitation(path) {
 }
 
 /**
- * Where a lane's Sprint 5 files are before the architect copies them into <workspace>/evidence/sprint-5 at wrap-up (built from parts: this file
- * must not carry the prefix itself, a test greps the repository for it; AMLABS_SCRATCH overrides it). Local use only, never CI.
+ * The sprint whose evidence folder the demo-status checks read (TD-78): one constant, so a new sprint changes one line. The sync script,
+ * the fixture generator and the tests all take it from here.
  */
-export const SPRINT5_SCRATCH = process.env.AMLABS_SCRATCH ?? join(sep, 'private', 'tmp', 'airplanemode-team', 'sprint-5');
+export const SPRINT = 6;
 
-/** The workspace evidence file; for a sprint-5 path that is not there yet, the lane scratch copy when that exists. */
+/**
+ * Where a lane's files for the current sprint are before the architect copies them into <workspace>/evidence/sprint-<SPRINT> at wrap-up
+ * (built from parts: this file must not carry the prefix itself, a test greps the repository for it; AMLABS_SCRATCH overrides it).
+ * Local use only, never CI.
+ */
+export const SPRINT_SCRATCH = process.env.AMLABS_SCRATCH ?? join(sep, 'private', 'tmp', 'airplanemode-team', `sprint-${SPRINT}`);
+
+/** The workspace evidence file; for a current-sprint path that is not there yet, the lane scratch copy when that exists. */
 function liveEvidence(path) {
   const file = join(WORKSPACE_ROOT, 'evidence', ...path.split('/'));
-  if (existsSync(file) || !path.startsWith('sprint-5/')) return file;
-  const scratch = join(SPRINT5_SCRATCH, ...path.slice('sprint-5/'.length).split('/'));
+  const prefix = `sprint-${SPRINT}/`;
+  if (existsSync(file) || !path.startsWith(prefix)) return file;
+  const scratch = join(SPRINT_SCRATCH, ...path.slice(prefix.length).split('/'));
   return existsSync(scratch) ? scratch : file;
 }
 

@@ -13,6 +13,11 @@
 //   "restart" mark a browser-restart run), cold_total_ms, match,
 //   precise_memory, machine, commit. Other columns (index_bytes, wasm_memory_bytes, js_heap_peak_bytes,
 //   storage_usage_bytes, note) are ignored here; they belong to the Sprint 4 report's memory budget table.
+//
+// Sprint 6 (B2, TD-76): `--ann <csv>` reads localdata/docs/benchmarks/ann.csv (written by `npm run bench:ann`) into data/ann.json: one group per
+// (data set, index kind, ef), each the median and the worst of its runs. It is a separate file because the columns of vector-index.csv are pinned by tests.
+//   node scripts/import-localdata-bench.mjs --ann <ann.csv> [--ann-out <data/ann.json>] [--check]
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -152,6 +157,88 @@ export function buildLocaldataRows(csvText) {
   }));
 }
 
+// ---- Sprint 6: flat against HNSW (data/ann.json) ----------------------------------------------------------------------------------------------
+
+export const ANN_JSON = join(SITE_ROOT, 'data', 'ann.json');
+export const ANN_SPEC = 'airplanemode.site.ann/1';
+export const ANN_SIBLING_CSV = join(SITE_ROOT, '..', 'localdata', 'docs', 'benchmarks', 'ann.csv');
+export const NOT_MEASURED_8GB = 'not measured on 8 GB';
+/** What TD-65 fixed BEFORE measuring: mean recall@10 of at least 0.90 at ef 128 on the 100,000 x 384 clustered set. A constant with its source, not a figure of the CSV. */
+export const ANN_TARGET = Object.freeze({ decision: 'TD-65', recallAtTenMin: 0.9, ef: 128 });
+const ANN_REQUIRED = ['commit', 'date_utc', 'machine', 'command', 'driver', 'data', 'index_kind', 'rows', 'dim', 'm', 'ef_construction', 'ef_search', 'k', 'run', 'build_ms', 'cold_open_ms', 'query_p50_ms', 'query_p95_ms', 'recall_at_10', 'js_heap_peak_bytes', 'wasm_memory_bytes', 'index_bytes', 'ann_bytes', 'storage_usage_bytes', 'eight_gb'];
+const ANN_STATS = ['build_ms', 'cold_open_ms', 'query_p50_ms', 'query_p95_ms', 'recall_at_10', 'js_heap_peak_bytes', 'wasm_memory_bytes', 'index_bytes', 'ann_bytes', 'storage_usage_bytes'];
+const annNum = (v) => (v === '' || v === undefined ? null : Number(v));
+const annMedian = (vals) => {
+  const v = [...vals].sort((a, b) => a - b);
+  const mid = v.length >> 1;
+  return v.length % 2 ? v[mid] : (v[mid - 1] + v[mid]) / 2;
+};
+/** { median, worst } of a column over the runs of a group, or null when any run lacks it. 'Worst' is the largest value, and the smallest for recall. */
+function annStat(rows, col) {
+  const vals = rows.map((r) => annNum(r[col]));
+  if (vals.some((v) => v === null || !Number.isFinite(v))) return null;
+  const round = (n) => Number(n.toFixed(4));
+  return { median: round(annMedian(vals)), worst: round(col === 'recall_at_10' ? Math.min(...vals) : Math.max(...vals)) };
+}
+
+/** The JSON the benchmarks page's vector search table is built from. Throws on a file that does not look like localdata's ann.csv. */
+export function buildAnn(text, { csvName = 'docs/benchmarks/ann.csv' } = {}) {
+  const recs = parseCsv(text);
+  if (recs.length === 0) throw new Error(`${csvName}: no rows`);
+  for (const c of ANN_REQUIRED) if (!(c in recs[0])) throw new Error(`${csvName}: column ${c} is missing`);
+  recs.forEach((r, i) => {
+    // BUG-T1-S5-07's rule: a row that does not say that nothing was measured on an 8 GB laptop is not shown
+    if (r.eight_gb !== NOT_MEASURED_8GB) throw new Error(`${csvName}: row ${i + 1}: eight_gb must read '${NOT_MEASURED_8GB}', not '${r.eight_gb}'`);
+    for (const c of ANN_STATS) if (r[c] !== '' && !Number.isFinite(Number(r[c]))) throw new Error(`${csvName}: row ${i + 1}: ${c} is not a number: ${r[c]}`);
+  });
+  const keyOf = (r) => [r.data, r.index_kind, r.ef_search].join('\u0000');
+  const groups = [...new Set(recs.map(keyOf))].map((k) => {
+    const rows = recs.filter((r) => keyOf(r) === k);
+    const f = rows[0];
+    return {
+      data: f.data,
+      index: f.index_kind,
+      ef: annNum(f.ef_search),
+      m: annNum(f.m),
+      ef_construction: annNum(f.ef_construction),
+      rows: Number(f.rows),
+      dim: Number(f.dim),
+      k: Number(f.k),
+      runs: rows.length,
+      driver: [...new Set(rows.map((r) => r.driver))].join(', '),
+      machine: [...new Set(rows.map((r) => r.machine))].join('; '),
+      chrome: [...new Set(rows.map((r) => r.chrome))].join(', '),
+      command: [...new Set(rows.map((r) => r.command))].join('; '),
+      commit: [...new Set(rows.map((r) => r.commit))].join(', '),
+      ...Object.fromEntries(ANN_STATS.map((c) => [c, annStat(rows, c)])),
+      eight_gb: [...new Set(rows.map((r) => r.eight_gb))].join('; '),
+    };
+  });
+  return {
+    spec: ANN_SPEC,
+    source: {
+      csv: csvName,
+      csvSha256: createHash('sha256').update(text).digest('hex'),
+      commit: [...new Set(recs.map((r) => r.commit))].join(', '),
+      date: recs[0].date_utc,
+      rows: recs.length,
+    },
+    target: { ...ANN_TARGET },
+    groups,
+  };
+}
+
+export const serialiseAnn = (data) => `${JSON.stringify(data, null, 2)}\n`;
+
+export function importAnn({ csv = ANN_SIBLING_CSV, out = ANN_JSON, write = true } = {}) {
+  if (!existsSync(csv)) throw new Error(`${csv} does not exist`);
+  const data = buildAnn(readFileSync(csv, 'utf8'));
+  const next = serialiseAnn(data);
+  const changed = !existsSync(out) || readFileSync(out, 'utf8') !== next;
+  if (write && changed) writeFileSync(out, next);
+  return { data, changed, out };
+}
+
 /** Same layout as the committed file: top-level keys expanded, one row per line, so diffs show only changed rows. */
 const rowJson = (r) => `{ ${Object.entries(r).map(([k, v]) => `${JSON.stringify(k)}: ${JSON.stringify(v)}`).join(', ')} }`;
 function serialise(data) {
@@ -182,6 +269,24 @@ export function importBench({ siteRoot = SITE_ROOT, csvPath = SIBLING_CSV, write
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
+  const ai = args.indexOf('--ann');
+  if (ai >= 0) {
+    const oi = args.indexOf('--ann-out');
+    const check = args.includes('--check');
+    try {
+      const r = importAnn({ csv: resolve(args[ai + 1] ?? ''), out: oi >= 0 ? resolve(args[oi + 1] ?? '') : ANN_JSON, write: !check });
+      console.log(`import-localdata-bench: ${r.data.source.rows} rows in ${r.data.groups.length} groups from ${r.data.source.csv}`);
+      if (check && r.changed) {
+        console.error(`${r.out} differs from the CSV; run without --check`);
+        process.exit(1);
+      }
+      console.log(check ? `${r.out} is up to date` : r.changed ? `wrote ${r.out}` : `${r.out} already up to date`);
+      process.exit(0);
+    } catch (e) {
+      console.error(`import-localdata-bench: ${e.message}`);
+      process.exit(1);
+    }
+  }
   const i = args.indexOf('--csv');
   const csvPath = i >= 0 ? resolve(args[i + 1] ?? '') : SIBLING_CSV;
   const check = args.includes('--check');

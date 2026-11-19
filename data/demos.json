@@ -2,37 +2,37 @@
   {
     "repo": "pagetriage",
     "url": "https://airplanemode-labs.github.io/pagetriage/",
-    "status": "Sprint 5 (18 Nov 2026): Working: the same page analysis as before, now with the PDF structure call that the dockit demo uses documented (analyse_pdf_structure: which pages of a PDF hold a readable text layer), with its WebAssembly size and its timings measured in Chrome on a 48 GB Apple M5 Pro (not measured on 8 GB). Not yet: OCR, 8 GB figures (not measured on 8 GB), a signed release, a tag, a published package, Linux and Windows wheels (Sprint 6).",
-    "writtenOn": "2026-11-18"
+    "status": "Sprint 6 (19 Nov 2026): Working: the same page analysis as before, plus a stream check that runs before a PDF is opened (account_pdf_streams: how many bytes each font, image and content stream decodes to, with a limit per kind and a reason when one is passed, so a font or image bomb is refused first); its WebAssembly memory and timings were measured in Chrome on a 48 GB Apple M5 Pro (not measured on 8 GB). Not yet: OCR, 8 GB figures (not measured on 8 GB), a signed release, a tag, a published package, Linux and Windows wheels (a CI job is written; nothing has run on those systems yet).",
+    "writtenOn": "2026-11-19"
   },
   {
     "repo": "runtime",
     "url": "https://airplanemode-labs.github.io/runtime/",
-    "status": "Sprint 5 (18 Nov 2026): Working: runtime beta 0.3.0-beta.0 on spec release 0.5.0: capability profile, signed-manifest verification (now with an expected-id check that refuses a validly signed manifest of another product), download, hash check and quota eviction of synthetic assets, resume, and a Tamper lab of fourteen cases that shows the exact refusal reason, with 0 requests after a manifest refusal. The test-model page adds embeddings through the worker host, in-worker hashing of every model file, a token budget and Stop. This page's policy is now connect-src 'self': it can only reach its own origin. Not yet: WebLLM (cut), Windows and 8 GB measurements (not measured on 8 GB), key revocation, a real signing key.",
-    "writtenOn": "2026-11-18"
+    "status": "Sprint 6 (19 Nov 2026): Working: runtime beta 0.3.0-beta.1 on spec release 0.6.0: a trust set that holds a weak Ed25519 public key is refused before anything is parsed, and the Tamper lab now has fifteen cases (case 15 shows the exact reason, weak_key_refused, with 0 requests after the refusal); the engine can be unloaded and its WebAssembly memory is returned by ending the worker (an Unload button shows the model.unload event and the engine worker count before and after; in installed Chrome on an Apple M5 Pro 48 GB the process tree shrank by more than the load peak, not measured on 8 GB); an out-of-memory failure in the engine is a plain refusal of its own; a Stop after the first token is logged as an aborted generation. Not yet: WebLLM (cut), Windows and 8 GB measurements (not measured on 8 GB), key revocation, a real signing key, a transparency log.",
+    "writtenOn": "2026-11-19"
   },
   {
     "repo": "glyphsift",
     "url": "https://airplanemode-labs.github.io/glyphsift/",
-    "status": "Sprint 5 (18 Nov 2026): Working: everything from Sprint 4, plus a Gate tab that gives a pasted chunk of Devanagari text one of three answers, pass, hold or not scored (text that is not mostly Devanagari is passed through and not scored), with the score, the Devanagari share and a threshold you can change (975000 ppm by default), as the same canonical JSON the command line and the Python wheel print, computed in WebAssembly in the tab; text with an unpaired surrogate is refused in plain text; 0 requests after the page loads. Not yet: scripts other than Devanagari (Tamil is planned for v0.2 as a design note only, Bengali later), a published package or wheel, 8 GB figures (not measured on 8 GB).",
-    "writtenOn": "2026-11-18"
+    "status": "Sprint 6 (19 Nov 2026): Working: everything from Sprint 5, plus a short page on what glyphsift measures, linked from the demo and built only from the committed benchmark: the score falls as synthetic noise rises (0 of 60 series rise), the gate threshold is 975000 ppm, and native, Python and WebAssembly give the same bytes on 13 samples and 200 gate cases; the shipped source package now runs its corrupt-feature tests; 0 requests after the page loads. Not yet: scripts other than Devanagari (Tamil is planned for v0.2 as a design note only, Bengali later), a published package or wheel, 8 GB figures (not measured on 8 GB).",
+    "writtenOn": "2026-11-19"
   },
   {
     "repo": "localdata",
     "url": "https://airplanemode-labs.github.io/localdata/",
-    "status": "Sprint 5 (18 Nov 2026): Working: a documents API (putDocument, queryChunks returning chunk text and source page, deleteDocument; all-or-nothing, with clear(ns) removing a document namespace physically), prototype-safe keys and values, size-checked OPFS reads, a sweep of unreferenced records on open, all on OPFS, IndexedDB and memory in Chrome on an Apple M5 Pro with 48 GB (not measured on 8 GB). Not yet: HNSW, quantisation, compaction, encryption at rest, an 8 GB measurement.",
-    "writtenOn": "2026-11-18"
+    "status": "Sprint 6 (19 Nov 2026): Working: an optional HNSW graph behind the Storage API (buildIndex, query with index \"hnsw\" and ef; flat stays the default and the fallback; the graph is stored on OPFS, IndexedDB or memory, validated on every read and rebuilt from the stored vectors when it is refused), built in-house in the Rust ldvec crate with no new dependency and shown here against the flat scan on the same seeded data, in Chrome on an Apple M5 Pro with 48 GB (not measured on 8 GB). Not yet: quantisation, compaction, encryption at rest, HNSW for queryChunks, an 8 GB measurement.",
+    "writtenOn": "2026-11-19"
   },
   {
     "repo": "dockit",
     "url": "https://airplanemode-labs.github.io/dockit/",
-    "status": "Sprint 5 (18 Nov 2026): Working: ask a question about a PDF and read an answer from a small local model (Qwen3-0.6B, WebAssembly) with the source pages shown; page triage (pagetriage), text-layer extraction (pdf.js in its own worker), a glyph gate for Devanagari text (glyphsift) with the reason shown when a passage is held back, chunks and vectors in localdata, and a capability card; scanned, oversize, corrupt and encrypted files and a missing or tampered model are refused in plain words; after the one-time model download no request leaves the page (proved on a local build in installed Chrome on an Apple M5 Pro 48 GB, not measured on 8 GB; the live page changes only after the owner pushes). Not yet: OCR, a Windows or 8 GB figure, the pilot model (Qwen3-1.7B), a real signing key, WebLLM (cut), multi-document chat.",
-    "writtenOn": "2026-11-18"
+    "status": "Sprint 6 (19 Nov 2026): Working: ask a question about a PDF and read an answer from a small local model (Qwen3-0.6B, WebAssembly) with the source pages shown, as before, now with one model in memory at a time: the Chrome process tree peaked at a median of 5,441 MiB, down from 6,307 MiB, short of the 5,120 MiB target (each median is of 5 in-session runs), with the fixed question set unchanged at 24 of 36 and every answer about 2.6 seconds slower (not measured on 8 GB); the capability card states the memory line read from the signed model list, a device that reports less is refused before any model byte is read, and an out-of-memory failure in the engine is a plain refusal; a PDF with a font, image or other part that unpacks to more than a limit, or whose structure cannot be checked, is refused before pdf.js opens it; a Stop is logged as aborted; after the one-time model download no request leaves the page (proved on a local build in installed Chrome on an Apple M5 Pro 48 GB, not measured on 8 GB; live since the owner's push of 18 Nov 2026). Not yet: OCR, a Windows or 8 GB figure, the pilot model (Qwen3-1.7B), a real signing key, WebLLM (cut), multi-document chat.",
+    "writtenOn": "2026-11-19"
   },
   {
     "repo": "site",
     "url": "https://airplanemode-labs.github.io/site/",
-    "status": "Sprint 5 (18 Nov 2026): Working: the benchmarks page now carries the dockit end-to-end rows (time to first token, total time, peak memory as the Chrome process tree, and the JS heap and WebAssembly memory under their own names, with the fixed question-set result as N of M correct with the correct source page), built only from committed data, with the done-when line, a limitations list and an 8 GB column that reads not measured on 8 GB; every check that read a sibling repository now reads a committed fixture, so CI runs from a lone checkout. No scripts. Not yet: 8 GB figures (not measured on 8 GB), a Windows measurement, a published Sprint 5 write-up (a skeleton only).",
-    "writtenOn": "2026-11-18"
+    "status": "Sprint 6 (19 Nov 2026): Working: the benchmarks page now carries a Memory hardening table with the dockit memory before and after (peak memory as the Chrome process tree, time to first token, the total for the first question and for every question, and the fixed question set as N of M, with the outcome of the TD-66 target computed from the data) and a Vector search table with flat against HNSW at 100,000 x 384 (build, query p50 and p95, recall@10, index and graph bytes, JS heap and WebAssembly memory, with the outcome of the TD-65 recall target computed from the data), both built only from committed data with an 8 GB column that reads not measured on 8 GB; the Sprint 4 and Sprint 5 write-ups are finished from their evidence as unlisted drafts for the owner, and a Sprint 6 skeleton exists; the six demo status lines come from one sprint constant. No scripts. Not yet: 8 GB figures (not measured on 8 GB), a Windows measurement, a published Sprint 6 write-up (a skeleton only).",
+    "writtenOn": "2026-11-19"
   }
 ]

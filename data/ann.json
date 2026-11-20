@@ -2,9 +2,9 @@
   "spec": "airplanemode.site.ann/1",
   "source": {
     "csv": "docs/benchmarks/ann.csv",
-    "csvSha256": "b02f8734f81a81708753d913e3f05e8c8a7e576a6b0a54665eadbba68ea57a35",
-    "commit": "da39477-dirty",
-    "date": "2026-11-19T13:58:52.672Z",
+    "csvSha256": "436d910646e719a9553ac775cc2d037d17f8b29bdffc2685b2bd1f605d2e5149",
+    "commit": "8abd87b-dirty",
+    "date": "2026-11-19T19:32:27.101Z",
     "rows": 20
   },
   "target": {
@@ -27,30 +27,30 @@
       "machine": "Apple M5 Pro, 48 GB",
       "chrome": "Chrome/157.0.8103.79",
       "command": "npm run bench:ann",
-      "commit": "da39477-dirty",
+      "commit": "8abd87b-dirty",
       "build_ms": {
-        "median": 876.7,
-        "worst": 8464.1
+        "median": 3278.85,
+        "worst": 8388.6
       },
       "cold_open_ms": {
-        "median": 207.95,
-        "worst": 2474.2
+        "median": 228.2,
+        "worst": 1854.3
       },
       "query_p50_ms": {
         "median": 3.65,
-        "worst": 37.9
+        "worst": 35.6
       },
       "query_p95_ms": {
-        "median": 3.8,
-        "worst": 40.6
+        "median": 3.95,
+        "worst": 36.4
       },
       "recall_at_10": {
         "median": 1,
         "worst": 1
       },
       "js_heap_peak_bytes": {
-        "median": 92043855,
-        "worst": 550900641
+        "median": 92116804,
+        "worst": 583459308
       },
       "wasm_memory_bytes": {
         "median": 157810688,
@@ -65,8 +65,8 @@
         "worst": 0
       },
       "storage_usage_bytes": {
-        "median": 167002852,
-        "worst": 1671599716
+        "median": 168311432,
+        "worst": 1682848924
       },
       "eight_gb": "not measured on 8 GB"
     },
@@ -84,14 +84,14 @@
       "machine": "Apple M5 Pro, 48 GB",
       "chrome": "Chrome/157.0.8103.79",
       "command": "npm run bench:ann",
-      "commit": "da39477-dirty",
+      "commit": "8abd87b-dirty",
       "build_ms": {
-        "median": 43650.15,
-        "worst": 800451.5
+        "median": 56209.15,
+        "worst": 931946.9
       },
       "cold_open_ms": {
-        "median": 212.55,
-        "worst": 2363.9
+        "median": 217.05,
+        "worst": 1858.9
       },
       "query_p50_ms": {
         "median": 0.1,
@@ -99,31 +99,31 @@
       },
       "query_p95_ms": {
         "median": 0.2,
-        "worst": 0.4
+        "worst": 0.3
       },
       "recall_at_10": {
-        "median": 0.9965,
-        "worst": 0.9035
+        "median": 0.998,
+        "worst": 0.949
       },
       "js_heap_peak_bytes": {
-        "median": 92044231,
-        "worst": 583587849
+        "median": 92102462,
+        "worst": 583639124
       },
       "wasm_memory_bytes": {
-        "median": 183566336,
-        "worst": 1824391168
+        "median": 184877056,
+        "worst": 1834614784
       },
       "index_bytes": {
         "median": 156412608,
         "worst": 1564125388
       },
       "ann_bytes": {
-        "median": 10590216,
-        "worst": 107474300
+        "median": 11898796,
+        "worst": 118723508
       },
       "storage_usage_bytes": {
-        "median": 167002852,
-        "worst": 1671599716
+        "median": 168311432,
+        "worst": 1682848924
       },
       "eight_gb": "not measured on 8 GB"
     },
@@ -141,46 +141,46 @@
       "machine": "Apple M5 Pro, 48 GB",
       "chrome": "Chrome/157.0.8103.79",
       "command": "npm run bench:ann",
-      "commit": "da39477-dirty",
+      "commit": "8abd87b-dirty",
       "build_ms": {
-        "median": 43650.15,
-        "worst": 800451.5
+        "median": 56209.15,
+        "worst": 931946.9
       },
       "cold_open_ms": {
-        "median": 212.55,
-        "worst": 2363.9
+        "median": 217.05,
+        "worst": 1858.9
       },
       "query_p50_ms": {
-        "median": 0.1,
-        "worst": 0.3
+        "median": 0.15,
+        "worst": 0.2
       },
       "query_p95_ms": {
-        "median": 0.2,
-        "worst": 0.5
+        "median": 0.25,
+        "worst": 0.4
       },
       "recall_at_10": {
         "median": 1,
-        "worst": 0.98
+        "worst": 0.995
       },
       "js_heap_peak_bytes": {
-        "median": 92044231,
-        "worst": 583587849
+        "median": 92102462,
+        "worst": 583639124
       },
       "wasm_memory_bytes": {
-        "median": 183566336,
-        "worst": 1824391168
+        "median": 184877056,
+        "worst": 1834614784
       },
       "index_bytes": {
         "median": 156412608,
         "worst": 1564125388
       },
       "ann_bytes": {
-        "median": 10590216,
-        "worst": 107474300
+        "median": 11898796,
+        "worst": 118723508
       },
       "storage_usage_bytes": {
-        "median": 167002852,
-        "worst": 1671599716
+        "median": 168311432,
+        "worst": 1682848924
       },
       "eight_gb": "not measured on 8 GB"
     },
@@ -198,46 +198,46 @@
       "machine": "Apple M5 Pro, 48 GB",
       "chrome": "Chrome/157.0.8103.79",
       "command": "npm run bench:ann",
-      "commit": "da39477-dirty",
+      "commit": "8abd87b-dirty",
       "build_ms": {
-        "median": 43650.15,
-        "worst": 800451.5
+        "median": 56209.15,
+        "worst": 931946.9
       },
       "cold_open_ms": {
-        "median": 212.55,
-        "worst": 2363.9
+        "median": 217.05,
+        "worst": 1858.9
       },
       "query_p50_ms": {
-        "median": 0.25,
-        "worst": 0.5
+        "median": 0.3,
+        "worst": 0.4
       },
       "query_p95_ms": {
         "median": 0.4,
-        "worst": 0.8
+        "worst": 0.6
       },
       "recall_at_10": {
         "median": 1,
         "worst": 1
       },
       "js_heap_peak_bytes": {
-        "median": 92044231,
-        "worst": 583587849
+        "median": 92102462,
+        "worst": 583639124
       },
       "wasm_memory_bytes": {
-        "median": 183566336,
-        "worst": 1824391168
+        "median": 184877056,
+        "worst": 1834614784
       },
       "index_bytes": {
         "median": 156412608,
         "worst": 1564125388
       },
       "ann_bytes": {
-        "median": 10590216,
-        "worst": 107474300
+        "median": 11898796,
+        "worst": 118723508
       },
       "storage_usage_bytes": {
-        "median": 167002852,
-        "worst": 1671599716
+        "median": 168311432,
+        "worst": 1682848924
       },
       "eight_gb": "not measured on 8 GB"
     },
@@ -255,14 +255,14 @@
       "machine": "Apple M5 Pro, 48 GB",
       "chrome": "Chrome/157.0.8103.79",
       "command": "npm run bench:ann",
-      "commit": "da39477-dirty",
+      "commit": "8abd87b-dirty",
       "build_ms": {
-        "median": 717,
-        "worst": 717
+        "median": 678,
+        "worst": 678
       },
       "cold_open_ms": {
-        "median": 175.5,
-        "worst": 175.5
+        "median": 173.6,
+        "worst": 173.6
       },
       "query_p50_ms": {
         "median": 3.6,
@@ -277,8 +277,8 @@
         "worst": 1
       },
       "js_heap_peak_bytes": {
-        "median": 92047165,
-        "worst": 92047165
+        "median": 92120068,
+        "worst": 92120068
       },
       "wasm_memory_bytes": {
         "median": 157810688,
@@ -293,8 +293,8 @@
         "worst": 0
       },
       "storage_usage_bytes": {
-        "median": 168027940,
-        "worst": 168027940
+        "median": 168034104,
+        "worst": 168034104
       },
       "eight_gb": "not measured on 8 GB"
     },
@@ -312,14 +312,14 @@
       "machine": "Apple M5 Pro, 48 GB",
       "chrome": "Chrome/157.0.8103.79",
       "command": "npm run bench:ann",
-      "commit": "da39477-dirty",
+      "commit": "8abd87b-dirty",
       "build_ms": {
-        "median": 83768.5,
-        "worst": 83768.5
+        "median": 83083.5,
+        "worst": 83083.5
       },
       "cold_open_ms": {
-        "median": 196.6,
-        "worst": 196.6
+        "median": 192.6,
+        "worst": 192.6
       },
       "query_p50_ms": {
         "median": 0.2,
@@ -330,12 +330,12 @@
         "worst": 0.3
       },
       "recall_at_10": {
-        "median": 0.045,
-        "worst": 0.045
+        "median": 0.039,
+        "worst": 0.039
       },
       "js_heap_peak_bytes": {
-        "median": 92018513,
-        "worst": 92018513
+        "median": 92120432,
+        "worst": 92120432
       },
       "wasm_memory_bytes": {
         "median": 184614912,
@@ -346,12 +346,12 @@
         "worst": 156412608
       },
       "ann_bytes": {
-        "median": 11615304,
-        "worst": 11615304
+        "median": 11621468,
+        "worst": 11621468
       },
       "storage_usage_bytes": {
-        "median": 168027940,
-        "worst": 168027940
+        "median": 168034104,
+        "worst": 168034104
       },
       "eight_gb": "not measured on 8 GB"
     },
@@ -369,30 +369,30 @@
       "machine": "Apple M5 Pro, 48 GB",
       "chrome": "Chrome/157.0.8103.79",
       "command": "npm run bench:ann",
-      "commit": "da39477-dirty",
+      "commit": "8abd87b-dirty",
       "build_ms": {
-        "median": 83768.5,
-        "worst": 83768.5
+        "median": 83083.5,
+        "worst": 83083.5
       },
       "cold_open_ms": {
-        "median": 196.6,
-        "worst": 196.6
+        "median": 192.6,
+        "worst": 192.6
       },
       "query_p50_ms": {
         "median": 0.3,
         "worst": 0.3
       },
       "query_p95_ms": {
-        "median": 0.4,
-        "worst": 0.4
+        "median": 0.5,
+        "worst": 0.5
       },
       "recall_at_10": {
-        "median": 0.0755,
-        "worst": 0.0755
+        "median": 0.084,
+        "worst": 0.084
       },
       "js_heap_peak_bytes": {
-        "median": 92018513,
-        "worst": 92018513
+        "median": 92120432,
+        "worst": 92120432
       },
       "wasm_memory_bytes": {
         "median": 184614912,
@@ -403,12 +403,12 @@
         "worst": 156412608
       },
       "ann_bytes": {
-        "median": 11615304,
-        "worst": 11615304
+        "median": 11621468,
+        "worst": 11621468
       },
       "storage_usage_bytes": {
-        "median": 168027940,
-        "worst": 168027940
+        "median": 168034104,
+        "worst": 168034104
       },
       "eight_gb": "not measured on 8 GB"
     },
@@ -426,14 +426,14 @@
       "machine": "Apple M5 Pro, 48 GB",
       "chrome": "Chrome/157.0.8103.79",
       "command": "npm run bench:ann",
-      "commit": "da39477-dirty",
+      "commit": "8abd87b-dirty",
       "build_ms": {
-        "median": 83768.5,
-        "worst": 83768.5
+        "median": 83083.5,
+        "worst": 83083.5
       },
       "cold_open_ms": {
-        "median": 196.6,
-        "worst": 196.6
+        "median": 192.6,
+        "worst": 192.6
       },
       "query_p50_ms": {
         "median": 0.6,
@@ -444,12 +444,12 @@
         "worst": 0.7
       },
       "recall_at_10": {
-        "median": 0.1375,
-        "worst": 0.1375
+        "median": 0.1475,
+        "worst": 0.1475
       },
       "js_heap_peak_bytes": {
-        "median": 92018513,
-        "worst": 92018513
+        "median": 92120432,
+        "worst": 92120432
       },
       "wasm_memory_bytes": {
         "median": 184614912,
@@ -460,12 +460,12 @@
         "worst": 156412608
       },
       "ann_bytes": {
-        "median": 11615304,
-        "worst": 11615304
+        "median": 11621468,
+        "worst": 11621468
       },
       "storage_usage_bytes": {
-        "median": 168027940,
-        "worst": 168027940
+        "median": 168034104,
+        "worst": 168034104
       },
       "eight_gb": "not measured on 8 GB"
     }

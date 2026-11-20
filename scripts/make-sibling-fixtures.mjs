@@ -86,6 +86,13 @@ lines('workspace', 'SPRINT-4-REPORT.md', {
 lines('workspace', 'SPRINT-5-REPORT.md', {
   fragments: ['1de5ff5..eb28e49', '5974bb6..fe2b00b', '44325732090', '44325740893', '44325772916', '44325781731', 'done-when NOT met (owner runbook step 5)'],
 });
+// evidence/sprint-6: what the Sprint 6 write-up quotes: D5's B1 result, and the lock proof (fresh clones at the locks: the e2e and gate runs and the size guard).
+whole('evidence', 'sprint-6/D5/B1-result.md');
+for (const f of ['e2e.log', 'gate.log', 'size.txt']) whole('evidence', `sprint-6/architect/lockproof-logs/${f}`);
+// the lines of the Sprint 6 report the write-up quotes (an excerpt, under 4 KB: no narrative, no owner decision)
+lines('workspace', 'SPRINT-6-REPORT.md', {
+  fragments: ['have 26 rows, 20 of them refused', 'recall@10 is 0.9965 / 1 / 1 at ef 32 / 64 / 128', '0.90 at ef 128 is met', 'Uniform data at 100k x 384 has no floor', 'The team did not produce even the grant draft this sprint'],
+});
 // evidence/sprint-<SPRINT>: the status line of each demo (the architect copies the lane scratch folders to evidence/sprint-<SPRINT> at wrap-up; until then they are read from scratch).
 for (const f of ['D1/status-line.txt', 'D2/status-line.txt', 'D3/status-line.txt', 'D4/status-line.txt', 'D5/dockit-status-line.txt', 'D5/site-status-line.txt']) whole('evidence', `sprint-${SPRINT}/${f}`);
 // dockit's real benchmark CSVs: from the commit once dockit is committed, from its working tree until then (the entry says which).
@@ -154,7 +161,7 @@ for (const [key, cut] of [...want].sort(([a], [b]) => (a < b ? -1 : 1))) {
 
 // Index of every evidence path the Sprint 3, 4 and 5 write-ups cite (existence is checked against this, not the disk).
 const files = {};
-for (const n of [3, 4, 5]) {
+for (const n of [3, 4, 5, 6]) {
   const writeup = readFileSync(join(SITE_ROOT, 'writeups', `2026-11-sprint-${n}.html`), 'utf8');
   const cited = [...new Set([...writeup.matchAll(/evidence\/(sprint-\d\/[A-Za-z0-9_./-]+[A-Za-z0-9_])/g)].map((m) => m[1]))].sort();
   for (const rel of cited) {
@@ -163,7 +170,7 @@ for (const n of [3, 4, 5]) {
     files[rel] = statSync(file).isDirectory() ? { directory: true } : { size: statSync(file).size, sha256: sha256(readFileSync(file)) };
   }
 }
-const index = { note: 'Every evidence path the Sprint 3, 4 and 5 write-ups cite, recorded when the fixtures were cut. Existence checks in CI read this index, not the disk.', files };
+const index = { note: 'Every evidence path the Sprint 3, 4, 5 and 6 write-ups cite, recorded when the fixtures were cut. Existence checks in CI read this index, not the disk.', files };
 const indexBody = `${JSON.stringify(index, null, 2)}\n`;
 writeFileSync(join(FIXTURE_ROOT, 'evidence', 'INDEX.json'), indexBody);
 entries.push({ repo: 'evidence', commit: null, path: 'INDEX.json', cut: { mode: 'generated' }, bytes: Buffer.byteLength(indexBody), sha256: sha256(indexBody), sourceSha256: null });

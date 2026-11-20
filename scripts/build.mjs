@@ -16,6 +16,7 @@ import {
 } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { EMULATED_SPEC, FAILURE_REASONS as EMULATED_FAILURES, NOT_MEASURED_8GB, validateEnvironmentLabel } from './import-dockit-emulated.mjs';
 
 export const ALLOWED_RESOURCE_HOSTS = ['github.com', 'arxiv.org', 'doi.org'];
 
@@ -108,7 +109,7 @@ function renderLayout(layout, { title, description, content, root, active, built
     .replaceAll('{{root}}', root)
     .replaceAll('{{built}}', esc(built))
     .replace('{{content}}', () => content);
-  html = html.replace(/\{\{active:([a-z]+)\}\}/g, (_, page) => (page === active ? 'aria-current="page"' : ''));
+  html = html.replace(/\{\{active:([a-z-]+)\}\}/g, (_, page) => (page === active ? 'aria-current="page"' : ''));
   return html;
 }
 
@@ -360,6 +361,79 @@ ${rows}
 </p>`;
 }
 
+const gib = (bytes) => `${fmtNum(bytes / 1073741824)} GiB`;
+const isCount = (v) => typeof v === 'number' && Number.isSafeInteger(v) && v >= 0;
+
+/**
+ * Throws unless data/e2e-emulated.json has the shape the importer writes: the spec, at least one leg, every environment label acceptable (the same rules as the
+ * importer: 'emulated: ...; not a laptop', 'laptop' only in the suffix, no 8 GB machine), every figure a non-negative integer or null, a failure reason from
+ * the four, a result of pass, fail or incomplete, and the 8 GB laptop cell exactly 'not measured on 8 GB'. The data file is checked again here because the
+ * page must not trust a file it did not write itself.
+ */
+export function checkEmulated(data) {
+  if (data?.spec !== EMULATED_SPEC) throw new Error(`e2e-emulated.json: spec must be ${EMULATED_SPEC}`);
+  if (!Array.isArray(data.legs) || data.legs.length === 0) throw new Error('e2e-emulated.json: legs must be a non-empty list');
+  const src = data.source;
+  if (src === null || typeof src !== 'object') throw new Error('e2e-emulated.json: source is missing');
+  if (!/^docs\/benchmarks\/e2e-emulated-win-vm\.csv$/.test(src.csv)) throw new Error('e2e-emulated.json: source.csv is not the emulated CSV');
+  if (!/^[0-9a-f]{64}$/.test(src.csvSha256)) throw new Error('e2e-emulated.json: source.csvSha256 is not a sha256');
+  if (typeof src.commit !== 'string' || !/^[0-9a-z, -]{1,120}$/.test(src.commit)) throw new Error('e2e-emulated.json: source.commit is not a commit list');
+  data.legs.forEach((l, i) => {
+    const where = `e2e-emulated.json: leg ${i + 1}`;
+    try {
+      validateEnvironmentLabel(l.environment);
+    } catch (e) {
+      throw new Error(`${where}: ${e.message}`);
+    }
+    if (l.laptop8gb !== NOT_MEASURED_8GB) throw new Error(`${where}: laptop_8gb must read '${NOT_MEASURED_8GB}'`);
+    if (l.limitBytes !== null && !isCount(l.limitBytes)) throw new Error(`${where}: limitBytes is not a non-negative integer`);
+    for (const k of ['runs', 'sessionRuns', 'restartRuns']) if (!isCount(l[k])) throw new Error(`${where}: ${k} is not a non-negative integer`);
+    for (const k of ['jobCommitPeakBytes', 'jobEscapes']) if (l[k] !== null && !isCount(l[k])) throw new Error(`${where}: ${k} is not a non-negative integer`);
+    for (const k of ['first_token_ms', 'total_ms', 'processCommitPeakBytes', 'process_rss_peak_bytes', 'samplerMedianIntervalMs'])
+      if (l[k] !== null && !(isCount(l[k]?.median) && isCount(l[k]?.worst))) throw new Error(`${where}: ${k} is not a non-negative integer pair`);
+    if (l.failure !== null && !EMULATED_FAILURES.includes(l.failure)) throw new Error(`${where}: failure must be null or one of ${EMULATED_FAILURES.join(', ')}`);
+    if (!['pass', 'fail', 'incomplete'].includes(l.result)) throw new Error(`${where}: result must be pass, fail or incomplete`);
+  });
+}
+
+/**
+ * The emulated section of the benchmarks page, from data/e2e-emulated.json only, every cell escaped. It exists only when the file does. The label is quoted
+ * verbatim in the first column; the job limit covers the pwsh, node and Chrome process tree; the 8 GB laptop column reads not measured on 8 GB.
+ */
+export function renderEmulated(data) {
+  const result = (l) => (l.result === 'pass' ? 'pass' : l.result === 'fail' ? `fail: ${l.failure ?? 'unknown'}` : 'incomplete');
+  const rows = data.legs
+    .map(
+      (l) =>
+        `<tr class="emulated-leg"><td>${esc(l.environment)}</td><td>${fmtNum(l.runs)}</td><td>${l.limitBytes === null ? 'no limit' : esc(gib(l.limitBytes))}</td>` +
+        `<td>${l.jobCommitPeakBytes === null ? 'not measured' : esc(mbOf(l.jobCommitPeakBytes))}</td>` +
+        `<td>${l.processCommitPeakBytes === null ? 'not measured' : `${esc(mbOf(l.processCommitPeakBytes.median))} / ${esc(mbOf(l.processCommitPeakBytes.worst))}`}</td>` +
+        `<td>${l.jobEscapes === null ? 'not measured' : fmtNum(l.jobEscapes)}</td>` +
+        `<td>${medianWorst(l.first_token_ms)}</td><td>${medianWorst(l.total_ms)}</td>` +
+        `<td>${esc(result(l))}</td><td><code>${esc(l.commit)}</code>, ${esc(l.chrome)}</td><td>${esc(l.laptop8gb)}</td></tr>`,
+    )
+    .join('\n');
+  return `<h2 id="emulated-windows">Emulated on a GitHub-hosted Windows VM (not a laptop)</h2>
+<p>
+  <span class="tag">dockit</span> The same benchmark as above, run once by hand on a GitHub-hosted Windows Server VM (the manual bench-windows workflow), once per leg: with no job limit, then with
+  the pwsh, node and Chrome process tree inside a Windows Job Object whose committed-memory limit is 8, 6 and 5 GiB. The job limit covers the pwsh, node and Chrome process tree, so the whole-tree peak is a
+  little above the Chrome-only peak. The raw rows are in dockit's <code>${esc(data.source.csv)}</code> (sha256 <code>${esc(data.source.csvSha256.slice(0, 16))}</code>), taken at commit <code>${esc(data.source.commit)}</code>.
+</p>
+<div class="table-wrap">
+<table class="benchmarks emulated">
+<thead><tr><th>Environment (verbatim)</th><th>Runs</th><th>Job commit limit</th><th>Peak commit, whole tree: pwsh, node and Chrome</th><th>Peak commit, Chrome only (median / worst)</th><th>Chrome processes outside the job</th><th>Time to first token (median / worst)</th><th>Total, first question (median / worst)</th><th>Result</th><th>Commit, Chrome</th><th>8 GB laptop</th></tr></thead>
+<tbody>
+${rows}
+</tbody>
+</table>
+</div>
+<p class="muted">
+  A commit limit is not a physical-memory limit: the VM has more memory than a laptop, so a capped leg never pages and either fits or an allocation fails. These rows are not a laptop figure and fill no
+  8 GB cell: the 8 GB laptop column reads not measured on 8 GB in every row, and the 8 GB Windows done-when stays NOT met (owner runbook step 5). Peak commit is the Windows commit size, which is what a job limit adds up;
+  it is a different figure from the peak resident size of the table above.
+</p>`;
+}
+
 const GITHUB_ORG = 'https://github.com/AirplaneMode-Labs';
 const DEMO_URL = /^https:\/\/airplanemode-labs\.github\.io\/[a-z]+\/$/;
 
@@ -414,6 +488,13 @@ function renderDemosHome(demos) {
 ${items}
 </ul>
 <p class="muted">Statuses written on ${esc(dates)} from local builds, not measured at the live URLs. See the <a href="demos/">demos page</a>.</p>`;
+}
+
+/** 'about 800 MB': what dockit keeps on the device after the one-time model download, from data/e2e.json (the stored size the browser reported), never typed. */
+export function dockitDownload(e2e) {
+  const g = e2e.groups.find((x) => x.restart === false);
+  if (!g?.storage_usage_bytes) throw new Error('data/e2e.json has no storage_usage_bytes for the in-session group');
+  return `about ${Math.round(g.storage_usage_bytes.median / 1e6)} MB`;
 }
 
 const LICENCE_REPOS = ['pagetriage', 'glyphsift', 'localdata', 'runtime', 'dockit', 'site', 'control-plane'];
@@ -484,6 +565,20 @@ export function build({ root, outDir }) {
     }
     if (content.includes('{{memory-section}}')) {
       content = content.replace('{{memory-section}}', () => renderMemory(e2e));
+    }
+    if (content.includes('{{dockit-size}}')) {
+      content = content.replace('{{dockit-size}}', () => dockitDownload(e2e));
+    }
+    if (content.includes('{{emulated-section}}\n')) {
+      // present only when dockit's emulated results have been imported; with no data the line is removed whole, so the page is unchanged
+      const emulatedFile = join(root, 'data', 'e2e-emulated.json');
+      let section = '';
+      if (existsSync(emulatedFile)) {
+        const emulated = JSON.parse(readFileSync(emulatedFile, 'utf8'));
+        checkEmulated(emulated);
+        section = `${renderEmulated(emulated)}\n`;
+      }
+      content = content.replace('{{emulated-section}}\n', () => section);
     }
     if (content.includes('{{ann-section}}')) {
       content = content.replace('{{ann-section}}', () => renderAnn(JSON.parse(readFileSync(join(root, 'data', 'ann.json'), 'utf8'))));

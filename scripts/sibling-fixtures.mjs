@@ -37,7 +37,7 @@ export function splitCitation(path) {
  * The sprint whose evidence folder the demo-status checks read (TD-78): one constant, so a new sprint changes one line. The sync script,
  * the fixture generator and the tests all take it from here.
  */
-export const SPRINT = 6;
+export const SPRINT = 7;
 
 /**
  * Where a lane's files for the current sprint are before the architect copies them into <workspace>/evidence/sprint-<SPRINT> at wrap-up

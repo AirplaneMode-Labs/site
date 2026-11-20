@@ -1,0 +1,57 @@
+<!-- title: Start here -->
+<!-- description: A two-minute path through Airplane Mode Labs: the six demos in your browser, four quick starts that need no model download, the benchmarks and the limitations. -->
+<h1>Start here</h1>
+<p class="lede">
+  Airplane Mode Labs builds offline-first AI tools that run in the browser. If you have two minutes, do the first section; if you have ten, do the second. Everything below says
+  what it does not do yet, and nothing here is published to a package registry: the quick starts build from a clone of the repository.
+</p>
+
+<h2 id="demos">1. Try a demo in your browser</h2>
+<p>
+  Each demo runs in the browser tab: nothing is uploaded, and the only requests are for the page's own files. Each has a box titled "What this demo does not do yet". Start with the
+  first one; it needs no download.
+</p>
+<ul class="demo-list">
+  <li><a href="https://airplanemode-labs.github.io/glyphsift/" rel="noopener noreferrer">glyphsift</a>: drop in Devanagari text and see whether it is clean or damaged. No model, no download.</li>
+  <li><a href="https://airplanemode-labs.github.io/pagetriage/" rel="noopener noreferrer">pagetriage</a>: open a PDF and see what is on each page before anything reads it. No model, no download.</li>
+  <li><a href="https://airplanemode-labs.github.io/localdata/" rel="noopener noreferrer">localdata</a>: store and search vectors in the browser, flat scan or an optional graph. No model, no download.</li>
+  <li><a href="https://airplanemode-labs.github.io/runtime/" rel="noopener noreferrer">runtime</a>: the capability profile, the signed-manifest checks and the tamper lab. No model, no download.</li>
+  <li>
+    <a href="https://airplanemode-labs.github.io/site/" rel="noopener noreferrer">site</a>: this site, as a demo of itself: papers, benchmarks and write-ups, with no script on any page.
+  </li>
+  <li>
+    dockit, the offline PDF question-answering app, is the one with a download. Before you open it: it keeps {{dockit-size}} on your device once its models have downloaded (a small
+    language model and a search model; you do this once, online), and works offline from then on. It reads text-layer PDFs only. Open it on a good connection, then switch Wi-Fi off:
+    <a href="https://airplanemode-labs.github.io/dockit/" rel="noopener noreferrer">open dockit</a>.
+  </li>
+</ul>
+
+<h2 id="quick-starts">2. Try the libraries in two minutes</h2>
+<p>
+  Each library repository has a "Try it in two minutes" section that needs no model download and no test key. It builds the library from a clone (so it needs the toolchain named there, and the
+  package registries once for that first build), installs what it built into an empty folder and runs it with no network. Its code blocks are run by a test in the repository's CI, so the
+  section cannot drift from the code. Nothing is published to npm, PyPI or crates.io yet, which is why each one builds from the clone.
+</p>
+<ul>
+  <li><a href="https://github.com/AirplaneMode-Labs/runtime#try-it-in-two-minutes" rel="noopener noreferrer">runtime</a>: sign a manifest with a key made for the run, verify it, change one number and watch the verifier refuse it.</li>
+  <li><a href="https://github.com/AirplaneMode-Labs/localdata#try-it-in-two-minutes" rel="noopener noreferrer">localdata</a>: store five synthetic vectors, build a graph index over them and ask for the three nearest.</li>
+  <li><a href="https://github.com/AirplaneMode-Labs/pagetriage#try-it-in-two-minutes" rel="noopener noreferrer">pagetriage</a>: run the built npm package, Python wheel and command-line binary on one synthetic PDF.</li>
+  <li><a href="https://github.com/AirplaneMode-Labs/glyphsift#try-it-in-two-minutes" rel="noopener noreferrer">glyphsift</a>: score a clean and a noisy line of Devanagari from the command line, Python and Node.</li>
+</ul>
+
+<h2 id="numbers">3. The numbers, and what they do not say</h2>
+<p>
+  The <a href="../benchmarks/">benchmarks page</a> lists every figure with the command that produced it. Every figure comes from a developer machine, and the 8 GB laptop column reads
+  not measured on 8 GB in every row: whether the tools fit an 8 GB Windows laptop with the Wi-Fi off has not been measured yet.
+</p>
+<p>Each repository states what does not work yet in its Limitations section:</p>
+<ul>
+  <li><a href="https://github.com/AirplaneMode-Labs/dockit#limitations" rel="noopener noreferrer">dockit</a></li>
+  <li><a href="https://github.com/AirplaneMode-Labs/runtime#limitations" rel="noopener noreferrer">runtime</a></li>
+  <li><a href="https://github.com/AirplaneMode-Labs/localdata#limitations" rel="noopener noreferrer">localdata</a></li>
+  <li><a href="https://github.com/AirplaneMode-Labs/pagetriage#limitations" rel="noopener noreferrer">pagetriage</a></li>
+  <li><a href="https://github.com/AirplaneMode-Labs/glyphsift#limitations" rel="noopener noreferrer">glyphsift</a></li>
+</ul>
+<p class="muted">
+  Package names use the placeholder scope <code>@airplanemode</code> until the registry handles are reserved. There is no tag and no release yet.
+</p>

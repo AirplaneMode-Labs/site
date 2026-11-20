@@ -393,6 +393,7 @@ export function checkEmulated(data) {
       if (l[k] !== null && !(isCount(l[k]?.median) && isCount(l[k]?.worst))) throw new Error(`${where}: ${k} is not a non-negative integer pair`);
     if (l.failure !== null && !EMULATED_FAILURES.includes(l.failure)) throw new Error(`${where}: failure must be null or one of ${EMULATED_FAILURES.join(', ')}`);
     if (!['pass', 'fail', 'incomplete'].includes(l.result)) throw new Error(`${where}: result must be pass, fail or incomplete`);
+    if (l.questions !== null && l.questions !== undefined && !(isCount(l.questions?.all?.correct) && isCount(l.questions?.all?.of))) throw new Error(`${where}: questions must be null or { all: { correct, of } } with non-negative integers`);
     checkLimitEvidence(l, where);
   });
   if (data.lowestChromeCommitPeakBytes !== null && !isCount(data.lowestChromeCommitPeakBytes)) throw new Error('e2e-emulated.json: lowestChromeCommitPeakBytes is not a non-negative integer or null');
@@ -407,6 +408,7 @@ export function checkEmulated(data) {
     if (l.laptop8gb !== NOT_MEASURED_8GB) throw new Error(`${where}: laptop_8gb must read '${NOT_MEASURED_8GB}'`);
     if (!isCount(l.limitBytes)) throw new Error(`${where}: limitBytes is not a non-negative integer`);
     for (const k of ['rows', 'completedRuns']) if (!isCount(l[k])) throw new Error(`${where}: ${k} is not a non-negative integer`);
+    if (typeof l.markerOnly !== 'boolean') throw new Error(`${where}: markerOnly must be true or false`);
     if (l.failure !== null && !EMULATED_FAILURES.includes(l.failure)) throw new Error(`${where}: failure must be null or one of ${EMULATED_FAILURES.join(', ')}`);
     if (!['failed_as_expected', 'failed_unproven', 'completed', 'incomplete'].includes(l.outcome)) throw new Error(`${where}: outcome is not one of the four`);
     checkLimitEvidence(l, where);
@@ -421,7 +423,11 @@ function checkLimitEvidence(l, where) {
   if (!LIMIT_PROOFS.includes(l.limitProof)) throw new Error(`${where}: limitProof is not one of ${LIMIT_PROOFS.join(', ')}`);
   if (l.limitReadBack !== null && !(['0x2000', '0x2200'].includes(l.limitReadBack?.flags) && isCount(l.limitReadBack?.bytes))) throw new Error(`${where}: limitReadBack must be null or { flags: 0x2000 | 0x2200, bytes: a non-negative integer }`);
   if (![true, false, null].includes(l.probeRefused)) throw new Error(`${where}: probeRefused must be true, false or null`);
-  for (const k of ['peakAfterProbeBytes', 'limitMessages']) if (l[k] !== null && !isCount(l[k])) throw new Error(`${where}: ${k} is not a non-negative integer or null`);
+  for (const k of ['peakAfterProbeBytes', 'limitMessages', 'probeMessages', 'benchmarkMessages']) if (l[k] !== null && !isCount(l[k])) throw new Error(`${where}: ${k} is not a non-negative integer or null`);
+  // the benchmark's count follows from the whole run and the probe's: total - probe on a capped leg, the whole count on a leg with no limit, unknown otherwise (the same rule as dockit's limitMessages)
+  if (l.probeMessages !== null && l.limitMessages !== null && l.probeMessages > l.limitMessages) throw new Error(`${where}: probeMessages is above limitMessages`);
+  const expectedBenchmark = l.limitMessages === null ? null : l.limitBytes === null ? l.limitMessages : l.probeMessages === null ? null : l.limitMessages - l.probeMessages;
+  if (l.benchmarkMessages !== expectedBenchmark) throw new Error(`${where}: benchmarkMessages ${l.benchmarkMessages} does not follow from limitMessages and probeMessages (${expectedBenchmark})`);
   if (l.limitProof !== limitProof(proofRow(l))) throw new Error(`${where}: limitProof ${l.limitProof} does not follow from the evidence (${limitProof(proofRow(l))})`);
 }
 
@@ -442,15 +448,25 @@ export function renderEmulated(data) {
   const aboveNote = (l) =>
     !above(l) ? '' : l.limitProof === 'proven' ? ' (whole-tree peak above a limit that is proven in force: the peak counts commits the limit refused)' : ' (whole-tree peak above the limit: not a result under this cap)';
   const result = (l) => (l.result === 'pass' ? 'pass' : l.result === 'fail' ? `fail: ${l.failure ?? 'unknown'}` : 'incomplete') + aboveNote(l);
+  const plural = (n, one, many) => (n === 1 ? one : many);
+  const listOf = (items) => (items.length <= 1 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items.at(-1)}`);
+  /** The Commits refused while the benchmark ran cell: the whole-run memory-limit messages minus the probe's own (the same wording as dockit's README block). */
+  const refusedCell = (l) => {
+    if (l.limitBytes === null) return 'not applicable (no limit)';
+    if (l.limitMessages === null) return 'no port';
+    if (l.benchmarkMessages === null) return 'not counted';
+    return l.benchmarkMessages > 0 ? `yes: ${fmtNum(l.benchmarkMessages)} ${plural(l.benchmarkMessages, 'message', 'messages')} while the benchmark ran (the probe's ${fmtNum(l.probeMessages)} not counted)` : `none (the probe's ${fmtNum(l.probeMessages)} not counted)`;
+  };
+  const questionCell = (l) => (l.questions === null || l.questions === undefined ? 'not measured' : `${fmtNum(l.questions.all.correct)} of ${fmtNum(l.questions.all.of)}`);
   const rows = data.legs
     .map(
       (l) =>
-        `<tr class="emulated-leg"><td>${esc(l.environment)}</td><td>${fmtNum(l.runs)}</td><td>${l.limitBytes === null ? 'no limit' : esc(gib(l.limitBytes))}</td><td>${esc(proofCell(l))}</td>` +
+        `<tr class="emulated-leg"><td>${esc(l.environment)}</td><td>${fmtNum(l.runs)}</td><td>${l.limitBytes === null ? 'no limit' : esc(gib(l.limitBytes))}</td><td>${esc(proofCell(l))}</td><td>${esc(refusedCell(l))}</td>` +
         `<td>${l.jobCommitPeakBytes === null ? 'not measured' : esc(mbOf(l.jobCommitPeakBytes))}</td>` +
         `<td>${l.processCommitPeakBytes === null ? 'not measured' : `${esc(mbOf(l.processCommitPeakBytes.median))} / ${esc(mbOf(l.processCommitPeakBytes.worst))}`}</td>` +
         `<td>${l.jobEscapes === null ? 'not measured' : fmtNum(l.jobEscapes)}</td>` +
         `<td>${medianWorst(l.first_token_ms)}</td><td>${medianWorst(l.total_ms)}</td>` +
-        `<td>${esc(result(l))}</td><td><code>${esc(l.commit)}</code>, ${esc(l.chrome)}</td><td>${esc(l.laptop8gb)}</td></tr>`,
+        `<td>${esc(questionCell(l))}</td><td>${esc(result(l))}</td><td><code>${esc(l.commit)}</code>, ${esc(l.chrome)}</td><td>${esc(l.laptop8gb)}</td></tr>`,
     )
     .join('\n');
   // The evidence behind the Limit in force column: what the system said about the limit, and what happened to the commit above it. One row per leg or control that has any.
@@ -465,7 +481,7 @@ export function renderEmulated(data) {
           : l.peakAfterProbeBytes > l.limitBytes
             ? `yes: ${mbOf(l.peakAfterProbeBytes)} is above the limit of ${mbOf(l.limitBytes)}`
             : `no: ${mbOf(l.peakAfterProbeBytes)} is below the limit of ${mbOf(l.limitBytes)}`;
-      return `<tr class="emulated-evidence"><td>${l.limitBytes === null ? 'no limit' : esc(gib(l.limitBytes))}${control ? ' (control)' : ''}</td><td>${esc(read)}</td><td>${esc(probe)}</td><td>${esc(counted)}</td><td>${l.peakAfterProbeBytes === null ? 'not measured' : esc(mbOf(l.peakAfterProbeBytes))}</td><td>${l.limitMessages === null ? 'no port' : fmtNum(l.limitMessages)}</td></tr>`;
+      return `<tr class="emulated-evidence"><td>${l.limitBytes === null ? 'no limit' : esc(gib(l.limitBytes))}${control ? ' (control)' : ''}</td><td>${esc(read)}</td><td>${esc(probe)}</td><td>${esc(counted)}</td><td>${l.peakAfterProbeBytes === null ? 'not measured' : esc(mbOf(l.peakAfterProbeBytes))}</td><td>${l.limitMessages === null ? 'no port' : fmtNum(l.limitMessages)}</td><td>${l.probeMessages === null ? (l.limitBytes === null ? 'no probe' : 'not counted') : fmtNum(l.probeMessages)}</td><td>${l.benchmarkMessages === null ? 'not known' : fmtNum(l.benchmarkMessages)}</td></tr>`;
     })
     .join('\n');
   const evidenceTable =
@@ -473,7 +489,7 @@ export function renderEmulated(data) {
       ? ''
       : `<div class="table-wrap">
 <table class="benchmarks emulated-evidence">
-<thead><tr><th>Limit evidence (leg)</th><th>Read-back: LimitFlags, JobMemoryLimit</th><th>Commit of the limit + ${probeOver} from inside the job</th><th>Refused commit counted in PeakJobMemoryUsed?</th><th>PeakJobMemoryUsed right after the probe</th><th>JOB_OBJECT_MSG_JOB_MEMORY_LIMIT messages, whole run</th></tr></thead>
+<thead><tr><th>Limit evidence (leg)</th><th>Read-back: LimitFlags, JobMemoryLimit</th><th>Commit of the limit + ${probeOver} from inside the job</th><th>Refused commit counted in PeakJobMemoryUsed?</th><th>PeakJobMemoryUsed right after the probe</th><th>JOB_OBJECT_MSG_JOB_MEMORY_LIMIT messages, whole run</th><th>of which caused by the probe</th><th>posted while the benchmark ran</th></tr></thead>
 <tbody>
 ${evidenceRows}
 </tbody>
@@ -482,6 +498,25 @@ ${evidenceRows}
 `;
   // What the legs do and do not show, in words, computed from the data (nothing here is typed from a result).
   const reading = [];
+  // Whether commits were refused while the benchmark ran, from the completion port's count after the probe's own message is taken out. Only a leg whose limit is proven in force gets a
+  // sentence: a refusal counted under a limit nobody proved says nothing about the limit.
+  const noLimitLeg = data.legs.find((x) => x.limitBytes === null);
+  const provenLegs = data.legs.filter((x) => x.limitBytes !== null && x.limitProof === 'proven');
+  for (const l of provenLegs.filter((x) => x.benchmarkMessages !== null && x.benchmarkMessages > 0)) {
+    const n = l.benchmarkMessages;
+    const passed = l.result === 'pass';
+    const q = l.questions;
+    const base = noLimitLeg?.questions;
+    const same = q == null || base == null ? '' : q.all.correct === base.all.correct && q.all.of === base.all.of ? " (the same as the no-limit leg's)" : ` (the no-limit leg's reads ${fmtNum(base.all.correct)} of ${fmtNum(base.all.of)})`;
+    reading.push(
+      `<p><strong>The ${esc(gib(l.limitBytes))} leg had commits refused while the benchmark ran${passed ? ', and the leg still finished' : ''}.</strong> The job's completion port received ${fmtNum(n)} JOB_OBJECT_MSG_JOB_MEMORY_LIMIT ${plural(n, 'message', 'messages')} while the benchmark ran, besides the ${fmtNum(l.probeMessages)} the probe caused: each is the system's notice that a process in the job asked for a commit past the limit and was refused (the system does not guarantee delivery of these notices, so the count is a floor, not an exact number of refusals). The limit was proven in force before the benchmark started (probe refused, read-back equal), so these are refusals by a limit that was in force, not a limit that did nothing.${passed ? ` All ${fmtNum(l.runs)} runs of the leg finished with no failure reason${q == null ? '' : `, and its question set reads ${fmtNum(q.all.correct)} of ${fmtNum(q.all.of)} answers with the cited page correct${same}`}.` : ''}</p>`,
+    );
+  }
+  const quietLegs = provenLegs.filter((x) => x.benchmarkMessages === 0);
+  if (quietLegs.length > 0)
+    reading.push(
+      `<p><strong>No commit was refused while the benchmark ran on the ${listOf(quietLegs.map((x) => esc(gib(x.limitBytes))))} ${plural(quietLegs.length, 'leg', 'legs')}.</strong> The only memory-limit message the completion port received on ${quietLegs.length === 1 ? 'it' : 'each'} was the one the probe caused, so the port saw no refusal during the benchmark (the system does not guarantee delivery of these notices, so this is what the port saw, not a proof).</p>`,
+    );
   for (const l of data.legs.filter((x) => x.limitBytes !== null && x.limitProof === 'not_enforced')) {
     const g = esc(gib(l.limitBytes));
     reading.push(
@@ -515,7 +550,7 @@ ${evidenceRows}
     );
   if (data.legs.length > 1)
     reading.push(
-      "<p>Each leg ran on its own runner VM, and the runner's CPU model and Chrome build can differ from leg to leg, so a difference in time between two legs is not an effect of the cap. The machine facts of the first run, leg by leg, are in dockit's <code>scripts/win/README.md</code>.</p>",
+      "<p>Each leg ran on its own runner VM, and the runner's CPU model and Chrome build can differ from leg to leg, so a difference in time between two legs is not an effect of the cap. The machine facts of each run, leg by leg, are in dockit's <code>scripts/win/README.md</code>.</p>",
     );
   // The control leg(s): from their own rows; never a benchmark figure.
   for (const c of controls) {
@@ -531,8 +566,9 @@ ${evidenceRows}
           ? `It failed with <code>${esc(c.failure)}</code> after ${fmtNum(c.completedRuns)} completed run(s), but the limit is not proven in force (${esc(LIMIT_PROOF_TEXT[c.limitProof])}), so the stop shows nothing about the cap.`
           : c.outcome === 'completed'
             ? `<strong>It completed under the control limit (${fmtNum(c.completedRuns)} runs): the cap does nothing, so no capped leg of this file means anything.</strong>`
-            : `It did not complete (${fmtNum(c.rows)} row(s), ${fmtNum(c.completedRuns)} finished run(s), no failure reason recorded: stopped by the time limit or a crash); the limit is ${esc(LIMIT_PROOF_TEXT[c.limitProof])}.`;
-    reading.push(`<p><strong>Control leg, ${g}: not a benchmark figure.</strong> The benchmark must not complete here: ${below}. ${outcome} Label: <code>${esc(c.environment)}</code>.</p>`);
+            : `It did not complete: ${c.completedRuns === 0 && c.markerOnly ? 'no run finished (its row is a marker, run 0)' : `${fmtNum(c.completedRuns)} ${plural(c.completedRuns, 'run', 'runs')} finished`} and no failure reason was recorded, so it was stopped by the time limit or a crash; ${c.limitProof === 'proven' ? 'the limit is proven in force (probe refused, read-back equal), so the control passed.' : `the limit is not proven in force (${esc(LIMIT_PROOF_TEXT[c.limitProof])}), so the stop shows nothing about the cap.`}`;
+    const saw = c.benchmarkMessages === null || c.probeMessages === null ? '' : ` It saw ${c.benchmarkMessages === 0 ? 'no' : fmtNum(c.benchmarkMessages)} memory-limit ${plural(c.benchmarkMessages, 'message', 'messages')} while it ran, besides the probe's ${fmtNum(c.probeMessages)}.`;
+    reading.push(`<p><strong>Control leg, ${g}: not a benchmark figure.</strong> The benchmark must not complete here: ${below}. ${outcome}${saw} Label: <code>${esc(c.environment)}</code>.</p>`);
   }
   return `<h2 id="emulated-windows">Emulated on a GitHub-hosted Windows VM (not a laptop)</h2>
 <p>
@@ -542,7 +578,7 @@ ${evidenceRows}
 </p>
 <div class="table-wrap">
 <table class="benchmarks emulated">
-<thead><tr><th>Environment (verbatim)</th><th>Runs</th><th>Job commit limit</th><th>Limit in force</th><th>Peak commit, whole tree: pwsh, node and Chrome</th><th>Peak commit, Chrome only (median / worst)</th><th>Chrome processes outside the job</th><th>Time to first token (median / worst)</th><th>Total, first question (median / worst)</th><th>Result</th><th>Commit, Chrome</th><th>8 GB laptop</th></tr></thead>
+<thead><tr><th>Environment (verbatim)</th><th>Runs</th><th>Job commit limit</th><th>Limit in force</th><th>Commits refused while the benchmark ran</th><th>Peak commit, whole tree: pwsh, node and Chrome</th><th>Peak commit, Chrome only (median / worst)</th><th>Chrome processes outside the job</th><th>Time to first token (median / worst)</th><th>Total, first question (median / worst)</th><th>Question set (cited page correct, all runs)</th><th>Result</th><th>Commit, Chrome</th><th>8 GB laptop</th></tr></thead>
 <tbody>
 ${rows}
 </tbody>
@@ -550,8 +586,8 @@ ${rows}
 </div>
 ${evidenceTable}${reading.join('\n')}
 <p class="muted">
-  A commit limit is not a physical-memory limit: the VM has more memory than a laptop, so a capped leg never pages and either fits or an allocation fails. These rows are not a laptop figure and fill no
-  8 GB cell: the 8 GB laptop column reads not measured on 8 GB in every row, and the 8 GB Windows done-when stays NOT met (owner runbook step 5). Peak commit is the Windows commit size, which is what a job limit adds up;
+  A commit limit is not a physical-memory limit: the VM has more memory than a laptop, so a capped leg never pages and either fits or an allocation fails, and it does not model an 8 GB machine's operating system and
+  other apps, an integrated GPU, thermal limits or its disk. These rows are not a laptop figure and fill no 8 GB cell: the 8 GB laptop column reads not measured on 8 GB in every row, and the 8 GB Windows done-when stays NOT met (owner runbook step 5). Peak commit is the Windows commit size, which is what a job limit adds up;
   it is a different figure from the peak resident size of the table above. The whole-tree peak is left as not measured when the job's high-water mark was already as high after the commit probe as at the end of the run.
 </p>`;
 }

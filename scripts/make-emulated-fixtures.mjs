@@ -11,7 +11,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const FIX = join(here, '..', 'test', 'fixtures');
 
 // The header of dockit's emulated CSV (E2E_EMULATED_COLUMNS in dockit/scripts/lib/bench-columns.mjs, compared with the live file by test:siblings).
-export const COLUMNS = ['date', 'machine', 'chrome', 'commit', 'run', 'restart', 'pdf', 'pages', 'chunks', 'held', 'triage_ms', 'extract_ms', 'gate_ms', 'embed_ms', 'index_ms', 'retrieve_ms', 'first_token_ms', 'total_ms', 'out_tokens', 'tokens_per_s', 'js_heap_peak_bytes', 'wasm_memory_peak_bytes', 'process_rss_peak_bytes', 'storage_usage_bytes', 'requests_after_offline', 'model', 'backend', 'answer_ok', 'laptop_8gb', 'host_load_1m_start', 'host_load_1m_end', 'environment', 'job_commit_limit_bytes', 'job_commit_peak_bytes', 'process_commit_peak_bytes', 'job_escapes', 'sampler_median_interval_ms', 'failure_reason', 'job_limit_readback_bytes', 'job_limit_flags_readback', 'limit_probe_refused', 'job_peak_after_probe_bytes', 'job_memory_limit_messages', 'control_leg'];
+export const COLUMNS = ['date', 'machine', 'chrome', 'commit', 'run', 'restart', 'pdf', 'pages', 'chunks', 'held', 'triage_ms', 'extract_ms', 'gate_ms', 'embed_ms', 'index_ms', 'retrieve_ms', 'first_token_ms', 'total_ms', 'out_tokens', 'tokens_per_s', 'js_heap_peak_bytes', 'wasm_memory_peak_bytes', 'process_rss_peak_bytes', 'storage_usage_bytes', 'requests_after_offline', 'model', 'backend', 'answer_ok', 'laptop_8gb', 'host_load_1m_start', 'host_load_1m_end', 'environment', 'job_commit_limit_bytes', 'job_commit_peak_bytes', 'process_commit_peak_bytes', 'job_escapes', 'sampler_median_interval_ms', 'failure_reason', 'job_limit_readback_bytes', 'job_limit_flags_readback', 'limit_probe_refused', 'job_peak_after_probe_bytes', 'job_memory_limit_messages', 'control_leg', 'probe_memory_limit_messages'];
 export const Q_COLUMNS = ['date', 'machine', 'commit', 'run', 'restart', 'qid', 'answer_ok', 'correct_source_page', 'top_retrieved_page_ok', 'first_token_ms', 'total_ms', 'laptop_8gb', 'environment', 'failure_reason'];
 export const GIB = 1073741824;
 export const MIB = 1048576;
@@ -27,11 +27,12 @@ const csv = (cols, rows) => `${cols.join(',')}\n${rows.map((r) => cols.map((c) =
 function sampleRows() {
   const e2e = [];
   const qs = [];
+  // messages: the completion port's count over the whole run (the probe's own message is 1): the 6 GiB leg had two commits refused while the benchmark ran and still finished, the 5 GiB leg one and failed
   const legs = [
-    { limit: null, peak: 5000, chrome: 4700, fail: '' },
-    { limit: 8, peak: 4900, chrome: 4600, fail: '' },
-    { limit: 6, peak: 4800, chrome: 4500, fail: '' },
-    { limit: 5, peak: 5100, chrome: 4800, fail: 'out_of_memory' },
+    { limit: null, peak: 5000, chrome: 4700, fail: '', messages: 0 },
+    { limit: 8, peak: 4900, chrome: 4600, fail: '', messages: 1 },
+    { limit: 6, peak: 4800, chrome: 4500, fail: '', messages: 3 },
+    { limit: 5, peak: 5100, chrome: 4800, fail: 'out_of_memory', messages: 2 },
   ];
   for (const [i, l] of legs.entries()) {
     const n = l.fail ? 2 : 6;
@@ -47,8 +48,8 @@ function sampleRows() {
         process_commit_peak_bytes: l.chrome * MIB + run * MIB, job_escapes: 0, sampler_median_interval_ms: 700 + run, failure_reason: failed ? l.fail : '',
         // the limit evidence as the merge step writes it: the leg with no limit read back (0x2000, 0); a capped leg read back equal, with the probe refused and a port count
         ...(l.limit === null
-          ? { job_limit_readback_bytes: 0, job_limit_flags_readback: '0x2000', limit_probe_refused: '', job_peak_after_probe_bytes: '', job_memory_limit_messages: 0, control_leg: false }
-          : { job_limit_readback_bytes: l.limit * GIB, job_limit_flags_readback: '0x2200', limit_probe_refused: true, job_peak_after_probe_bytes: 300 * MIB, job_memory_limit_messages: 1, control_leg: false }),
+          ? { job_limit_readback_bytes: 0, job_limit_flags_readback: '0x2000', limit_probe_refused: '', job_peak_after_probe_bytes: '', job_memory_limit_messages: 0, control_leg: false, probe_memory_limit_messages: '' }
+          : { job_limit_readback_bytes: l.limit * GIB, job_limit_flags_readback: '0x2200', limit_probe_refused: true, job_peak_after_probe_bytes: 300 * MIB, job_memory_limit_messages: l.messages, control_leg: false, probe_memory_limit_messages: 1 }),
       });
       e2e.push(row);
       for (const qid of ['q1', 'q2', 'q7']) {
@@ -61,7 +62,7 @@ function sampleRows() {
   Object.assign(control, {
     date: '2026-11-21T04:00:00.000Z', machine: label(2, true), commit: 'aaaaaaaaaaaa', run: 0, restart: false, answer_ok: false, laptop_8gb: NOT_MEASURED_8GB, environment: label(2, true),
     job_commit_limit_bytes: 2 * GIB, failure_reason: 'out_of_memory', job_limit_readback_bytes: 2 * GIB, job_limit_flags_readback: '0x2200', limit_probe_refused: true, job_peak_after_probe_bytes: 300 * MIB,
-    job_memory_limit_messages: 3, control_leg: true,
+    job_memory_limit_messages: 3, control_leg: true, probe_memory_limit_messages: 1,
   });
   e2e.push(control);
   qs.push({ date: control.date, machine: label(2, true), commit: 'aaaaaaaaaaaa', run: 0, restart: false, qid: '', answer_ok: false, correct_source_page: '', top_retrieved_page_ok: '', first_token_ms: '', total_ms: '', laptop_8gb: NOT_MEASURED_8GB, environment: label(2, true), failure_reason: 'out_of_memory' });

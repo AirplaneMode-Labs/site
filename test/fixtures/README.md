@@ -25,5 +25,5 @@ none of the figures was measured. Do not quote them. The real rows live in `loca
 benchmarks page (`scripts/import-dockit-emulated.mjs`, `renderEmulated` in `scripts/build.mjs`). They are written by `scripts/make-emulated-fixtures.mjs` and every figure in them is
 invented: nothing was measured, and the environment label says "synthetic fixture". Do not quote them. `e2e-emulated.sample.json` is the importer's output for the two sample CSVs;
 `e2e-emulated.hostile.json` is the same data with a script tag, an attribute-opening quote and a spreadsheet formula in three cells, which the build must refuse and the renderer must
-escape. The sample now has the limit-evidence columns (the read-back, the commit probe, the peak after it, the completion-port count, the control marker) and one control leg
-(a 2 GiB limit, failed at once with its limit proven in force), all invented. The real emulated rows are `dockit/docs/benchmarks/e2e-emulated-win-vm.csv`, imported from the second dispatch of the bench-windows workflow (they have the first header, no evidence).
+escape. The sample has the limit-evidence columns (the read-back, the commit probe, the peak after it, the completion-port count, the control marker, the probe's own message count) and one control leg
+(a 2 GiB limit, failed at once with its limit proven in force), all invented. The real emulated rows are `dockit/docs/benchmarks/e2e-emulated-win-vm.csv`, imported from the third dispatch of the bench-windows workflow (run 44666921454, with all the evidence columns and a marker row for its control leg).

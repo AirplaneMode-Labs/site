@@ -3,11 +3,13 @@
 // bench-windows workflow and never typed by hand) and writes data/e2e-emulated.json, from which the benchmarks page renders its 'Emulated on a GitHub-hosted
 // Windows VM (not a laptop)' section. With no CSV it writes nothing, and the page has no such section and no such text (Sprint 7, B6, TD-113).
 //
-// A CSV written before dockit's limit evidence existed (the first dispatch of bench-windows, run 44656249868) has the first header; one written since has six more columns after
-// failure_reason (job_limit_readback_bytes, job_limit_flags_readback, limit_probe_refused, job_peak_after_probe_bytes, job_memory_limit_messages, control_leg). Both are read; a leg
-// whose evidence cells are empty reads 'limit unproven'. A leg is 'limit proven in force' only when its read-back equals what was set AND the commit above the limit was refused
+// A CSV written before dockit's limit evidence existed (the second dispatch of bench-windows, run 44656249868; dockit keeps it under docs/benchmarks/history/) has the first header; one
+// written since has seven more columns after failure_reason (job_limit_readback_bytes, job_limit_flags_readback, limit_probe_refused, job_peak_after_probe_bytes,
+// job_memory_limit_messages, control_leg, probe_memory_limit_messages). Both are read; a leg whose evidence cells are empty reads 'limit unproven'. The probe's own memory-limit message
+// is told from the ones posted while the benchmark ran (limitMessages, a copy of dockit's function). A leg is 'limit proven in force' only when its read-back equals what was set AND the commit above the limit was refused
 // (limitProof, a copy of dockit's function, compared with it by test:siblings). Rows of a CONTROL leg (control_leg true) never join a leg: they become `controlLegs`, reported
-// as controls and never as benchmark figures.
+// as controls and never as benchmark figures. A control leg that wrote no benchmark row has ONE marker row (run 0, no figure, no failure reason: dockit's merge step writes it from the
+// leg's summary); it reads as a control that did not complete (outcome incomplete, markerOnly true).
 //
 // Everything is checked on the way in, because a CSV is data from a CI run, not trusted markup:
 //   - environment must be 'emulated: <what was run>; not a laptop' from a small safe alphabet, say 'laptop' only in that suffix and not read as an 8 GB machine;
@@ -27,7 +29,7 @@ import { parseCsv } from './import-localdata-bench.mjs';
 const here = dirname(fileURLToPath(import.meta.url));
 export const SITE_ROOT = join(here, '..');
 export const EMULATED_JSON = join(SITE_ROOT, 'data', 'e2e-emulated.json');
-export const EMULATED_SPEC = 'airplanemode.site.e2e-emulated/2';
+export const EMULATED_SPEC = 'airplanemode.site.e2e-emulated/3';
 export const NOT_MEASURED_8GB = 'not measured on 8 GB';
 export const COMMAND = 'bench-windows workflow: node scripts/bench-e2e.mjs --environment <label> inside scripts/win/run-capped.ps1';
 export const CSV_FILE = 'e2e-emulated-win-vm.csv';
@@ -50,9 +52,9 @@ export function validateEnvironmentLabel(label) {
   return label;
 }
 
-/** The six evidence columns dockit's merge step fills; a CSV has all of them or none. */
-export const EVIDENCE_COLUMNS = ['job_limit_readback_bytes', 'job_limit_flags_readback', 'limit_probe_refused', 'job_peak_after_probe_bytes', 'job_memory_limit_messages', 'control_leg'];
-const EVIDENCE_INTEGERS = ['job_limit_readback_bytes', 'job_peak_after_probe_bytes', 'job_memory_limit_messages'];
+/** The seven evidence columns dockit's merge step fills; a CSV has all of them or none. */
+export const EVIDENCE_COLUMNS = ['job_limit_readback_bytes', 'job_limit_flags_readback', 'limit_probe_refused', 'job_peak_after_probe_bytes', 'job_memory_limit_messages', 'control_leg', 'probe_memory_limit_messages'];
+const EVIDENCE_INTEGERS = ['job_limit_readback_bytes', 'job_peak_after_probe_bytes', 'job_memory_limit_messages', 'probe_memory_limit_messages'];
 
 /**
  * What one leg's evidence cells say about its commit limit (a copy of limitProof in dockit/scripts/lib/bench-columns.mjs):
@@ -72,6 +74,25 @@ export function limitProof(row) {
   return 'unproven';
 }
 export const LIMIT_PROOFS = ['no_limit', 'proven', 'not_enforced', 'readback_mismatch', 'unproven'];
+
+const messageCount = (v) => {
+  const t = v === undefined || v === null ? '' : String(v);
+  if (t === '') return null;
+  if (!INTEGER.test(t)) throw new Error(`a message count must be empty or a non-negative integer, not '${t}'`);
+  return Number(t);
+};
+/**
+ * The job's memory-limit messages of ONE leg (a copy of limitMessages in dockit/scripts/lib/bench-columns.mjs; test:siblings compares them on a table of rows):
+ * total (whole run; null with no completion port), probe (the probe's own refused commit; null with no probe or no count), benchmark (total - probe: posted while the benchmark ran;
+ * null when not known; on a leg with no limit every message is the benchmark's). The system does not guarantee delivery of these notices, so benchmark is a floor.
+ */
+export function limitMessages(row) {
+  const total = messageCount(row.job_memory_limit_messages);
+  const probe = messageCount(row.probe_memory_limit_messages);
+  const uncapped = (row.job_commit_limit_bytes ?? '') === '';
+  if (total !== null && probe !== null && probe > total) throw new Error(`probe_memory_limit_messages (${probe}) is above job_memory_limit_messages (${total})`);
+  return { total, probe, benchmark: total === null ? null : uncapped ? total : probe === null ? null : total - probe };
+}
 /** The wording of each reading (the same sentences as dockit's README block). */
 export const LIMIT_PROOF_TEXT = {
   no_limit: 'no limit set',
@@ -118,6 +139,7 @@ function check(records, required, integers, what, evidence = false) {
     if (have.length > 0) {
       for (const c of EVIDENCE_INTEGERS) if (r[c] !== '' && !INTEGER.test(r[c])) throw new Error(`${what}: row ${i + 1}: ${c} is not a non-negative integer: ${JSON.stringify(r[c].slice(0, 30))}`);
       for (const c of ['limit_probe_refused', 'control_leg']) if (!['', 'true', 'false'].includes(r[c])) throw new Error(`${what}: row ${i + 1}: ${c} must be empty, true or false`);
+      if (r.probe_memory_limit_messages !== '' && r.job_memory_limit_messages !== '' && Number(r.probe_memory_limit_messages) > Number(r.job_memory_limit_messages)) throw new Error(`${what}: row ${i + 1}: probe_memory_limit_messages must not be above job_memory_limit_messages`);
       if (!['', '0x2000', '0x2200'].includes(r.job_limit_flags_readback)) throw new Error(`${what}: row ${i + 1}: job_limit_flags_readback must be empty, 0x2000 or 0x2200`);
     }
   });
@@ -162,6 +184,8 @@ export function buildEmulated(e2eText, questionsText, { csvName = `docs/benchmar
       probeRefused: (r.limit_probe_refused ?? '') === '' ? null : r.limit_probe_refused === 'true',
       peakAfterProbeBytes: num(r.job_peak_after_probe_bytes ?? ''),
       limitMessages: num(r.job_memory_limit_messages ?? ''),
+      probeMessages: limitMessages(r).probe,
+      benchmarkMessages: limitMessages(r).benchmark,
     };
   };
   const limitOf = (rows) => {
@@ -215,7 +239,7 @@ export function buildEmulated(e2eText, questionsText, { csvName = `docs/benchmar
     const failure = rows.map((r) => r.failure_reason).find((x) => x !== '') ?? null;
     const completedRuns = rows.filter((r) => r.failure_reason === '' && Number(r.run) > 0).length;
     const outcome = failure !== null ? (ev.limitProof === 'proven' ? 'failed_as_expected' : 'failed_unproven') : completedRuns >= 5 ? 'completed' : 'incomplete';
-    return { environment, limitBytes: limitOf(rows), ...ev, rows: rows.length, completedRuns, failure, outcome, commit: [...new Set(rows.map((r) => r.commit))].join(', '), laptop8gb: NOT_MEASURED_8GB };
+    return { environment, limitBytes: limitOf(rows), ...ev, rows: rows.length, completedRuns, markerOnly: rows.every((r) => Number(r.run) === 0), failure, outcome, commit: [...new Set(rows.map((r) => r.commit))].join(', '), laptop8gb: NOT_MEASURED_8GB };
   });
   // the lowest Chrome-only commit peak of any run of a benchmark leg: what a control limit is compared with, from the rows and never typed
   const chromePeaks = e2e.filter((r) => !isControl(r.environment)).map((r) => num(r.process_commit_peak_bytes)).filter((x) => x !== null && x > 0);

@@ -1611,18 +1611,31 @@ test('T3-R2-04: no 8 GB cell of the older benchmarks table reads the bare phrase
 
 // ---- Sprint 4 (D5-06): demos lines for dockit and site, the WebLLM wording, the spec wording, the gap-3 sweep (TD-11) ----
 
-test('demos.json dockit line is the Sprint 7 line: the same app, the memory re-measured on a quiet machine with its target outcome, the Windows benchmark written and not run, 8 GB not measured, WebLLM cut', () => {
+test('demos.json dockit line is the Sprint 7 line: the same app, the memory re-measured on a quiet machine with its target outcome, the Windows benchmark as it ran (read from the committed emulated data), 8 GB not measured, WebLLM cut', () => {
   const demos = JSON.parse(readFileSync(join(root, 'data', 'demos.json'), 'utf8'));
   const line = demos.find((d) => d.repo === 'dockit').status;
   const [claimed, notYet] = line.split(/Not yet: /);
   assert.ok(notYet, 'dockit line has a Not yet tail');
   assert.match(claimed, /^Sprint 7 \(20 Nov 2026\): Working: the same app as Sprint 6 \(ask a question about a PDF and read an answer from a small local model, Qwen3-0\.6B in WebAssembly, with the source pages shown, one model in memory at a time; nothing about the page changed in Sprint 7\)/);
   assert.match(claimed, /re-measured on a quiet machine on the committed Sprint 6 build/);
-  assert.match(claimed, /a Windows benchmark under an emulated memory cap \(a GitHub-hosted virtual machine, never a laptop\) is written and has not run/);
+  // the Windows clause is the committed emulated rows' own: what the data says, not what was typed
+  const emu = JSON.parse(readFileSync(join(root, 'data', 'e2e-emulated.json'), 'utf8'));
+  const gibs = (ls) => ls.map((l) => `${l.limitBytes / 1073741824} GiB`);
+  const listOf = (a) => (a.length < 2 ? a.join('') : `${a.slice(0, -1).join(', ')} and ${a.at(-1)}`);
+  const capped = emu.legs.filter((l) => l.limitBytes !== null);
+  assert.ok(capped.every((l) => l.limitProof === 'proven'), 'the line may say the limit is proven only if the data says so');
+  assert.ok(claimed.includes('a Windows benchmark under an emulated memory cap (a GitHub-hosted virtual machine with 4 vCPU and 16 GB RAM, never a laptop) has run'));
+  assert.ok(claimed.includes(`the commit limit of its ${listOf(gibs(capped))} legs is proven in force`));
+  assert.ok(claimed.includes(`all ${emu.legs.length} legs finished`) && emu.legs.every((l) => l.result === 'pass'));
+  const refused = capped.filter((l) => l.benchmarkMessages > 0);
+  assert.ok(claimed.includes(`commits were refused while the benchmark ran on the ${listOf(gibs(refused))} ${refused.length === 1 ? 'leg' : 'legs'} and it still finished`));
+  assert.ok(emu.controlLegs.every((c) => c.outcome === 'incomplete' && c.limitProof === 'proven') && claimed.includes('the 2 GiB control leg, which must not finish, did not finish'));
+  assert.ok(claimed.includes('it limits committed memory on one virtual machine, so it is not a laptop figure and fills no 8 GB cell'));
+  assert.doesNotMatch(claimed, /has not run|is written and|pending its first run/);
   assert.match(claimed, /not measured on 8 GB/);
   assert.match(claimed, /live since the owner's push of 18 Nov 2026/);
   assert.doesNotMatch(claimed, /WebLLM/);
-  for (const t of ['OCR', 'a Windows or 8 GB laptop figure', 'an emulated Windows figure is pending its first run and would not be a laptop figure', 'the pilot model (Qwen3-1.7B)', 'a real signing key', 'WebLLM (cut)', 'multi-document chat']) assert.ok(notYet.includes(t), `not-yet tail lacks ${t}`);
+  for (const t of ['OCR', 'a Windows or 8 GB laptop figure (the emulated Windows run is not one)', 'the pilot model (Qwen3-1.7B)', 'a real signing key', 'WebLLM (cut)', 'multi-document chat']) assert.ok(notYet.includes(t), `not-yet tail lacks ${t}`);
   assert.doesNotMatch(line, /\bmet\b|published|audited|compliant/i);
   assert.doesNotMatch(line, /(?<!not )measured on 8 GB/);
   assert.doesNotMatch(line, /free RAM/i);
@@ -1636,18 +1649,18 @@ test('demos.json dockit line is the Sprint 7 line: the same app, the memory re-m
   assert.ok(claimed.includes(`a median answer time of ${e2e.questions.timing.total_ms.median.toLocaleString('en-US')} ms`));
 });
 
-test('demos.json site line is the Sprint 7 line: the Start here page, the data-gated emulated section, the re-measured dockit figures, the Sprint 6 write-up, 8 GB not measured, no scripts', () => {
+test('demos.json site line is the Sprint 7 line: the Start here page, the emulated section built from dockit\'s committed rows, the re-measured dockit figures, the Sprint 6 write-up, 8 GB not measured, no scripts', () => {
   const demos = JSON.parse(readFileSync(join(root, 'data', 'demos.json'), 'utf8'));
   const line = demos.find((d) => d.repo === 'site').status;
   const e2e = JSON.parse(readFileSync(join(root, 'data', 'e2e.json'), 'utf8'));
   const g = e2e.groups.find((x) => x.restart === false);
   assert.match(line, /^Sprint 7 \(20 Nov 2026\): Working: a Start here page that links the six demos and the four quick starts that need no model download/);
   assert.ok(line.includes(`the size of dockit's download (about ${Math.round(g.storage_usage_bytes.median / 1e6)} MB, read from the stored size in the benchmark data) stated before its link`));
-  assert.match(line, /a section of the benchmarks page for an emulated Windows run, built only from data that does not exist yet, so the page shows none of it/);
-  assert.match(line, /never fill an 8 GB laptop cell/);
+  assert.match(line, /a section of the benchmarks page for dockit's emulated Windows run \(a GitHub-hosted virtual machine, never a laptop\), built only from dockit's committed rows: a capped leg reads limit proven in force only when the system's read-back equals what was set and a commit above the limit was refused, each leg says whether commits were refused while the benchmark ran, the 2 GiB control is reported as a control and in no figure, and no row fills an 8 GB laptop cell/);
+  assert.doesNotMatch(line, /does not exist yet|pending/);
   assert.ok(line.includes(`a median of ${Math.round(g.process_rss_peak_bytes.median / 1048576).toLocaleString('en-US')} MiB, still short of the 5,120 MiB target`));
   assert.match(line, /the Sprint 6 write-up is finished as an unlisted draft and a Sprint 7 skeleton exists/);
-  assert.match(line, /No scripts\. Not yet: 8 GB figures \(not measured on 8 GB\), a Windows measurement \(the first emulated run is pending\)/);
+  assert.match(line, /No scripts\. Not yet: 8 GB figures \(not measured on 8 GB\), a Windows laptop measurement \(the emulated Windows run is not one\)/);
   assert.doesNotMatch(line, /\bmet\b|audited|compliant/i);
 });
 

@@ -60,7 +60,7 @@ if (!process.argv.includes('--live')) {
     assert.equal(mine.NOT_MEASURED_8GB, dockit.LAPTOP_8GB);
   });
 
-  // The limit evidence: the six columns the merge step fills, and the reading of them ('proven' needs the read-back equal AND the probe refused), are the same in both repositories
+  // The limit evidence: the seven columns the merge step fills, and the reading of them ('proven' needs the read-back equal AND the probe refused), are the same in both repositories
   test('live siblings: the evidence columns, the reading of them and its wording are the same in dockit and in the site importer', async () => {
     const dockit = await import(new URL('../../dockit/scripts/lib/bench-columns.mjs', import.meta.url));
     const mine = await import('../scripts/import-dockit-emulated.mjs');
@@ -82,6 +82,12 @@ if (!process.argv.includes('--live')) {
       { job_commit_limit_bytes: '', job_limit_readback_bytes: '1', job_limit_flags_readback: '0x2000' },
     ];
     for (const r of rows) assert.equal(mine.limitProof(r), dockit.limitProof(r), JSON.stringify(r));
+    // the probe's own memory-limit message told from the ones posted while the benchmark ran: the same function in both repositories, and the same refusal of a contradiction
+    const capped = (total, probe) => ({ job_commit_limit_bytes: limit, job_memory_limit_messages: total, probe_memory_limit_messages: probe });
+    const msgRows = [capped('3', '1'), capped('1', '1'), capped('', ''), capped('3', ''), { job_commit_limit_bytes: limit, job_memory_limit_messages: '3' }, { job_commit_limit_bytes: '', job_memory_limit_messages: '0', probe_memory_limit_messages: '' }, { job_commit_limit_bytes: '', job_memory_limit_messages: '2' }];
+    for (const r of msgRows) assert.deepEqual(mine.limitMessages(r), dockit.limitMessages(r), JSON.stringify(r));
+    assert.throws(() => mine.limitMessages(capped('1', '2')), /probe/);
+    assert.throws(() => dockit.limitMessages(capped('1', '2')), /probe/);
   });
 
   // The same suite, reading the live files.

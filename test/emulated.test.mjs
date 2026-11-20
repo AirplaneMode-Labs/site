@@ -6,7 +6,7 @@ import { dirname, join } from 'node:path';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { build, checkEmulated, renderEmulated } from '../scripts/build.mjs';
-import { buildEmulated, importEmulated, serialise, validateEnvironmentLabel, limitProof, proofRow, EVIDENCE_COLUMNS, LIMIT_PROOF_TEXT, MACHINE_8GB_OR_LAPTOP_RE, ENVIRONMENT_RE, EMULATED_SPEC, NOT_MEASURED_8GB } from '../scripts/import-dockit-emulated.mjs';
+import { buildEmulated, importEmulated, serialise, validateEnvironmentLabel, limitProof, limitMessages, proofRow, EVIDENCE_COLUMNS, LIMIT_PROOF_TEXT, MACHINE_8GB_OR_LAPTOP_RE, ENVIRONMENT_RE, EMULATED_SPEC, NOT_MEASURED_8GB } from '../scripts/import-dockit-emulated.mjs';
 
 // Sprint 7 (B6, TD-113): the benchmarks page gets a section for the emulated Windows run, built only from data/e2e-emulated.json, which the importer
 // writes only when dockit's emulated CSV exists. No data, no section and no 'emulated' text on the benchmarks page; with data, the label verbatim.
@@ -282,7 +282,7 @@ test('the reading never says a leg met, passed under, survived or worked under a
   }
 });
 
-test('the committed data, when it exists, is dockit\'s first Windows run: four legs in matrix order, six runs each, and the page says what the 5 GiB leg does not show', () => {
+test('the committed data, when it exists, is dockit\'s third Windows run (44666921454): four benchmark legs in matrix order, six runs each, every capped limit proven in force, two refusals while the 5 GiB benchmark ran, and the 2 GiB control passed', () => {
   const file = join(root, 'data', 'e2e-emulated.json');
   if (!existsSync(file)) return;
   const data = JSON.parse(readFileSync(file, 'utf8'));
@@ -291,21 +291,127 @@ test('the committed data, when it exists, is dockit\'s first Windows run: four l
   assert.deepEqual(data.legs.map((l) => l.runs), [6, 6, 6, 6]);
   assert.deepEqual(data.legs.map((l) => l.result), ['pass', 'pass', 'pass', 'pass']);
   assert.ok(data.legs.every((l) => l.laptop8gb === NOT_MEASURED_8GB && l.jobEscapes === 0 && l.failure === null));
-  assert.ok(data.legs[3].jobCommitPeakBytes > data.legs[3].limitBytes, 'the 5 GiB leg is above its own limit');
-  for (const l of data.legs.slice(0, 3)) assert.ok(l.limitBytes === null || l.jobCommitPeakBytes < l.limitBytes);
-  assert.equal(data.source.commit, '5705baab8cdf');
-  // written before the limit evidence existed: no read-back, no probe, no control leg, so every capped leg reads unproven
-  assert.deepEqual(data.legs.map((l) => l.limitProof), ['no_limit', 'unproven', 'unproven', 'unproven']);
-  assert.ok(data.legs.every((l) => l.limitReadBack === null && l.probeRefused === null && l.peakAfterProbeBytes === null && l.limitMessages === null));
-  assert.deepEqual(data.controlLegs, []);
-  assert.equal(data.lowestChromeCommitPeakBytes, 3942731776);
+  assert.equal(data.source.commit, 'f6a71cab4ab1');
+  assert.equal(data.source.rows, 25);
+  // read back, probed and counted: every capped leg is proven in force, the leg with no limit reads no limit set
+  assert.deepEqual(data.legs.map((l) => l.limitProof), ['no_limit', 'proven', 'proven', 'proven']);
+  assert.ok(data.legs.slice(1).every((l) => l.limitReadBack.flags === '0x2200' && l.limitReadBack.bytes === l.limitBytes && l.probeRefused === true));
+  assert.deepEqual(data.legs.map((l) => [l.limitMessages, l.probeMessages, l.benchmarkMessages]), [[0, null, 0], [1, 1, 0], [1, 1, 0], [3, 1, 2]]);
+  // the whole-tree peak is the probe's on the 8 and 6 GiB legs (not measured); the 5 GiB figure is above its limit and counts refused commits
+  assert.deepEqual(data.legs.map((l) => l.jobCommitPeakBytes), [6081593344, null, null, 6092845056]);
+  assert.ok(data.legs[3].jobCommitPeakBytes > data.legs[3].limitBytes);
+  assert.deepEqual(data.legs.map((l) => l.peakAfterProbeBytes), [null, 8965201920, 6811119616, 5735489536]);
+  // 24 of 36 answers with the cited page correct on every leg, as on the Mac
+  assert.ok(data.legs.every((l) => l.questions.all.correct === 24 && l.questions.all.of === 36));
+  // the control: a marker row only, did not complete, limit proven, one message while it ran
+  assert.equal(data.controlLegs.length, 1);
+  const c = data.controlLegs[0];
+  assert.deepEqual({ limitBytes: c.limitBytes, rows: c.rows, completedRuns: c.completedRuns, failure: c.failure, outcome: c.outcome, limitProof: c.limitProof, markerOnly: c.markerOnly, limitMessages: c.limitMessages, probeMessages: c.probeMessages, benchmarkMessages: c.benchmarkMessages }, { limitBytes: 2 * GIB, rows: 1, completedRuns: 0, failure: null, outcome: 'incomplete', limitProof: 'proven', markerOnly: true, limitMessages: 2, probeMessages: 1, benchmarkMessages: 1 });
+  assert.equal(data.lowestChromeCommitPeakBytes, 3888627712);
   const html = renderEmulated(data);
-  assert.ok(html.includes('| 8 GiB | limit unproven'.replace('| 8 GiB | ', '<td>8 GiB</td><td>')));
-  assert.ok(!html.includes('limit proven in force'));
-  assert.ok(!html.includes('Limit evidence'));
-  assert.ok(html.includes('The 5 GiB leg is not a result under a 5 GiB cap.'));
-  assert.ok(html.includes('No leg in this file failed for want of memory'));
   assert.equal([...html.matchAll(/<tr class="emulated-leg"/g)].length, 4);
+  assert.ok(html.includes(`<td>${PROVEN}</td>`));
+  assert.ok(!html.includes('limit unproven'));
+  assert.ok(!html.includes('is not a result under a '));
+  assert.ok(!html.includes('No leg in this file failed for want of memory'));
+  assert.ok(html.includes('<strong>The 5 GiB leg had commits refused while the benchmark ran, and the leg still finished.</strong>'));
+  assert.ok(html.includes('received 2 JOB_OBJECT_MSG_JOB_MEMORY_LIMIT messages while the benchmark ran, besides the 1 the probe caused'));
+  assert.ok(html.includes('<strong>No commit was refused while the benchmark ran on the 8 GiB and 6 GiB legs.</strong>'));
+  assert.ok(html.includes('<strong>Control leg, 2 GiB: not a benchmark figure.</strong>'));
+  assert.ok(html.includes('so the control passed'));
+  assert.ok(html.includes('The limit of every capped leg is proven in force'));
+});
+
+test('the committed data names the same facts as dockit\'s committed CSV: the file it was built from, byte for byte, when dockit is next to this repository', () => {
+  const csv = join(root, '..', 'dockit', 'docs', 'benchmarks', 'e2e-emulated-win-vm.csv');
+  const file = join(root, 'data', 'e2e-emulated.json');
+  if (!existsSync(csv) || !existsSync(file)) return; // a lone checkout has neither; test:siblings runs this against the live files
+  if (process.env.SITE_SIBLINGS !== 'live') return;
+  assert.equal(JSON.parse(readFileSync(file, 'utf8')).source.csvSha256, sha256(readFileSync(csv, 'utf8')));
+});
+
+// ---- whether commits were refused while the benchmark ran, and the marker row of a control leg ----
+
+test('importer: limitMessages is the same function as dockit\'s: the probe own message told from the ones posted while the benchmark ran', () => {
+  const capped = (total, probe) => ({ job_commit_limit_bytes: String(5 * GIB), job_memory_limit_messages: total, probe_memory_limit_messages: probe });
+  assert.deepEqual(limitMessages(capped('3', '1')), { total: 3, probe: 1, benchmark: 2 });
+  assert.deepEqual(limitMessages(capped('1', '1')), { total: 1, probe: 1, benchmark: 0 });
+  assert.deepEqual(limitMessages({ job_commit_limit_bytes: '', job_memory_limit_messages: '0', probe_memory_limit_messages: '' }), { total: 0, probe: null, benchmark: 0 });
+  assert.deepEqual(limitMessages(capped('', '')), { total: null, probe: null, benchmark: null });
+  assert.deepEqual(limitMessages(capped('3', '')), { total: 3, probe: null, benchmark: null });
+  assert.deepEqual(limitMessages({ job_commit_limit_bytes: String(5 * GIB), job_memory_limit_messages: '3' }), { total: 3, probe: null, benchmark: null });
+  assert.throws(() => limitMessages(capped('1', '2')), /probe/);
+});
+
+test('the evidence table splits the messages into the whole run, the probe and the benchmark, and the leg table says whether commits were refused while the benchmark ran', () => {
+  const html = renderEmulated(sampleData());
+  const rows = [...html.matchAll(/<tr class="emulated-leg"[\s\S]*?<\/tr>/g)].map((m) => m[0]);
+  assert.ok(html.includes('<th>Commits refused while the benchmark ran</th>'));
+  assert.ok(html.includes('<th>JOB_OBJECT_MSG_JOB_MEMORY_LIMIT messages, whole run</th><th>of which caused by the probe</th><th>posted while the benchmark ran</th>'));
+  assert.ok(rows[0].includes('<td>not applicable (no limit)</td>'));
+  assert.ok(rows[1].includes("<td>none (the probe's 1 not counted)</td>"));
+  assert.ok(rows[2].includes("<td>yes: 2 messages while the benchmark ran (the probe's 1 not counted)</td>"));
+  assert.ok(rows[3].includes("<td>yes: 1 message while the benchmark ran (the probe's 1 not counted)</td>"));
+  const evidence = [...html.matchAll(/<tr class="emulated-evidence"[\s\S]*?<\/tr>/g)].map((m) => m[0]);
+  assert.ok(evidence[0].endsWith('<td>0</td><td>no probe</td><td>0</td></tr>'));
+  assert.ok(evidence[2].endsWith('<td>3</td><td>1</td><td>2</td></tr>'));
+  assert.ok(evidence[4].endsWith('<td>3</td><td>1</td><td>2</td></tr>'));
+});
+
+test('a proven leg with memory-limit messages beyond the probe own gets the refusal paragraph (and "still finished" only when it passed); one with none gets the quiet paragraph; never an unproven leg', () => {
+  const html = renderEmulated(sampleData());
+  // the sample: 6 GiB passed with 2 refusals; 5 GiB failed with 1; 8 GiB had none
+  assert.ok(html.includes('<strong>The 6 GiB leg had commits refused while the benchmark ran, and the leg still finished.</strong>'));
+  assert.ok(html.includes('The job\'s completion port received 2 JOB_OBJECT_MSG_JOB_MEMORY_LIMIT messages while the benchmark ran, besides the 1 the probe caused'));
+  assert.ok(html.includes('All 6 runs of the leg finished with no failure reason'));
+  assert.ok(html.includes('<strong>The 5 GiB leg had commits refused while the benchmark ran.</strong>'), 'a leg that did not pass is not said to have finished');
+  assert.ok(html.includes('received 1 JOB_OBJECT_MSG_JOB_MEMORY_LIMIT message while the benchmark ran, besides the 1 the probe caused'));
+  assert.ok(html.includes('<strong>No commit was refused while the benchmark ran on the 8 GiB leg.</strong>'));
+  assert.ok(html.includes('The only memory-limit message the completion port received on it was the one the probe caused'));
+  // not proven: no sentence about refusals
+  const d = sampleData();
+  for (const l of d.legs.slice(1)) { l.probeRefused = null; l.limitProof = 'unproven'; }
+  const h2 = renderEmulated(d);
+  assert.ok(!h2.includes('had commits refused'));
+  assert.ok(!h2.includes('No commit was refused'));
+  // no probe count: not counted, no sentence
+  const e = sampleData();
+  for (const l of e.legs) { l.probeMessages = null; l.benchmarkMessages = l.limitBytes === null ? l.limitMessages : null; }
+  assert.doesNotThrow(() => checkEmulated(e));
+  const h3 = renderEmulated(e);
+  assert.ok(!h3.includes('had commits refused') && !h3.includes('No commit was refused'));
+  assert.ok(h3.includes('<td>not counted</td>'));
+});
+
+test('the question set of each leg is in its row, and a control that has only its marker row did not complete and passed as a control', () => {
+  const data = sampleData();
+  const rows = [...renderEmulated(data).matchAll(/<tr class="emulated-leg"[\s\S]*?<\/tr>/g)].map((m) => m[0]);
+    assert.ok(rows.every((r) => r.includes(`<td>${data.legs[rows.indexOf(r)].questions.all.correct} of ${data.legs[rows.indexOf(r)].questions.all.of}</td>`)));
+  assert.ok(renderEmulated(data).includes('<th>Question set (cited page correct, all runs)</th>'));
+  const marker = sampleData();
+  Object.assign(marker.controlLegs[0], { failure: null, completedRuns: 0, rows: 1, markerOnly: true, outcome: 'incomplete' });
+  assert.doesNotThrow(() => checkEmulated(marker));
+  const h = renderEmulated(marker);
+  assert.ok(h.includes('It did not complete: no run finished (its row is a marker, run 0) and no failure reason was recorded, so it was stopped by the time limit or a crash; the limit is proven in force (probe refused, read-back equal), so the control passed.'));
+  assert.ok(h.includes("It saw 2 memory-limit messages while it ran, besides the probe's 1."));
+  assert.ok(!h.includes('the limit is limit'));
+  const unproven = sampleData();
+  Object.assign(unproven.controlLegs[0], { failure: null, completedRuns: 0, rows: 1, markerOnly: true, outcome: 'incomplete', probeRefused: null, limitProof: 'unproven' });
+  assert.ok(renderEmulated(unproven).includes('the limit is not proven in force (limit unproven), so the stop shows nothing about the cap.'));
+});
+
+test('checkEmulated refuses message counts that contradict each other: a benchmark count that is not the whole run minus the probe, a probe count above the whole run, a marker flag that is not a boolean', () => {
+  const bad = (patch, where = (d) => d.legs[2]) => {
+    const d = sampleData();
+    Object.assign(where(d), patch);
+    return d;
+  };
+  assert.throws(() => checkEmulated(bad({ benchmarkMessages: 0 })), /benchmarkMessages/);
+  assert.throws(() => checkEmulated(bad({ probeMessages: 5 })), /probeMessages/);
+  assert.throws(() => checkEmulated(bad({ probeMessages: -1 })), /probeMessages/);
+  assert.throws(() => checkEmulated(bad({ benchmarkMessages: 1.5 })), /benchmarkMessages/);
+  assert.throws(() => checkEmulated(bad({ markerOnly: 'yes' }, (d) => d.controlLegs[0])), /markerOnly/);
+  assert.doesNotThrow(() => checkEmulated(sampleData()));
 });
 
 test('checkEmulated accepts the sample and refuses a wrong spec, an empty leg list, a leg with the 8 GB cell changed and a laptop word in a label', () => {
@@ -380,7 +486,7 @@ test('importer: the control leg is not a leg: it is in controlLegs, with its own
   const c = d.controlLegs[0];
   assert.equal(c.environment, label(2, true));
   assert.match(c.environment, /\(control leg, expected to fail\); not a laptop$/);
-  assert.deepEqual({ limitBytes: c.limitBytes, rows: c.rows, completedRuns: c.completedRuns, failure: c.failure, outcome: c.outcome, limitProof: c.limitProof, probeRefused: c.probeRefused, limitMessages: c.limitMessages }, { limitBytes: 2 * GIB, rows: 1, completedRuns: 0, failure: 'out_of_memory', outcome: 'failed_as_expected', limitProof: 'proven', probeRefused: true, limitMessages: 3 });
+  assert.deepEqual({ limitBytes: c.limitBytes, rows: c.rows, completedRuns: c.completedRuns, failure: c.failure, outcome: c.outcome, limitProof: c.limitProof, probeRefused: c.probeRefused, limitMessages: c.limitMessages, probeMessages: c.probeMessages, benchmarkMessages: c.benchmarkMessages, markerOnly: c.markerOnly }, { limitBytes: 2 * GIB, rows: 1, completedRuns: 0, failure: 'out_of_memory', outcome: 'failed_as_expected', limitProof: 'proven', probeRefused: true, limitMessages: 3, probeMessages: 1, benchmarkMessages: 2, markerOnly: true });
   assert.equal(c.laptop8gb, NOT_MEASURED_8GB);
   // the legs are what they are without the control rows: the same JSON for the CSV with the control rows cut out
   const lines = SAMPLE.e2e.trim().split('\n');
@@ -403,6 +509,9 @@ test('importer: every leg carries its evidence: the read-back, the probe, the pe
   assert.equal(d.legs[1].peakAfterProbeBytes, 300 * MIB);
   assert.equal(d.legs[1].limitMessages, 1);
   assert.equal(d.legs[0].limitMessages, 0);
+  // the probe's own message told from the ones posted while the benchmark ran: 8 GiB 1 = 1 + 0, 6 GiB 3 = 1 + 2, 5 GiB 2 = 1 + 1, no limit 0 = no probe + 0
+  assert.deepEqual(d.legs.map((l) => [l.limitMessages, l.probeMessages, l.benchmarkMessages]), [[0, null, 0], [1, 1, 0], [3, 1, 2], [2, 1, 1]]);
+  assert.deepEqual([d.controlLegs[0].limitMessages, d.controlLegs[0].probeMessages, d.controlLegs[0].benchmarkMessages], [3, 1, 2]);
   for (const l of [...d.legs, ...d.controlLegs]) assert.equal(l.limitProof, limitProof(proofRow(l)));
 });
 
@@ -413,7 +522,7 @@ test('importer: a CSV with the first header (no evidence columns) still imports,
   const noControl = `${[lines[0], ...lines.slice(1).filter((l) => !l.includes('(control leg, expected to fail)'))].join('\n')}\n`;
   const d = buildEmulated(noControl);
   assert.deepEqual(d.legs.map((l) => l.limitProof), ['no_limit', 'unproven', 'unproven', 'unproven']);
-  assert.ok(d.legs.every((l) => l.limitReadBack === null && l.probeRefused === null && l.limitMessages === null));
+  assert.ok(d.legs.every((l) => l.limitReadBack === null && l.probeRefused === null && l.limitMessages === null && l.probeMessages === null && l.benchmarkMessages === null));
   assert.deepEqual(d.controlLegs, []);
   assert.doesNotThrow(() => checkEmulated(d));
 });
@@ -437,13 +546,16 @@ test('importer: the proof is "proven" only when the read-back is equal AND the p
   assert.equal(LIMIT_PROOF_TEXT.unproven, 'limit unproven');
 });
 
-test('importer refuses evidence that is partial, mistyped or contradictory: some but not all of the six columns, a probe that is not true or false, flags that are not 0x2000 or 0x2200, a count that is not an integer, rows that disagree on control_leg', () => {
+test('importer refuses evidence that is partial, mistyped or contradictory: some but not all of the seven columns, a probe that is not true or false, flags that are not 0x2000 or 0x2200, a count that is not an integer, rows that disagree on control_leg', () => {
   const dropOne = withoutColumns(SAMPLE.e2e, ['control_leg']);
   assert.throws(() => buildEmulated(dropOne), /column control_leg is missing/);
+  assert.throws(() => buildEmulated(withoutColumns(SAMPLE.e2e, ['probe_memory_limit_messages'])), /column probe_memory_limit_messages is missing/);
   assert.throws(() => buildEmulated(mutate('limit_probe_refused', 'maybe')), /limit_probe_refused must be empty, true or false/);
   assert.throws(() => buildEmulated(mutate('control_leg', 'yes')), /control_leg must be empty, true or false/);
   assert.throws(() => buildEmulated(mutate('job_limit_flags_readback', '0x2204')), /job_limit_flags_readback/);
-  for (const col of ['job_limit_readback_bytes', 'job_peak_after_probe_bytes', 'job_memory_limit_messages']) for (const bad of ['-1', '1.5', '1e9', '=1+1']) assert.throws(() => buildEmulated(mutate(col, bad)), /not a non-negative integer/, `${col} = ${bad}`);
+  for (const col of ['job_limit_readback_bytes', 'job_peak_after_probe_bytes', 'job_memory_limit_messages', 'probe_memory_limit_messages']) for (const bad of ['-1', '1.5', '1e9', '=1+1']) assert.throws(() => buildEmulated(mutate(col, bad)), /not a non-negative integer/, `${col} = ${bad}`);
+  // a probe count above the whole-run count is a contradiction (the port counts upwards): the second row is the 8 GiB leg, whole run 1
+  assert.throws(() => buildEmulated(mutate('probe_memory_limit_messages', '2', 6)), /probe_memory_limit_messages must not be above job_memory_limit_messages/);
   // the first row of the sample is the none leg: one of its rows saying it is a control makes its environment disagree with itself
   assert.throws(() => buildEmulated(mutate('control_leg', 'true', 0)), /disagree on control_leg/);
 });
@@ -460,7 +572,7 @@ test('with the sample fixture: every capped leg says limit proven in force, the 
   assert.ok(html.includes('The limit of every capped leg is proven in force'));
   const evidence = [...html.matchAll(/<tr class="emulated-evidence"[\s\S]*?<\/tr>/g)].map((m) => m[0]);
   assert.equal(evidence.length, 5, 'four legs and the control');
-  assert.ok(evidence[1].includes('<td>0x2200, 8,589,934,592 bytes (equal to what was set)</td><td>refused</td><td>no: 300 MiB is below the limit of 8,192 MiB</td><td>300 MiB</td><td>1</td>'));
+  assert.ok(evidence[1].includes('<td>0x2200, 8,589,934,592 bytes (equal to what was set)</td><td>refused</td><td>no: 300 MiB is below the limit of 8,192 MiB</td><td>300 MiB</td><td>1</td><td>1</td><td>0</td>'));
   assert.ok(evidence[4].startsWith('<tr class="emulated-evidence"><td>2 GiB (control)</td>'));
   // the control: a paragraph of its own, from its own rows
   assert.ok(html.includes('<strong>Control leg, 2 GiB: not a benchmark figure.</strong>'));
@@ -540,7 +652,7 @@ test('the control leg outcomes: completed is red text, failed with an unproven l
   const incomplete = sampleData();
   Object.assign(incomplete.controlLegs[0], { failure: null, completedRuns: 2, rows: 2, outcome: 'incomplete' });
   assert.doesNotThrow(() => checkEmulated(incomplete));
-  assert.ok(renderEmulated(incomplete).includes('It did not complete (2 row(s), 2 finished run(s), no failure reason recorded'));
+  assert.ok(renderEmulated(incomplete).includes('It did not complete: 2 runs finished and no failure reason was recorded, so it was stopped by the time limit or a crash; the limit is proven in force (probe refused, read-back equal), so the control passed.'));
 
   // an outcome that does not follow from the failure, the runs and the evidence
   for (const patch of [{ outcome: 'completed' }, { outcome: 'failed_unproven' }, { failure: null, outcome: 'failed_as_expected' }]) {

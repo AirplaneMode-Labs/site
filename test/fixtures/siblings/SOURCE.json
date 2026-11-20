@@ -559,9 +559,9 @@
       "cut": {
         "mode": "whole"
       },
-      "bytes": 1200,
-      "sha256": "392b7082005865344e1dd69808ca1685242dca309c637c88572a071762d2dec5",
-      "sourceSha256": "392b7082005865344e1dd69808ca1685242dca309c637c88572a071762d2dec5"
+      "bytes": 1584,
+      "sha256": "f8bc9d1433be3aeac74d46a9b140ea14b8c1ba91d3c64b57984e12f5e71fdc3c",
+      "sourceSha256": "f8bc9d1433be3aeac74d46a9b140ea14b8c1ba91d3c64b57984e12f5e71fdc3c"
     },
     {
       "repo": "evidence",
@@ -571,9 +571,9 @@
       "cut": {
         "mode": "whole"
       },
-      "bytes": 982,
-      "sha256": "c069db9b647aa85bc37bac5d11040fa21454f1a13ca55f5b8291a285c35ce1cf",
-      "sourceSha256": "c069db9b647aa85bc37bac5d11040fa21454f1a13ca55f5b8291a285c35ce1cf"
+      "bytes": 1213,
+      "sha256": "1401a1a1399cf040619984f1e53892f83acd7f030e7d4be61758ce047c86e53a",
+      "sourceSha256": "1401a1a1399cf040619984f1e53892f83acd7f030e7d4be61758ce047c86e53a"
     },
     {
       "repo": "glyphsift",

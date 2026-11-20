@@ -60,6 +60,30 @@ if (!process.argv.includes('--live')) {
     assert.equal(mine.NOT_MEASURED_8GB, dockit.LAPTOP_8GB);
   });
 
+  // The limit evidence: the six columns the merge step fills, and the reading of them ('proven' needs the read-back equal AND the probe refused), are the same in both repositories
+  test('live siblings: the evidence columns, the reading of them and its wording are the same in dockit and in the site importer', async () => {
+    const dockit = await import(new URL('../../dockit/scripts/lib/bench-columns.mjs', import.meta.url));
+    const mine = await import('../scripts/import-dockit-emulated.mjs');
+    assert.deepEqual(mine.EVIDENCE_COLUMNS, [...dockit.E2E_EMULATED_COLUMNS].slice(dockit.E2E_EMULATED_COLUMNS_V1.length));
+    assert.deepEqual(mine.LIMIT_PROOF_TEXT, { ...dockit.LIMIT_PROOF_TEXT });
+    assert.deepEqual(mine.LIMIT_PROOFS, Object.keys(dockit.LIMIT_PROOF_TEXT));
+    const limit = String(5 * 1073741824);
+    const base = { job_commit_limit_bytes: limit, job_limit_readback_bytes: limit, job_limit_flags_readback: '0x2200', limit_probe_refused: 'true' };
+    const rows = [
+      base,
+      { ...base, limit_probe_refused: 'false' },
+      { ...base, limit_probe_refused: '' },
+      { ...base, job_limit_readback_bytes: String(5 * 1073741824 - 4096) },
+      { ...base, job_limit_flags_readback: '0x2000' },
+      { ...base, job_limit_readback_bytes: '', job_limit_flags_readback: '' },
+      { job_commit_limit_bytes: limit },
+      { job_commit_limit_bytes: '' },
+      { job_commit_limit_bytes: '', job_limit_readback_bytes: '0', job_limit_flags_readback: '0x2000' },
+      { job_commit_limit_bytes: '', job_limit_readback_bytes: '1', job_limit_flags_readback: '0x2000' },
+    ];
+    for (const r of rows) assert.equal(mine.limitProof(r), dockit.limitProof(r), JSON.stringify(r));
+  });
+
   // The same suite, reading the live files.
   await import('./build.test.mjs');
 }

@@ -11,19 +11,19 @@ const here = dirname(fileURLToPath(import.meta.url));
 const FIX = join(here, '..', 'test', 'fixtures');
 
 // The header of dockit's emulated CSV (E2E_EMULATED_COLUMNS in dockit/scripts/lib/bench-columns.mjs, compared with the live file by test:siblings).
-export const COLUMNS = ['date', 'machine', 'chrome', 'commit', 'run', 'restart', 'pdf', 'pages', 'chunks', 'held', 'triage_ms', 'extract_ms', 'gate_ms', 'embed_ms', 'index_ms', 'retrieve_ms', 'first_token_ms', 'total_ms', 'out_tokens', 'tokens_per_s', 'js_heap_peak_bytes', 'wasm_memory_peak_bytes', 'process_rss_peak_bytes', 'storage_usage_bytes', 'requests_after_offline', 'model', 'backend', 'answer_ok', 'laptop_8gb', 'host_load_1m_start', 'host_load_1m_end', 'environment', 'job_commit_limit_bytes', 'job_commit_peak_bytes', 'process_commit_peak_bytes', 'job_escapes', 'sampler_median_interval_ms', 'failure_reason'];
+export const COLUMNS = ['date', 'machine', 'chrome', 'commit', 'run', 'restart', 'pdf', 'pages', 'chunks', 'held', 'triage_ms', 'extract_ms', 'gate_ms', 'embed_ms', 'index_ms', 'retrieve_ms', 'first_token_ms', 'total_ms', 'out_tokens', 'tokens_per_s', 'js_heap_peak_bytes', 'wasm_memory_peak_bytes', 'process_rss_peak_bytes', 'storage_usage_bytes', 'requests_after_offline', 'model', 'backend', 'answer_ok', 'laptop_8gb', 'host_load_1m_start', 'host_load_1m_end', 'environment', 'job_commit_limit_bytes', 'job_commit_peak_bytes', 'process_commit_peak_bytes', 'job_escapes', 'sampler_median_interval_ms', 'failure_reason', 'job_limit_readback_bytes', 'job_limit_flags_readback', 'limit_probe_refused', 'job_peak_after_probe_bytes', 'job_memory_limit_messages', 'control_leg'];
 export const Q_COLUMNS = ['date', 'machine', 'commit', 'run', 'restart', 'qid', 'answer_ok', 'correct_source_page', 'top_retrieved_page_ok', 'first_token_ms', 'total_ms', 'laptop_8gb', 'environment', 'failure_reason'];
 export const GIB = 1073741824;
 export const MIB = 1048576;
-export const label = (limit) =>
-  `emulated: synthetic fixture on a GitHub-hosted Windows Server VM, x64, 4 vCPU, pwsh, node and Chrome process tree ${limit === null ? 'with no job limit' : `under a job commit limit of ${limit * 1073741824} bytes`}; not a laptop`;
+export const label = (limit, control = false) =>
+  `emulated: synthetic fixture on a GitHub-hosted Windows Server VM, x64, 4 vCPU, pwsh, node and Chrome process tree ${limit === null ? 'with no job limit' : `under a job commit limit of ${limit * 1073741824} bytes${control ? ' (control leg, expected to fail)' : ''}`}; not a laptop`;
 export const cell = (v) => {
   const s = v === null || v === undefined ? '' : String(v);
   return /[",\n]/.test(s) ? `"${s.replaceAll('"', '""')}"` : s;
 };
 const csv = (cols, rows) => `${cols.join(',')}\n${rows.map((r) => cols.map((c) => cell(r[c])).join(',')).join('\n')}\n`;
 
-/** Invented rows for four legs (none, 8, 6 and 5 GiB; the 5 GiB leg fails at its second run). */
+/** Invented rows for four legs (none, 8, 6 and 5 GiB; the 5 GiB leg fails at its second run) and the 2 GiB control leg, which fails at once with its limit proven in force. */
 function sampleRows() {
   const e2e = [];
   const qs = [];
@@ -45,6 +45,10 @@ function sampleRows() {
         requests_after_offline: 0, model: 'Qwen3-0.6B q8 + multilingual-e5-small q8', backend: 'transformers-js wasm (single-threaded)', answer_ok: !failed,
         laptop_8gb: NOT_MEASURED_8GB, environment: label(l.limit), job_commit_limit_bytes: l.limit === null ? '' : l.limit * GIB, job_commit_peak_bytes: l.peak * MIB,
         process_commit_peak_bytes: l.chrome * MIB + run * MIB, job_escapes: 0, sampler_median_interval_ms: 700 + run, failure_reason: failed ? l.fail : '',
+        // the limit evidence as the merge step writes it: the leg with no limit read back (0x2000, 0); a capped leg read back equal, with the probe refused and a port count
+        ...(l.limit === null
+          ? { job_limit_readback_bytes: 0, job_limit_flags_readback: '0x2000', limit_probe_refused: '', job_peak_after_probe_bytes: '', job_memory_limit_messages: 0, control_leg: false }
+          : { job_limit_readback_bytes: l.limit * GIB, job_limit_flags_readback: '0x2200', limit_probe_refused: true, job_peak_after_probe_bytes: 300 * MIB, job_memory_limit_messages: 1, control_leg: false }),
       });
       e2e.push(row);
       for (const qid of ['q1', 'q2', 'q7']) {
@@ -52,6 +56,15 @@ function sampleRows() {
       }
     }
   }
+  // the control leg: the benchmark fails before its first run completes, so there is one run-0 row (dockit's zero-row rule) with every figure empty
+  const control = Object.fromEntries(COLUMNS.map((c) => [c, '']));
+  Object.assign(control, {
+    date: '2026-11-21T04:00:00.000Z', machine: label(2, true), commit: 'aaaaaaaaaaaa', run: 0, restart: false, answer_ok: false, laptop_8gb: NOT_MEASURED_8GB, environment: label(2, true),
+    job_commit_limit_bytes: 2 * GIB, failure_reason: 'out_of_memory', job_limit_readback_bytes: 2 * GIB, job_limit_flags_readback: '0x2200', limit_probe_refused: true, job_peak_after_probe_bytes: 300 * MIB,
+    job_memory_limit_messages: 3, control_leg: true,
+  });
+  e2e.push(control);
+  qs.push({ date: control.date, machine: label(2, true), commit: 'aaaaaaaaaaaa', run: 0, restart: false, qid: '', answer_ok: false, correct_source_page: '', top_retrieved_page_ok: '', first_token_ms: '', total_ms: '', laptop_8gb: NOT_MEASURED_8GB, environment: label(2, true), failure_reason: 'out_of_memory' });
   return { e2e: csv(COLUMNS, e2e), q: csv(Q_COLUMNS, qs) };
 }
 export const SAMPLE = sampleRows();

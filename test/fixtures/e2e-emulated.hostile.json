@@ -1,19 +1,28 @@
 {
-  "spec": "airplanemode.site.e2e-emulated/1",
+  "spec": "airplanemode.site.e2e-emulated/2",
   "command": "bench-windows workflow: node scripts/bench-e2e.mjs --environment <label> inside scripts/win/run-capped.ps1",
   "source": {
     "csv": "docs/benchmarks/e2e-emulated-win-vm.csv",
-    "csvSha256": "aaf87ab889c05f60583def3cc56a33c9e1d8b806ef69a19f68b52b5b7b8e2a80",
+    "csvSha256": "a2b70a3d336875684ab0020046f80aafad3090932af419b23d58f38acc2df9a6",
     "questionsCsv": "docs/benchmarks/e2e-emulated-win-vm-questions.csv",
-    "questionsCsvSha256": "559ae738f6af102818da69f7793a6b197606cb164a7c8d21c60e5cd601b9eb73",
+    "questionsCsvSha256": "804a7b6f6dbd54582b71a46a1542215eba342b637e263b01a800d123dd519fce",
     "commit": "aaaaaaaaaaaa",
     "date": "2026-11-21T00:00:00.000Z",
-    "rows": 20
+    "rows": 21
   },
+  "lowestChromeCommitPeakBytes": 4719640576,
   "legs": [
     {
       "environment": "emulated: <script>alert(1)</script>; not a laptop",
       "limitBytes": null,
+      "limitProof": "no_limit",
+      "limitReadBack": {
+        "flags": "0x2000",
+        "bytes": 0
+      },
+      "probeRefused": null,
+      "peakAfterProbeBytes": null,
+      "limitMessages": 0,
       "runs": 6,
       "sessionRuns": 5,
       "restartRuns": 1,
@@ -61,6 +70,14 @@
     {
       "environment": "emulated: synthetic fixture on a GitHub-hosted Windows Server VM, x64, 4 vCPU, pwsh, node and Chrome process tree under a job commit limit of 8589934592 bytes; not a laptop",
       "limitBytes": 8589934592,
+      "limitProof": "proven",
+      "limitReadBack": {
+        "flags": "0x2200",
+        "bytes": 8589934592
+      },
+      "probeRefused": true,
+      "peakAfterProbeBytes": 314572800,
+      "limitMessages": 1,
       "runs": 6,
       "sessionRuns": 5,
       "restartRuns": 1,
@@ -108,6 +125,14 @@
     {
       "environment": "emulated: synthetic fixture on a GitHub-hosted Windows Server VM, x64, 4 vCPU, pwsh, node and Chrome process tree under a job commit limit of 6442450944 bytes; not a laptop",
       "limitBytes": 6442450944,
+      "limitProof": "proven",
+      "limitReadBack": {
+        "flags": "0x2200",
+        "bytes": 6442450944
+      },
+      "probeRefused": true,
+      "peakAfterProbeBytes": 314572800,
+      "limitMessages": 1,
       "runs": 6,
       "sessionRuns": 5,
       "restartRuns": 1,
@@ -155,6 +180,14 @@
     {
       "environment": "emulated: synthetic fixture on a GitHub-hosted Windows Server VM, x64, 4 vCPU, pwsh, node and Chrome process tree under a job commit limit of 5368709120 bytes; not a laptop",
       "limitBytes": 5368709120,
+      "limitProof": "proven",
+      "limitReadBack": {
+        "flags": "0x2200",
+        "bytes": 5368709120
+      },
+      "probeRefused": true,
+      "peakAfterProbeBytes": 314572800,
+      "limitMessages": 1,
       "runs": 2,
       "sessionRuns": 2,
       "restartRuns": 0,
@@ -191,6 +224,26 @@
           "of": 2
         }
       },
+      "laptop8gb": "not measured on 8 GB"
+    }
+  ],
+  "controlLegs": [
+    {
+      "environment": "emulated: synthetic fixture on a GitHub-hosted Windows Server VM, x64, 4 vCPU, pwsh, node and Chrome process tree under a job commit limit of 2147483648 bytes (control leg, expected to fail); not a laptop",
+      "limitBytes": 2147483648,
+      "limitProof": "proven",
+      "limitReadBack": {
+        "flags": "0x2200",
+        "bytes": 2147483648
+      },
+      "probeRefused": true,
+      "peakAfterProbeBytes": 314572800,
+      "limitMessages": 3,
+      "rows": 1,
+      "completedRuns": 0,
+      "failure": "out_of_memory",
+      "outcome": "failed_as_expected",
+      "commit": "aaaaaaaaaaaa",
       "laptop8gb": "not measured on 8 GB"
     }
   ]

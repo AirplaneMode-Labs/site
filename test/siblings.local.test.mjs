@@ -46,6 +46,20 @@ if (!process.argv.includes('--live')) {
     });
   }
 
+  // Sprint 7: the emulated-results contract between dockit and the site: the label pattern, the failure reasons and the CSV header are the same in both repositories
+  test('live siblings: the site importer of the emulated results agrees with dockit on the label pattern, the failure reasons and the CSV header', async () => {
+    const dockit = await import(new URL('../../dockit/scripts/lib/bench-columns.mjs', import.meta.url));
+    const mine = await import('../scripts/import-dockit-emulated.mjs');
+    const fixtures = await import('../scripts/make-emulated-fixtures.mjs');
+    assert.equal(mine.ENVIRONMENT_RE.source, dockit.ENVIRONMENT_LABEL_RE.source);
+    assert.deepEqual(mine.FAILURE_REASONS, [...dockit.FAILURE_REASONS]);
+    assert.deepEqual(fixtures.COLUMNS, [...dockit.E2E_EMULATED_COLUMNS]);
+    assert.deepEqual(fixtures.Q_COLUMNS, [...dockit.Q_EMULATED_COLUMNS]);
+    assert.equal(mine.CSV_FILE, dockit.EMULATED_E2E_FILE);
+    assert.equal(mine.Q_FILE, dockit.EMULATED_Q_FILE);
+    assert.equal(mine.NOT_MEASURED_8GB, dockit.LAPTOP_8GB);
+  });
+
   // The same suite, reading the live files.
   await import('./build.test.mjs');
 }

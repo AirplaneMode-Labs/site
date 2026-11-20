@@ -297,7 +297,7 @@ test('demos.json lists exactly the six demos with consistent URLs, statuses and 
     assert.match(d.url, /^https:\/\/airplanemode-labs\.github\.io\/[a-z]+\/$/, `${d.repo}: url shape`);
     assert.equal(d.url, `https://airplanemode-labs.github.io/${d.repo}/`, `${d.repo}: url does not match repo`);
     assert.ok(typeof d.status === 'string' && d.status.length > 0, `${d.repo}: empty status`);
-    assert.equal(d.writtenOn, '2026-11-19', `${d.repo}: writtenOn`);
+    assert.equal(d.writtenOn, '2026-11-20', `${d.repo}: writtenOn`);
   }
   assert.doesNotThrow(() => checkDemos(demos));
 });
@@ -323,7 +323,7 @@ test('the demos page lists all six URLs, heads the date column "Status written o
   assert.match(html, /<th>Status written on<\/th>/);
   assert.doesNotMatch(html, /<th>[^<]*Checked[^<]*<\/th>/);
   assert.doesNotMatch(html, /\bChecked\b/);
-  assert.match(html, /written on 19 Nov 2026 from local builds served under \/&lt;repo&gt;\//);
+  assert.match(html, /written on 20 Nov 2026 from local builds served under \/&lt;repo&gt;\//);
   assert.match(html, /nothing on this page was measured against the live URLs/);
   assert.equal((html.match(/<h2>What this demo does not do yet<\/h2>/g) ?? []).length, 1, 'exactly one not-yet heading');
   const demos = JSON.parse(readFileSync(join(root, 'data', 'demos.json'), 'utf8'));
@@ -339,7 +339,7 @@ test('the home page has a Demos section with the six URLs before Repositories an
   const demosAt = html.indexOf('<h2>Demos</h2>');
   const reposAt = html.indexOf('<h2>Repositories</h2>');
   assert.ok(demosAt > 0 && reposAt > demosAt, 'Demos section must precede Repositories');
-  assert.match(html, /Statuses written on 19 Nov 2026 from local builds, not measured at the live URLs\./);
+  assert.match(html, /Statuses written on 20 Nov 2026 from local builds, not measured at the live URLs\./);
 });
 
 test('every page carries the Demos nav link resolving to the demos page', () => {
@@ -437,13 +437,13 @@ test('benchmarks.json: the two Sprint 2 slots carry their reproduce commands; a 
   }
 });
 
-test('every demos.json status line carries the Sprint 6 date and the keys and URLs are unchanged', () => {
+test('every demos.json status line carries the Sprint 7 date and the keys and URLs are unchanged', () => {
   const demos = JSON.parse(readFileSync(join(root, 'data', 'demos.json'), 'utf8'));
   assert.equal(demos.length, 6);
   for (const d of demos) {
     assert.deepEqual(Object.keys(d).sort(), ['repo', 'status', 'url', 'writtenOn'], `${d.repo}: keys`);
-    assert.match(d.status, /^Sprint 6 \(19 Nov 2026\)[:.] /, `${d.repo}: Sprint 6 date`);
-    assert.equal(d.writtenOn, '2026-11-19', `${d.repo}: writtenOn`);
+    assert.match(d.status, /^Sprint 7 \(20 Nov 2026\)[:.] /, `${d.repo}: Sprint 7 date`);
+    assert.equal(d.writtenOn, '2026-11-20', `${d.repo}: writtenOn`);
   }
   assert.deepEqual(new Set(demos.map((d) => d.url)), new Set(DEMO_URLS));
 });
@@ -474,7 +474,7 @@ test('demos.json lines claim nothing the Sprint 3 gates (LANDED.json) do not mar
   const green = (k) => isGreen(landed, k);
   for (const d of demos) {
     assert.doesNotMatch(d.status, /not in this status yet/, `${d.repo}: stale status`);
-    assert.match(d.status, /^Sprint 6 \(19 Nov 2026\)[:.] /, `${d.repo}: prefix`);
+    assert.match(d.status, /^Sprint 7 \(20 Nov 2026\)[:.] /, `${d.repo}: prefix`);
     assert.doesNotMatch(d.status, /licensing|licence policy|policy page/i, `${d.repo}: must not advertise the licensing draft`);
     // A claim sentence is anything before 'Not yet'; the Not yet tail may name what is missing.
     const claimed = d.status.split(/Not yet/)[0];
@@ -542,7 +542,7 @@ test('pagetriage and localdata lines no longer carry the Sprint 3 wording (the d
   for (const repo of ['pagetriage', 'localdata']) {
     const line = demos.find((d) => d.repo === repo).status;
     assert.doesNotMatch(line, /status line/, `${repo}: stale 'status line'`);
-    assert.match(line, /^Sprint 6 \(19 Nov 2026\)[:.] /, `${repo}: Sprint 6 line`);
+    assert.match(line, /^Sprint 7 \(20 Nov 2026\)[:.] /, `${repo}: Sprint 7 line`);
   }
 });
 
@@ -859,7 +859,7 @@ const readOrEmpty = (rel) => (existsSync(join(root, rel)) ? readFileSync(join(ro
 const SPRINT3_WRITEUP = readOrEmpty('writeups/2026-11-sprint-3.html');
 const SPRINT4_WRITEUP = readOrEmpty('writeups/2026-11-sprint-4.html');
 const ALLOWED_NUMBER_TOKENS = [
-  /\bSprints? [1-6]\b/g,
+  /\bSprints? [1-7]\b/g,
   /\b\d{1,2} (to \d{1,2} )?(November|December|Nov) 2026\b/g,
   /\b\d{1,2} January 2027\b/g,
   /\b8 GB\b/g,
@@ -971,9 +971,10 @@ test('Sprint 3 write-up: each figure equals the saved evidence it cites', () => 
 
 const SPRINT5_WRITEUP = readOrEmpty('writeups/2026-11-sprint-5.html');
 const SPRINT6_WRITEUP = readOrEmpty('writeups/2026-11-sprint-6.html');
+const SPRINT7_WRITEUP = readOrEmpty('writeups/2026-11-sprint-7.html');
 const FIVE_HEADINGS = ['What we tried', 'What held up', 'What did not', 'Numbers (Apple M5 Pro; not measured on 8 GB)', 'Limitations'];
 /** What a figure may cite: an evidence file, the localdata benchmark CSV, or a sprint report. */
-const CITE = /evidence\/sprint-\d\/[A-Za-z0-9_./-]*[A-Za-z0-9_]|localdata\/docs\/benchmarks\/vector-index\.csv|SPRINT-\d-REPORT\.md/;
+const CITE = /evidence\/sprint-\d\/[A-Za-z0-9_./-]*[A-Za-z0-9_]|localdata\/docs\/benchmarks\/vector-index\.csv|dockit\/docs\/benchmarks\/e2e(?:-questions)?(?:-s6-baseline)?\.csv|SPRINT-\d-REPORT\.md/;
 const flatText = (html) => html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
 
 function assertFinishedWriteup(html, n) {
@@ -994,6 +995,7 @@ function assertFinishedWriteup(html, n) {
   }
   if (/localdata\/docs\/benchmarks\/vector-index\.csv/.test(html)) readSibling('localdata', 'docs/benchmarks/vector-index.csv');
   if (new RegExp(`SPRINT-${n}-REPORT\\.md`).test(html)) readSibling('workspace', `SPRINT-${n}-REPORT.md`);
+  for (const csv of new Set(html.match(/dockit\/docs\/benchmarks\/e2e(?:-questions)?(?:-s6-baseline)?\.csv/g) ?? [])) readSibling('dockit', csv.slice('dockit/'.length));
   const flat = flatText(html).replace(/\s+/g, ' ');
   assert.match(flat, /not measured on 8 GB/);
   assert.doesNotMatch(flat, /cheaper inference|save on inference|lower inference cost|cost per token|compliance export|DPDP\/GDPR-ready/i);
@@ -1111,30 +1113,92 @@ test('Sprint 5 write-up: each figure equals the log it cites (the benchmark run,
   assert.match(report, /build done on Apple M5 Pro 48 GB; 8 GB Windows done-when NOT met \(owner runbook step 5\)/);
 });
 
-test('Sprint 6 write-up: an unlisted noindex skeleton with the five headings, each marked for the product owner, no figures, and it never calls a done-when met', () => {
-  const html = SPRINT6_WRITEUP;
+test('Sprint 6 write-up: finished, unlisted and noindex, five headings, every figure cites its file, the done-when is quoted as written and never called met', () => {
+  const flat = assertFinishedWriteup(SPRINT6_WRITEUP, 6);
+  assert.match(flat, /build done on Apple M5 Pro 48 GB; 8 GB Windows done-when NOT met \(owner runbook step 5\)/);
+  assert.match(flat, /Sprint 6's done-when is NOT met/);
+  assert.doesNotMatch(flat.replace(/NOT met/g, ''), /\bmet\b/);
+  assert.match(flat, /Sprint 6 \(planned 18 January 2027 to 31 January 2027/);
+  assert.match(flat, /Finished on 20 November 2026/);
+  assert.doesNotMatch(flat, /\bpublished\b|audited|compliant/i);
+});
+
+test('Sprint 6 write-up: each figure equals the file it cites (the baseline and re-measured CSVs, B1-result.md, the lock proof logs, the report)', async () => {
+  const flat = flatText(SPRINT6_WRITEUP);
+  const must = (t, why) => assert.ok(flat.includes(t), `missing '${t}' (${why})`);
+  const n = (x) => x.toLocaleString('en-US');
+  const { buildE2e } = await import('../scripts/import-dockit-bench.mjs');
+  // before: recomputed from the baseline CSV fixture; after (Sprint 7 re-measure): recomputed from the current e2e.csv fixture
+  const before = buildE2e(readSibling('dockit', 'docs/benchmarks/e2e-s6-baseline.csv'), readSibling('dockit', 'docs/benchmarks/e2e-questions-s6-baseline.csv'), { csvName: 'x', questionsName: 'y' });
+  const after = buildE2e(readSibling('dockit', 'docs/benchmarks/e2e.csv'), readSibling('dockit', 'docs/benchmarks/e2e-questions.csv'), { csvName: 'x', questionsName: 'y' });
+  const session = (set) => set.groups.find((g) => g.restart === false);
+  const mib = (b) => Math.round(b / 1048576);
+  const beforeMedian = session(before).process_rss_peak_bytes.median / 1048576;
+  const afterMedian = session(after).process_rss_peak_bytes.median / 1048576;
+  must(`median of ${n(mib(session(before).process_rss_peak_bytes.median))} MiB`, 'before, recomputed from the baseline CSV');
+  must(`median of ${n(mib(session(after).process_rss_peak_bytes.median))} MiB`, 're-measure, recomputed from e2e.csv');
+  must(`${n(Math.round(afterMedian - 5120))} MiB short of the 5,120 MiB target`, 'the re-measure against the target');
+  assert.ok(afterMedian > 5120 && beforeMedian > afterMedian, 'the target is missed and the peak fell');
+  must(`${after.questions.all.correct} of ${after.questions.all.of}`, 'question set over all runs');
+  must(`${after.questions.firstRun.correct} of ${after.questions.firstRun.of}`, 'question set on the first run');
+  assert.deepEqual([before.questions.all.correct, before.questions.all.of, after.questions.all.correct, after.questions.all.of], [24, 36, 24, 36], 'unchanged question set');
+  assert.equal(Math.max(...[...before.groups, ...after.groups].map((g) => g.requests_after_offline.max)), 0);
+  must('0 requests after the network was blocked in every run of both sets', 'requests');
+  must(`median per-question total of ${n(Math.round(after.questions.timing.total_ms.median))} ms`, 're-measure time');
+  // Sprint 6's own after-run: B1-result.md (the committed CSV of that run was replaced by the quiet re-measure)
+  const b1 = readSibling('evidence', 'sprint-6/D5/B1-result.md');
+  for (const t of ['5,440.8 MiB', '866.7 MiB', '13.7 percent', '320.8 MiB', '9,390.5 ms', '11,950 ms', 'at most 5,120 MiB', 'q2 and q6 wrong in all 6 runs in both sets']) assert.ok(b1.includes(t), `B1-result.md does not hold '${t}'`);
+  for (const t of ['5,440.8 MiB', '866.7 MiB', '13.7 percent', '9,390.5 ms', '11,950 ms']) must(t, 'B1-result.md');
+  must('q2 and q6 were wrong in every run of both sets', 'B1-result.md');
+  // the lock proof from fresh clones at the locks
+  assert.match(readSibling('evidence', 'sprint-6/architect/lockproof-logs/e2e.log'), /\b31 passed\b/);
+  assert.match(readSibling('evidence', 'sprint-6/architect/lockproof-logs/gate.log'), /\b2 passed\b/);
+  assert.match(readSibling('evidence', 'sprint-6/architect/lockproof-logs/size.txt'), /dist total \(du -sk x 1024, the guard's figure\): 821882880 bytes/);
+  must('31 of 31', 'e2e.log');
+  must('2 of 2', 'gate.log');
+  must('821,882,880 bytes', 'size.txt');
+  // S1-107: the font bomb
+  const bomb = readSibling('evidence', 'sprint-6/architect/lockproof-logs/e2e.log').match(/S1-107 peak: (\{"case":"font bomb[^\n]*\})/)?.[1];
+  assert.ok(bomb, 'the font bomb line is in e2e.log');
+  const peak = JSON.parse(bomb);
+  assert.deepEqual([peak.idleRssMiB, peak.peakRssMiB, peak.sprint5FontBombPeakMiB], [3073, 3077, 8121]);
+  must('3,077 MiB against 3,073 MiB idle', 'the font bomb peak');
+  must('8,121 MiB', 'the Sprint 5 font bomb');
+  // the report: weak keys, HNSW and the commercial drafts
+  const report = readSibling('workspace', 'SPRINT-6-REPORT.md');
+  for (const t of ['have 26 rows, 20 of them refused', 'recall@10 is 0.9965 / 1 / 1', '0.90 at ef 128 is met', 'Uniform data at 100k x 384 has no floor', 'The team did not produce even the grant draft this sprint']) assert.ok(report.includes(t), `SPRINT-6-REPORT.md does not hold '${t}'`);
+  must('26 rows, 20 of them refused', 'weak keys');
+  must('0.9965 / 1 / 1 at ef 32 / 64 / 128', 'HNSW recall');
+  must('0.045 / 0.0755 / 0.1375', 'uniform recall');
+  assert.ok(report.includes('0.045 / 0.0755 / 0.1375'));
+});
+
+test('Sprint 7 write-up: an unlisted noindex skeleton with the five headings, each marked for the product owner, no figures, and it never calls a done-when met', () => {
+  const html = SPRINT7_WRITEUP;
   assert.match(html, /<meta name="draft" content="true"/);
   const heads = [...html.matchAll(/<h2>(.*?)<\/h2>/g)].map((m) => m[1]);
   assert.deepEqual(heads, FIVE_HEADINGS);
   for (const sec of html.split(/<h2>/).slice(1)) assert.ok(sec.includes('[product owner to finish at close-out]'));
   assert.doesNotMatch(html, /\/private\/tmp|<script|\sstyle="|https?:\/\//i);
   assert.doesNotMatch(html.replace(/NOT met/g, ''), /\bmet\b/);
+  assert.match(html, /an addition the owner asked for on 19 November 2026/);
+  assert.match(html, /the first gate is stated as it stands/);
   const stray = figureElements(html).filter(hasStrayNumber);
   assert.deepEqual(stray, [], `figures in the skeleton: ${stray.join(' || ')}`);
   const { out } = buildToTemp();
-  const built = readFileSync(join(out, 'writeups', '2026-11-sprint-6', 'index.html'), 'utf8');
+  const built = readFileSync(join(out, 'writeups', '2026-11-sprint-7', 'index.html'), 'utf8');
   assert.match(built, /<meta name="robots" content="noindex" \/>/);
-  assert.doesNotMatch(readFileSync(join(out, 'writeups', 'index.html'), 'utf8'), /2026-11-sprint-6|Sprint 6/);
+  assert.doesNotMatch(readFileSync(join(out, 'writeups', 'index.html'), 'utf8'), /2026-11-sprint-7|Sprint 7/);
 });
 
-test('both Sprint write-up drafts are linked from no page and carry no scratch path', () => {
+test('every Sprint write-up draft is linked from no page and carries no scratch path', () => {
   const { out } = buildToTemp();
   for (const file of walk(out).filter((f) => f.endsWith('.html'))) {
     const rel = file.slice(out.length + 1).replaceAll('\\', '/');
     const html = readFileSync(file, 'utf8');
     assert.doesNotMatch(html, /\/private\/tmp/, `${rel} names a scratch path`);
-    if (/^writeups\/2026-11-sprint-[3456]\//.test(rel)) continue;
-    assert.doesNotMatch(html, /href="[^"]*2026-11-sprint-[3456]/, `${rel} links to a sprint write-up draft`);
+    if (/^writeups\/2026-11-sprint-[34567]\//.test(rel)) continue;
+    assert.doesNotMatch(html, /href="[^"]*2026-11-sprint-[34567]/, `${rel} links to a sprint write-up draft`);
   }
 });
 
@@ -1374,22 +1438,24 @@ test('the Sprint 2 write-up carries a dated correction: WebLLM moved to Sprint 4
   assert.match(flat, /Sprint 3 is the runtime alpha, including the WebLLM backend/, 'the original sentence stays; the correction is appended, not a silent rewrite');
 });
 
-test('the home page repository table shows Sprint 6 statuses (TD-69 versions), not the Sprint 1 ones', () => {
+test('the home page repository table shows Sprint 7 statuses (TD-107 versions), not the Sprint 1 ones', () => {
   const { out } = buildToTemp();
   const html = readFileSync(join(out, 'index.html'), 'utf8');
   for (const stale of ['validator lands in Sprint 2', 'drivers and behavioural suite in Sprint 1', 'Sprint 1: specs, capability profile and asset manager', 'release preparation in progress', 'Skeleton; tests written']) {
     assert.ok(!html.includes(stale), `stale home status: ${stale}`);
   }
   const row = (repo) => new RegExp(`<tr><td>(?:<a [^>]*>)?${repo}(?:</a>)?</td>.*?</tr>`).exec(html)?.[0] ?? '';
-  assert.match(row('glyphsift'), /Release candidate 0\.1\.2 \(not tagged, not published\)/);
-  assert.match(row('runtime'), /Beta 0\.3\.0-beta\.1 on spec release 0\.6\.0 \(not tagged, not published, not tag-ready\)/);
+  assert.match(row('glyphsift'), /Release candidate 0\.1\.3 \(not tagged, not published\)/);
+  assert.match(row('runtime'), /Beta 0\.3\.0-beta\.2 on spec release 0\.6\.1 \(not tagged, not published, not tag-ready\)/);
   assert.match(row('runtime'), /WebLLM: not yet \(cut\)/);
   assert.doesNotMatch(row('runtime'), /WebLLM is Sprint 4/);
-  assert.match(row('localdata'), /0\.4\.0-alpha\.0/);
+  assert.match(row('localdata'), /0\.4\.0-alpha\.1/);
   assert.match(row('localdata'), /optional HNSW graph/);
   assert.doesNotMatch(row('localdata'), /0\.1\.0-dev|lands in Sprint 4/);
+  assert.match(row('pagetriage'), /1\.0\.0-rc\.1/);
   assert.match(row('pagetriage'), /not published, no tag yet/);
-  assert.match(row('dockit'), /0\.3\.0-dev \(private, not published\)/);
+  assert.doesNotMatch(row('pagetriage'), /\b1\.0\.0(?!-rc)/);
+  assert.match(row('dockit'), /0\.4\.0-dev \(private, never published to a registry\)/);
   // The licence column still equals data/licences.json for the six public repos plus control-plane.
   assert.match(row('pagetriage'), /MIT OR Apache-2\.0/);
 });
@@ -1545,41 +1611,44 @@ test('T3-R2-04: no 8 GB cell of the older benchmarks table reads the bare phrase
 
 // ---- Sprint 4 (D5-06): demos lines for dockit and site, the WebLLM wording, the spec wording, the gap-3 sweep (TD-11) ----
 
-test('demos.json dockit line is the Sprint 6 line: one model at a time with the measured memory and the missed target, the memory line, the stream accounting, no request after the download, not measured on 8 GB, WebLLM cut', () => {
+test('demos.json dockit line is the Sprint 7 line: the same app, the memory re-measured on a quiet machine with its target outcome, the Windows benchmark written and not run, 8 GB not measured, WebLLM cut', () => {
   const demos = JSON.parse(readFileSync(join(root, 'data', 'demos.json'), 'utf8'));
   const line = demos.find((d) => d.repo === 'dockit').status;
   const [claimed, notYet] = line.split(/Not yet: /);
   assert.ok(notYet, 'dockit line has a Not yet tail');
-  assert.match(claimed, /ask a question about a PDF and read an answer from a small local model \(Qwen3-0\.6B, WebAssembly\) with the source pages shown/);
-  assert.match(claimed, /one model in memory at a time/);
-  assert.match(claimed, /the Chrome process tree peaked at a median of [\d,]+ MiB, down from [\d,]+ MiB, short of the 5,120 MiB target/);
-  assert.match(claimed, /memory line/);
-  assert.match(claimed, /refused before pdf\.js opens it/);
+  assert.match(claimed, /^Sprint 7 \(20 Nov 2026\): Working: the same app as Sprint 6 \(ask a question about a PDF and read an answer from a small local model, Qwen3-0\.6B in WebAssembly, with the source pages shown, one model in memory at a time; nothing about the page changed in Sprint 7\)/);
+  assert.match(claimed, /re-measured on a quiet machine on the committed Sprint 6 build/);
+  assert.match(claimed, /a Windows benchmark under an emulated memory cap \(a GitHub-hosted virtual machine, never a laptop\) is written and has not run/);
   assert.match(claimed, /not measured on 8 GB/);
   assert.match(claimed, /live since the owner's push of 18 Nov 2026/);
-  assert.doesNotMatch(line, /changes only after the owner pushes/, 'the dockit page is live; the line must not say it is not');
   assert.doesNotMatch(claimed, /WebLLM/);
-  for (const t of ['OCR', 'a Windows or 8 GB figure', 'the pilot model (Qwen3-1.7B)', 'a real signing key', 'WebLLM (cut)', 'multi-document chat']) assert.ok(notYet.includes(t), `not-yet tail lacks ${t}`);
-  assert.doesNotMatch(line, /\bmet\b/);
+  for (const t of ['OCR', 'a Windows or 8 GB laptop figure', 'an emulated Windows figure is pending its first run and would not be a laptop figure', 'the pilot model (Qwen3-1.7B)', 'a real signing key', 'WebLLM (cut)', 'multi-document chat']) assert.ok(notYet.includes(t), `not-yet tail lacks ${t}`);
+  assert.doesNotMatch(line, /\bmet\b|published|audited|compliant/i);
+  assert.doesNotMatch(line, /(?<!not )measured on 8 GB/);
   assert.doesNotMatch(line, /free RAM/i);
-  // the two memory figures are the medians of the committed CSVs (the same files the benchmarks page is built from)
+  // the memory figures are the medians of the committed CSVs (the same files the benchmarks page is built from)
   const e2e = JSON.parse(readFileSync(join(root, 'data', 'e2e.json'), 'utf8'));
   const mib = (b) => Math.round(b / 1048576).toLocaleString('en-US');
   const session = (set) => set.groups.find((g) => g.restart === false);
-  assert.ok(claimed.includes(`a median of ${mib(session(e2e).process_rss_peak_bytes.median)} MiB, down from ${mib(session(e2e.baseline).process_rss_peak_bytes.median)} MiB`));
-  assert.equal(session(e2e).process_rss_peak_bytes.median / 1048576 > e2e.target.rssMedianMiB, claimed.includes('short of the 5,120 MiB target'), 'the target outcome in the line is the data\'s');
+  assert.ok(claimed.includes(`a median of ${mib(session(e2e).process_rss_peak_bytes.median)} MiB, down from ${mib(session(e2e.baseline).process_rss_peak_bytes.median)} MiB before the Sprint 6 memory work`));
+  assert.equal(session(e2e).process_rss_peak_bytes.median / 1048576 > e2e.target.rssMedianMiB, claimed.includes('still short of the 5,120 MiB target'), "the target outcome in the line is the data's");
+  assert.ok(claimed.includes(`with the fixed question set at ${e2e.questions.all.correct} of ${e2e.questions.all.of}`));
+  assert.ok(claimed.includes(`a median answer time of ${e2e.questions.timing.total_ms.median.toLocaleString('en-US')} ms`));
 });
 
-test('demos.json site line is the Sprint 6 line: the memory hardening and vector search tables from committed data, the finished write-ups, 8 GB not measured, no scripts', () => {
+test('demos.json site line is the Sprint 7 line: the Start here page, the data-gated emulated section, the re-measured dockit figures, the Sprint 6 write-up, 8 GB not measured, no scripts', () => {
   const demos = JSON.parse(readFileSync(join(root, 'data', 'demos.json'), 'utf8'));
   const line = demos.find((d) => d.repo === 'site').status;
-  assert.match(line, /^Sprint 6 \(19 Nov 2026\): Working: the benchmarks page now carries a Memory hardening table/);
-  assert.match(line, /the outcome of the TD-66 target computed from the data/);
-  assert.match(line, /a Vector search table with flat against HNSW at 100,000 x 384/);
-  assert.match(line, /both built only from committed data with an 8 GB column that reads not measured on 8 GB/);
-  assert.match(line, /the Sprint 4 and Sprint 5 write-ups are finished from their evidence as unlisted drafts for the owner/);
-  assert.match(line, /No scripts\. Not yet: 8 GB figures \(not measured on 8 GB\)/);
-  assert.doesNotMatch(line, /\bmet\b/);
+  const e2e = JSON.parse(readFileSync(join(root, 'data', 'e2e.json'), 'utf8'));
+  const g = e2e.groups.find((x) => x.restart === false);
+  assert.match(line, /^Sprint 7 \(20 Nov 2026\): Working: a Start here page that links the six demos and the four quick starts that need no model download/);
+  assert.ok(line.includes(`the size of dockit's download (about ${Math.round(g.storage_usage_bytes.median / 1e6)} MB, read from the stored size in the benchmark data) stated before its link`));
+  assert.match(line, /a section of the benchmarks page for an emulated Windows run, built only from data that does not exist yet, so the page shows none of it/);
+  assert.match(line, /never fill an 8 GB laptop cell/);
+  assert.ok(line.includes(`a median of ${Math.round(g.process_rss_peak_bytes.median / 1048576).toLocaleString('en-US')} MiB, still short of the 5,120 MiB target`));
+  assert.match(line, /the Sprint 6 write-up is finished as an unlisted draft and a Sprint 7 skeleton exists/);
+  assert.match(line, /No scripts\. Not yet: 8 GB figures \(not measured on 8 GB\), a Windows measurement \(the first emulated run is pending\)/);
+  assert.doesNotMatch(line, /\bmet\b|audited|compliant/i);
 });
 
 test('every WebLLM mention in the site reads not yet (cut from Sprint 4) or cut, and nothing implies the spec is live on GitHub', () => {
@@ -1637,7 +1706,7 @@ test('site README and CHANGELOG carry a Sprint 4 entry and make no AIBOM, DPDP o
 test('demos.json: the six lines equal the status-line files of the lanes for the current sprint (committed fixtures of evidence/sprint-<SPRINT>, TD-78)', () => {
   const demos = JSON.parse(readFileSync(join(root, 'data', 'demos.json'), 'utf8'));
   const line = (r) => demos.find((d) => d.repo === r)?.status ?? '';
-  assert.equal(SPRINT, 6, 'one SPRINT constant names the sprint whose evidence folder the demo-status checks read');
+  assert.equal(SPRINT, 7, 'one SPRINT constant names the sprint whose evidence folder the demo-status checks read');
   for (const r of ['runtime', 'localdata', 'pagetriage', 'glyphsift', 'dockit', 'site']) assert.match(line(r), /^Sprint \d \(\d{1,2} Nov 2026\): /, `${r}: not a sprint status line`);
   for (const [r, file] of Object.entries(STATUS_SOURCES)) {
     assert.equal(line(r), readSibling('evidence', `sprint-${SPRINT}/${file}`).trim(), `${r}: differs from evidence/sprint-${SPRINT}/${file}`);
@@ -1686,16 +1755,16 @@ test('site README: the Sprint 4 state is stated as it is (pushed 15 Nov, runs re
   assert.doesNotMatch(flat.replace(/not (?:yet )?(?:green|read)/gi, ''), /CI (?:is )?green on (?:all )?three/i);
 });
 
-test('home page repository table: Sprint 6 statuses (runtime beta, localdata documents API and HNSW graph, glyphsift gate, dockit answering offline one model at a time), 8 GB not measured', () => {
+test('home page repository table: Sprint 7 statuses (runtime beta, localdata documents API and HNSW graph, glyphsift gate, dockit answering offline one model at a time), 8 GB not measured', () => {
   const html = readFileSync(join(root, 'src', 'pages', 'index.html'), 'utf8').replace(/\s+/g, ' ');
   const row = (n) => new RegExp(`<tr><td><a [^>]*>${n}</a></td>.*?</tr>`).exec(html)?.[0] ?? '';
-  assert.match(row('runtime'), /Beta 0\.3\.0-beta\.1 on spec release 0\.6\.0 \(not tagged, not published, not tag-ready\)/);
+  assert.match(row('runtime'), /Beta 0\.3\.0-beta\.2 on spec release 0\.6\.1 \(not tagged, not published, not tag-ready\)/);
   assert.doesNotMatch(row('runtime'), /0\.2\.0-alpha/);
-  assert.match(row('localdata'), /0\.4\.0-alpha\.0/);
+  assert.match(row('localdata'), /0\.4\.0-alpha\.1/);
   assert.match(row('localdata'), /documents API \(putDocument, queryChunks\)/);
   assert.match(row('localdata'), /\(not measured on 8 GB\)/);
-  assert.match(row('glyphsift'), /0\.1\.2/);
-  assert.match(row('dockit'), /0\.3\.0-dev \(private, not published\): answers a question about a PDF offline with one small local model at a time; OCR: not yet; not measured on 8 GB/);
+  assert.match(row('glyphsift'), /0\.1\.3/);
+  assert.match(row('dockit'), /0\.4\.0-dev \(private, never published to a registry\): answers a question about a PDF offline with one small local model at a time; OCR: not yet; not measured on 8 GB/);
   assert.doesNotMatch(row('dockit'), /Skeleton|no document processing/);
 });
 
@@ -2117,7 +2186,7 @@ test('data/ann.json equals the importer output for the committed copy of localda
 test('the built benchmarks page has a flat-against-HNSW table: every figure from data/ann.json, the recall target outcome computed, the 8 GB column reads not measured on 8 GB', () => {
   const { out } = buildToTemp();
   const html = readFileSync(join(out, 'benchmarks', 'index.html'), 'utf8');
-  const section = /<h2 id="vector-search">[\s\S]*?(?=<h2 id="reference-machine">|<h2>Reference machine<\/h2>)/.exec(html)?.[0] ?? '';
+  const section = /<h2 id="vector-search">[\s\S]*?(?=<h2 id="emulated-windows">|<h2 id="reference-machine">|<h2>Reference machine<\/h2>)/.exec(html)?.[0] ?? '';
   assert.ok(section.length > 500, 'the vector search section is missing');
   const ann = JSON.parse(readFileSync(join(root, 'data', 'ann.json'), 'utf8'));
   assert.match(section, /<h2 id="vector-search">Vector search: flat against HNSW at 100,000 x 384<\/h2>/);

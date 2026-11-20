@@ -20,3 +20,9 @@ as they were. A test greps every committed file of this repository for a home or
 row and the importer refuses anything else) and exists only to exercise `scripts/import-localdata-bench.mjs --ann`. The machine column reads `synthetic fixture`;
 none of the figures was measured. Do not quote them. The real rows live in `localdata/docs/benchmarks/ann.csv` and, as a committed copy for CI, in
 `test/fixtures/siblings/localdata/docs/benchmarks/ann.csv`.
+
+`e2e-emulated.sample.csv`, `e2e-emulated-questions.sample.csv`, `e2e-emulated.sample.json` and `e2e-emulated.hostile.json` exercise the emulated Windows section of the
+benchmarks page (`scripts/import-dockit-emulated.mjs`, `renderEmulated` in `scripts/build.mjs`). They are written by `scripts/make-emulated-fixtures.mjs` and every figure in them is
+invented: nothing was measured, and the environment label says "synthetic fixture". Do not quote them. `e2e-emulated.sample.json` is the importer's output for the two sample CSVs;
+`e2e-emulated.hostile.json` is the same data with a script tag, an attribute-opening quote and a spreadsheet formula in three cells, which the build must refuse and the renderer must
+escape. The real emulated rows will live in `dockit/docs/benchmarks/e2e-emulated-win-vm.csv` once the first dispatch of the bench-windows workflow has been imported.

@@ -1,0 +1,197 @@
+{
+  "spec": "airplanemode.site.e2e-emulated/1",
+  "command": "bench-windows workflow: node scripts/bench-e2e.mjs --environment <label> inside scripts/win/run-capped.ps1",
+  "source": {
+    "csv": "docs/benchmarks/e2e-emulated-win-vm.csv",
+    "csvSha256": "aaf87ab889c05f60583def3cc56a33c9e1d8b806ef69a19f68b52b5b7b8e2a80",
+    "questionsCsv": "docs/benchmarks/e2e-emulated-win-vm-questions.csv",
+    "questionsCsvSha256": "559ae738f6af102818da69f7793a6b197606cb164a7c8d21c60e5cd601b9eb73",
+    "commit": "aaaaaaaaaaaa",
+    "date": "2026-11-21T00:00:00.000Z",
+    "rows": 20
+  },
+  "legs": [
+    {
+      "environment": "emulated: synthetic fixture on a GitHub-hosted Windows Server VM, x64, 4 vCPU, pwsh, node and Chrome process tree with no job limit; not a laptop",
+      "limitBytes": null,
+      "runs": 6,
+      "sessionRuns": 5,
+      "restartRuns": 1,
+      "chrome": "Chrome/157.0.8103.79",
+      "commit": "aaaaaaaaaaaa",
+      "first_token_ms": {
+        "median": 9035,
+        "worst": 9060
+      },
+      "total_ms": {
+        "median": 14035,
+        "worst": 14060
+      },
+      "process_rss_peak_bytes": {
+        "median": 4613734400,
+        "worst": 4613734400
+      },
+      "processCommitPeakBytes": {
+        "median": 4931977216,
+        "worst": 4934598656
+      },
+      "jobCommitPeakBytes": 5242880000,
+      "jobEscapes": 0,
+      "samplerMedianIntervalMs": {
+        "median": 704,
+        "worst": 706
+      },
+      "requestsAfterOffline": {
+        "max": 0
+      },
+      "failure": null,
+      "result": "pass",
+      "questions": {
+        "all": {
+          "correct": 12,
+          "of": 12
+        },
+        "firstRun": {
+          "correct": 2,
+          "of": 2
+        }
+      },
+      "laptop8gb": "not measured on 8 GB"
+    },
+    {
+      "environment": "emulated: synthetic fixture on a GitHub-hosted Windows Server VM, x64, 4 vCPU, pwsh, node and Chrome process tree under a job commit limit of 8589934592 bytes; not a laptop",
+      "limitBytes": 8589934592,
+      "runs": 6,
+      "sessionRuns": 5,
+      "restartRuns": 1,
+      "chrome": "Chrome/157.0.8103.79",
+      "commit": "aaaaaaaaaaaa",
+      "first_token_ms": {
+        "median": 9035,
+        "worst": 9060
+      },
+      "total_ms": {
+        "median": 14035,
+        "worst": 14060
+      },
+      "process_rss_peak_bytes": {
+        "median": 4508876800,
+        "worst": 4508876800
+      },
+      "processCommitPeakBytes": {
+        "median": 4827119616,
+        "worst": 4829741056
+      },
+      "jobCommitPeakBytes": 5138022400,
+      "jobEscapes": 0,
+      "samplerMedianIntervalMs": {
+        "median": 704,
+        "worst": 706
+      },
+      "requestsAfterOffline": {
+        "max": 0
+      },
+      "failure": null,
+      "result": "pass",
+      "questions": {
+        "all": {
+          "correct": 12,
+          "of": 12
+        },
+        "firstRun": {
+          "correct": 2,
+          "of": 2
+        }
+      },
+      "laptop8gb": "not measured on 8 GB"
+    },
+    {
+      "environment": "emulated: synthetic fixture on a GitHub-hosted Windows Server VM, x64, 4 vCPU, pwsh, node and Chrome process tree under a job commit limit of 6442450944 bytes; not a laptop",
+      "limitBytes": 6442450944,
+      "runs": 6,
+      "sessionRuns": 5,
+      "restartRuns": 1,
+      "chrome": "Chrome/157.0.8103.79",
+      "commit": "aaaaaaaaaaaa",
+      "first_token_ms": {
+        "median": 9035,
+        "worst": 9060
+      },
+      "total_ms": {
+        "median": 14035,
+        "worst": 14060
+      },
+      "process_rss_peak_bytes": {
+        "median": 4404019200,
+        "worst": 4404019200
+      },
+      "processCommitPeakBytes": {
+        "median": 4722262016,
+        "worst": 4724883456
+      },
+      "jobCommitPeakBytes": 5033164800,
+      "jobEscapes": 0,
+      "samplerMedianIntervalMs": {
+        "median": 704,
+        "worst": 706
+      },
+      "requestsAfterOffline": {
+        "max": 0
+      },
+      "failure": null,
+      "result": "pass",
+      "questions": {
+        "all": {
+          "correct": 12,
+          "of": 12
+        },
+        "firstRun": {
+          "correct": 2,
+          "of": 2
+        }
+      },
+      "laptop8gb": "not measured on 8 GB"
+    },
+    {
+      "environment": "emulated: synthetic fixture on a GitHub-hosted Windows Server VM, x64, 4 vCPU, pwsh, node and Chrome process tree under a job commit limit of 5368709120 bytes; not a laptop",
+      "limitBytes": 5368709120,
+      "runs": 2,
+      "sessionRuns": 2,
+      "restartRuns": 0,
+      "chrome": "Chrome/157.0.8103.79",
+      "commit": "aaaaaaaaaaaa",
+      "first_token_ms": null,
+      "total_ms": null,
+      "process_rss_peak_bytes": {
+        "median": 4718592000,
+        "worst": 4718592000
+      },
+      "processCommitPeakBytes": {
+        "median": 5034737664,
+        "worst": 5035261952
+      },
+      "jobCommitPeakBytes": 5347737600,
+      "jobEscapes": 0,
+      "samplerMedianIntervalMs": {
+        "median": 702,
+        "worst": 702
+      },
+      "requestsAfterOffline": {
+        "max": 0
+      },
+      "failure": "out_of_memory",
+      "result": "fail",
+      "questions": {
+        "all": {
+          "correct": 2,
+          "of": 4
+        },
+        "firstRun": {
+          "correct": 2,
+          "of": 2
+        }
+      },
+      "laptop8gb": "not measured on 8 GB"
+    }
+  ]
+}

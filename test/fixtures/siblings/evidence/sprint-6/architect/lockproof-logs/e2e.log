@@ -1,0 +1,50 @@
+
+Running 31 tests using 1 worker
+
+cache phase done
+  ✓   1 test/e2e.spec.ts:95:1 › online once: the model downloads and verifies, then the network is blocked (5.4s)
+requests after offline: network 0, service-worker hits 28, cache hits 0
+  ✓   2 test/e2e.spec.ts:109:1 › q1 over policy-3p.pdf: a real Qwen3-0.6B answer with 45, source page 2, and 0 requests attempted (13.2s)
+q2: I could not find this in the document.
+q3: The annual premium is 12,500 rupees. [S1]
+q4: The sample policy covers a **sample sedan**. [S1]
+q5: The policy holder can cancel the policy by writing in writing. [S1]
+q6: I could not find this in the document.
+q7: I could not find this in the document.
+  ✓   3 test/e2e.spec.ts:136:1 › the other six questions are recorded, not gated (1.2m)
+model loads for the question after Stop (after-stop-streaming): 2 loads, 1907 ms in all (Apple M5 Pro 48 GB, not measured on 8 GB)
+  ✓   4 test/e2e.spec.ts:187:1 › Stop while the answer streams, then the next question: re-loaded from the device, 45 on page 2, 0 requests, no download (BUG-T1-S5-R2-01) (22.5s)
+model loads for the question after Stop (after-stop-prefill): 2 loads, 2144 ms in all (Apple M5 Pro 48 GB, not measured on 8 GB)
+  ✓   5 test/e2e.spec.ts:201:1 › Stop within 1 s of Ask (before the first token) shows Stopped., then the next question answers with 45 and page 2 (BUG-T1-S5-R2-01, -02) (14.6s)
+  ✓   6 test/e2e.spec.ts:220:1 › the analysis and pdf workers are gone after extraction: each stage ends its worker (B1 M3) (1.3s)
+  ✓   7 test/e2e.spec.ts:244:1 › a fresh pdf worker per document, terminated afterwards (1.3s)
+  ✓   8 test/e2e.spec.ts:287:3 › refusal: scanned PDF shows its plain message, 0 requests and 0 model bytes used (91ms)
+  ✓   9 test/e2e.spec.ts:287:3 › refusal: corrupt PDF shows its plain message, 0 requests and 0 model bytes used (34ms)
+  ✓  10 test/e2e.spec.ts:287:3 › refusal: encrypted PDF shows its plain message, 0 requests and 0 model bytes used (34ms)
+  ✓  11 test/e2e.spec.ts:287:3 › refusal: 301-page PDF shows its plain message, 0 requests and 0 model bytes used (91ms)
+  ✓  12 test/e2e.spec.ts:299:1 › refusal: a file over 20 MiB is refused before it is read (arrayBuffer never called on it) (16ms)
+  ✓  13 test/e2e.spec.ts:312:1 › refusal: the 1.2 GiB content bomb is now refused as stream_limit, before pdf.js, in plain words, never as a scanned file, and the page stays usable (S1-107) (2.7s)
+S1-107 peak: {"case":"font bomb (FontFile2, 1 GiB + 1 of zeros, Flate)","idleRssMiB":3073,"peakRssMiB":3077,"analysisWorkerWasmPeakMiB":5,"jsHeapPeakMiB":11,"sprint5FontBombPeakMiB":8121,"note":"Apple M5 Pro 48 GB, not measured on 8 GB"}
+  ✓  14 test/e2e.spec.ts:355:3 › S1-107: font bomb (FontFile2, 1 GiB + 1 of zeros, Flate) is refused before pdf.js starts: its plain sentence, no pdf worker, no extract event, no model, 0 requests; peaks logged (4.9s)
+S1-107 peak: {"case":"image bomb (1 GiB + 1 of zeros, Flate, declared 32768 x 32768)","idleRssMiB":3074,"peakRssMiB":3073,"analysisWorkerWasmPeakMiB":5,"jsHeapPeakMiB":14,"sprint5FontBombPeakMiB":8121,"note":"Apple M5 Pro 48 GB, not measured on 8 GB"}
+  ✓  15 test/e2e.spec.ts:355:3 › S1-107: image bomb (1 GiB + 1 of zeros, Flate, declared 32768 x 32768) is refused before pdf.js starts: its plain sentence, no pdf worker, no extract event, no model, 0 requests; peaks logged (4.9s)
+S1-107 peak: {"case":"a PDF with a broken cross-reference table (pdf.js opens it, pagetriage's parser cannot vouch for it)","idleRssMiB":3073,"peakRssMiB":3073,"analysisWorkerWasmPeakMiB":3,"jsHeapPeakMiB":12,"sprint5FontBombPeakMiB":8121,"note":"Apple M5 Pro 48 GB, not measured on 8 GB"}
+  ✓  16 test/e2e.spec.ts:355:3 › S1-107: a PDF with a broken cross-reference table (pdf.js opens it, pagetriage's parser cannot vouch for it) is refused before pdf.js starts: its plain sentence, no pdf worker, no extract event, no model, 0 requests; peaks logged (3.6s)
+  ✓  17 test/e2e.spec.ts:415:1 › prompt injection: the answer holds only text nodes, no link annotation is rendered, 0 requests (10.2s)
+  ✓  18 test/e2e.spec.ts:434:1 › Cache Storage holds only precache keys, and no event carries a file name, a question or an answer (24ms)
+  ✓  19 test/e2e.spec.ts:461:1 › a full Chrome restart on the same profile, offline: the stored manifest is re-verified and the answer holds 45 with source page 2 (13.8s)
+worker targets sampled every 100 ms: 241 samples, at most 1 at once
+  ✓  20 test/e2e.spec.ts:479:1 › B1 M1: at every 100 ms sample over an ingest and two questions there is at most one worker target, and the embedder unloads before the answer model loads (24.7s)
+  ✓  21 test/e2e.spec.ts:549:1 › B1 M6: with deviceMemory overridden to 2 the card states the line and opening a PDF is refused in the exact words, with no model load phase and no request (765ms)
+  ✓  22 test/e2e.spec.ts:575:1 › B1 M6 (TD-84): a browser that does not report its memory is not below the line: the card says so in plain words and the model loads and answers (13.7s)
+  ✓  23 test/e2e.spec.ts:589:1 › B1 M6: at 8 GB reported the card shows the line as met, and the same document opens (1.8s)
+  ✓  24 test/e2e.spec.ts:692:1 › data at rest, Keep on this device: the document is on disk, and Delete followed by a reload leaves 0 files, no kept row and an empty kept list (13.4s)
+  ✓  25 test/e2e.spec.ts:721:1 › data at rest, Keep on this device: Delete from the kept list after a reload removes it the same way (1.6s)
+  ✓  26 test/e2e.spec.ts:738:1 › data at rest, memory only (the default): after a reload OPFS and IndexedDB hold no document namespace, and the IndexedDB database dockit holds only the manifest store (13.2s)
+  ✓  27 test/e2e.spec.ts:781:1 › tampered stored manifest bytes (one hash digit): no_valid_signature, shown as manifest_refused, and 0 model bytes reach the engine (S-OFF-1) (263ms)
+  ✓  28 test/e2e.spec.ts:803:1 › a stored manifest that no longer parses (the explicit parse-failure case): manifest_refused with reason parse, 0 model bytes (263ms)
+  ✓  29 test/e2e.spec.ts:821:1 › a tampered model manifest from the server (one hash digit): no_valid_signature, and no model file is requested (762ms)
+  ✓  30 test/e2e.spec.ts:851:1 › the model missing while offline (a fresh profile that never downloaded it): model_not_cached (783ms)
+  ✓  31 test/e2e.spec.ts:868:1 › a worker started from a blob inherits the page CSP: eval inside it is blocked, and every worker of the page starts with 0 CSP or Trusted Types violations (607ms)
+
+  31 passed (4.0m)

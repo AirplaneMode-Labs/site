@@ -7,7 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Added (dockit's third dispatch, run 44666921454: the limit proven in force)
+
+- `data/e2e-emulated.json` is now built from dockit's third run of the manual `bench-windows` workflow (run 44666921454 on dockit `f6a71cab4ab1`, 20 Nov 2026): the first with the limit read back, probed and counted. Four benchmark legs
+  (no limit, 8, 6 and 5 GiB; six runs each, 24 of 36 answers on every leg, as on the Mac) and the 2 GiB control, which wrote no benchmark row and so has one marker row (run 0, no figure, no failure reason). Emulated, not a laptop: a
+  limit on committed memory on a GitHub-hosted VM with 4 vCPU and 16 GB RAM; every 8 GB cell still "not measured on 8 GB". The second dispatch's rows are kept in dockit's `docs/benchmarks/history/` and are in no figure here.
+- The importer reads a seventh evidence column, `probe_memory_limit_messages` (the completion port's count when the probe ended), and a copy of dockit's `limitMessages()` splits the memory-limit messages into the whole run, the probe's own and
+  those posted while the benchmark ran. `data/e2e-emulated.json` is now spec `airplanemode.site.e2e-emulated/3`: each leg and control leg has `probeMessages` and `benchmarkMessages`, and a control leg has `markerOnly`. `checkEmulated` recomputes
+  `benchmarkMessages` from the other two and refuses a file whose count does not follow.
+- The emulated section says in words, computed from the data, whether commits were refused while the benchmark ran: a "Commits refused while the benchmark ran" column, an evidence table with the three message counts, a paragraph for a proven leg that had
+  refusals (and "still finished", with its question set, only when it passed: the 5 GiB leg, two refusals, 24 of 36) and one for the proven legs that had none (8 and 6 GiB); a "Question set" column; a control that has only its marker row reads "did not complete ... so the
+  control passed" when its limit is proven. The whole-tree peak of the 8 and 6 GiB legs reads not measured (it is the probe's) and the 5 GiB leg's counts commits the limit refused, from the same evidence as before. The closing note says the run does not model an 8 GB machine's operating system and other apps, an integrated GPU, thermal limits or disk.
+- `test:siblings` also compares `limitMessages` and the seven evidence columns with dockit's; `scripts/make-emulated-fixtures.mjs` has the new column and invented message counts (a leg that had refusals and finished, one that had them and failed, one that had none).
+
+### Added (dockit's second dispatch, run 44656249868)
 
 - `data/e2e-emulated.json`, written by `scripts/import-dockit-emulated.mjs` from dockit's committed emulated CSVs (the first Windows run, bench-windows run 44656249868 on dockit `5705baab8cdf`, 20 Nov 2026): four
   legs (no limit, 8, 6 and 5 GiB), six runs each, labelled "emulated: ...; not a laptop" verbatim, every 8 GB cell still "not measured on 8 GB". The benchmarks page now has its emulated section.
@@ -27,7 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The emulated section's introduction no longer says the whole-tree peak is "a little above" the Chrome-only peak (it is 1.9 GiB above it in the 5 GiB leg); it says the whole-tree peak counts pwsh and node as well as
-  Chrome. The README's Sprint 7 limitation about the emulated figure now describes the imported run. The status paragraph, `data/demos.json` and the status lines are the Sprint 7 snapshot and are refreshed with the demos.
+  Chrome. The README's Sprint 7 limitation about the emulated figure now describes the imported run.
+- The Status paragraph, `data/demos.json` (the site and dockit lines), the README's Sprint 7 paragraphs and the Sprint 7 write-up skeleton no longer say that the emulated section is built from data that does not exist or that the Windows run is pending: they describe the third dispatch's rows (the dockit and site lines are the `D5` status-line files of the sprint evidence folder, re-synced with `scripts/sync-demo-status.mjs`, and the two committed fixtures of them re-cut).
 
 ## [0.1.0-dev] - 2026-11-20 (untagged)
 

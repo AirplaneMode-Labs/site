@@ -3,16 +3,20 @@
 The lab's public site: the paper tracker, the benchmarks page and the write-ups, published to
 GitHub Pages (see Demo below).
 
+Live demo: https://airplanemode-labs.github.io/site/
+
+The package name `@airplanemode/site` is a placeholder; the site is never published to a registry; the Pages deploy is the release (`docs/release.md`).
+
 ## Status
 
-Sprint 6 (19 Nov 2026): Working: the benchmarks page now carries a Memory hardening table with the dockit memory before and after (peak memory as the Chrome process tree, time to first token, the total for the first question and for every question, and the fixed question set as N of M, with the outcome of the TD-66 target computed from the data) and a Vector search table with flat against HNSW at 100,000 x 384 (build, query p50 and p95, recall@10, index and graph bytes, JS heap and WebAssembly memory, with the outcome of the TD-65 recall target computed from the data), both built only from committed data with an 8 GB column that reads not measured on 8 GB; the Sprint 4 and Sprint 5 write-ups are finished from their evidence as unlisted drafts for the owner, and a Sprint 6 skeleton exists; the six demo status lines come from one sprint constant. No scripts. Not yet: 8 GB figures (not measured on 8 GB), a Windows measurement, a published Sprint 6 write-up (a skeleton only).
+Sprint 7 (20 Nov 2026): Working: a Start here page that links the six demos and the four quick starts that need no model download, with the size of dockit's download (about 800 MB, read from the stored size in the benchmark data) stated before its link; a section of the benchmarks page for an emulated Windows run, built only from data that does not exist yet, so the page shows none of it and no text about it, and any row in it would name its environment and never fill an 8 GB laptop cell; the dockit memory figures are the Sprint 6 build re-measured on a quiet machine (a median of 5,436 MiB, still short of the 5,120 MiB target, Apple M5 Pro 48 GB, not measured on 8 GB); the Sprint 6 write-up is finished as an unlisted draft and a Sprint 7 skeleton exists; the six demo status lines come from one sprint constant. No scripts. Not yet: 8 GB figures (not measured on 8 GB), a Windows measurement (the first emulated run is pending), a published Sprint 6 or Sprint 7 write-up.
 
-Live since the owner's push of 18 Nov 2026 (the site `pages` run 44335118288 was green and the footer read "Built from main at fe2b00b5f027"). Sprint 6 (19 Nov 2026) is local
-until the owner pushes it, so the live site shows Sprint 5 until then. Sprint 6 adds two sections to the benchmarks page, both built from committed data only: a Memory hardening
-table (the dockit memory before and after, from dockit's two CSV pairs, with the outcome of the TD-66 target computed from them, not typed) and a Vector search table (flat against
-HNSW at 100,000 x 384, from localdata's `ann.csv`, with the outcome of the TD-65 recall target computed). It finishes the Sprint 4 and Sprint 5 write-ups from their saved evidence and
-the two reports, short and factual, as unlisted `noindex` drafts (taking the draft marker off is the owner's publishing step, as for Sprint 3), adds a Sprint 6 skeleton, and reads the
-six demo status lines through one `SPRINT` constant (TD-78). The earlier status text follows.
+Live since the owner's push of 18 Nov 2026 (the site `pages` run 44335118288 was green and the footer read "Built from main at fe2b00b5f027"); Sprint 6 was pushed by the main session on 19 Nov 2026
+(head f151e04, `ci` run 44580229417 and `pages` run 44580229540 green), so the live site shows Sprint 6 until the main session pushes Sprint 7 (the live pages change only after that push). Sprint 7
+(an addition the owner asked for on 19 Nov 2026; the plan documents define six sprints, so it has no row in them) adds a Start here page, a section of the benchmarks page for an emulated Windows run
+that renders only when `data/e2e-emulated.json` exists (it does not exist yet: the first dispatch of dockit's `bench-windows` workflow has not run, and its results are imported in a follow-up), the
+Sprint 6 write-up finished from its evidence as an unlisted `noindex` draft, and a Sprint 7 skeleton. `data/e2e.json` is the Sprint 6 build of dockit re-measured on a quiet machine (TD-101). Gate 1
+(two paid pilots, 300 stars, five qualified conversations) reads 0, 0 and 0, and nothing on this site changes that. The earlier status text follows.
 
 Sprint 4 (14 Nov 2026): pushed 15 Nov 2026 at 4bd3cb2; the pages run 43667716681 failed, so the live site still shows Sprint 2.
 The paper tracker holds 65 papers: the first 30 named or implied in the plans plus 35 added in Sprint 4,
@@ -235,6 +239,12 @@ the 8 GB laptop has been measured. Today the page carries:
 
 ## Limitations
 
+- Sprint 7: there is no emulated Windows figure on the benchmarks page, and no section for one: dockit's manual `bench-windows` workflow is written and has not run, and the section renders only
+  when `data/e2e-emulated.json` exists (`node scripts/import-dockit-emulated.mjs` writes it only from a committed emulated CSV). When it exists it is a GitHub-hosted Windows VM with a job commit
+  limit, not a laptop, it quotes its environment label verbatim, and it fills no 8 GB cell; nothing on the site is, or will be, an 8 GB laptop figure until the owner's run exists.
+- Sprint 7: the Start here page links the four "Try it in two minutes" sections of the library READMEs by their anchors (`#try-it-in-two-minutes`); a test checks the links on this page, not that
+  the section still exists in another repository, so a renamed heading there breaks the link until this page is changed. dockit's download size on that page is read from the benchmark data.
+- Sprint 7: the Sprint 6 write-up is a draft from the team, unlisted and `noindex`; the Sprint 7 write-up is a skeleton. Neither is published; removing the draft marker is the owner's step.
 - Sprint 5: the dockit rows are from one machine (an Apple M5 Pro with 48 GB) and one synthetic three-page English policy with seven fixed questions;
   nothing is measured on 8 GB or on Windows, and the page says so. The question-set result is not a claim about real documents. The "top-ranked retrieved
   passage on the right page" column is retrieval over three pages and four retrieved passages, so it is easy to satisfy and is not a retrieval benchmark.
@@ -242,10 +252,8 @@ the 8 GB laptop has been measured. Today the page carries:
   is what notices a stale one, and CI cannot.
 
 - No search and no RSS feed.
-- The demo statuses on `/demos/` are hand-written and dated, not measured at the live URLs. The
-  dockit and site lines are Sprint 4 lines (14 Nov 2026); the runtime, localdata, glyphsift and pagetriage
-  lines are the Sprint 3 lines until the product owner rewrites them at close-out from the developers'
-  results. WebLLM appears only as not yet (cut from Sprint 4). Nothing says the manifest spec is live on
+- The demo statuses on `/demos/` are dated and not measured at the live URLs: since Sprint 6 each is the one-line `status-line.txt` its lane wrote (`node scripts/sync-demo-status.mjs`,
+  one `SPRINT` constant, TD-78), and the Sprint 7 lines are dated 20 Nov 2026 and were written from local builds served under `/<repo>/`. WebLLM appears only as not yet (cut from Sprint 4). Nothing says the manifest spec is live on
   GitHub: the spec wording is "manifest spec v0.1 published in runtime/spec (committed; public after the
   owner's push)". The home page repository table has the same limit for the runtime and localdata rows.
 - No scripts at all, by design; nothing on the site is interactive.

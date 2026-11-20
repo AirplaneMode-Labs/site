@@ -10,6 +10,8 @@ The site is deployed from `main` to GitHub Pages; there are no versioned release
 
 ## Reporting a vulnerability
 
+Report a vulnerability privately, by email: never in a public issue, and never with a real document attached.
+
 Email jtushar53@gmail.com with a description and, where possible, a reproduction. You will
 get an acknowledgement within seven days.
 

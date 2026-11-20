@@ -9,9 +9,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing yet.
 
+## [0.1.0-dev] - 2026-11-20 (untagged)
+
+Sprint 7 (20 Nov 2026; an addition the owner asked for on 19 Nov 2026, TD-102; version 0.1.0-dev, TD-107; never published to a registry, not tagged). Every figure on the site is from a committed file, and the
+8 GB column of every table still reads not measured on 8 GB.
+
+### Added
+
+- A Start here page (`/start-here/`, in the navigation): the six demos, the four "Try it in two minutes" sections that need no model download, the benchmarks and each repository's Limitations section, with the size
+  of dockit's download (read from the stored size in `data/e2e.json`, never typed) stated before its link. No script, no form, no third-party resource. (D5-04)
+- An emulated Windows section of the benchmarks page, built only from `data/e2e-emulated.json`, which `scripts/import-dockit-emulated.mjs` writes only when dockit has committed its emulated CSV. With no CSV it writes
+  nothing and the page has no such section and no such text. The importer refuses an environment label that is not "emulated: ...; not a laptop" in a small safe alphabet (no markup, quote or formula start), that says
+  laptop elsewhere or reads as an 8 GB machine, a figure that is not a non-negative integer, a failure reason outside four, and any row whose `laptop_8gb` is not `not measured on 8 GB`; the build checks the JSON again
+  and escapes every cell. The laptop cells of the page are not touched. (D5-04)
+- The Sprint 6 write-up, finished as an unlisted `noindex` draft from `evidence/sprint-6`, the committed benchmark files and the Sprint 6 report, with a test that recomputes each figure from its file; a Sprint 7
+  skeleton (`noindex`, linked from nowhere). (D5-06)
+- Issue forms with a required "no real document" checkbox and a link to `SECURITY.md`; `docs/release.md` ("never published to a registry; the Pages deploy is the release", TD-117, TD-120); the `Live demo:` line in
+  the README's first screen (TD-116). (D5-06)
+
+### Changed
+
+- The six demo status lines are the Sprint 7 lines (`SPRINT = 7`, TD-78); `data/e2e.json` and the dockit CSV fixtures are the Sprint 6 build re-measured on a quiet machine (TD-101). (D5-00, D5-06)
+
+### Deferred
+
+- The emulated Windows rows themselves: they exist only after the first dispatch of dockit's `bench-windows` workflow has been imported (a follow-up, not this sprint).
+
 ## [0.1.0-dev] - 2026-11-19 (untagged)
 
-Sprint 6 (19 Nov 2026; version 0.1.0-dev, TD-69; not published, not tagged, not pushed).
+Sprint 6 (19 Nov 2026; version 0.1.0-dev, TD-69; not published, not tagged; pushed by the main session on 19 Nov 2026, head f151e04, and live).
 
 ### Added
 

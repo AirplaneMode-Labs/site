@@ -20,3 +20,8 @@
 Code contributions are licensed under Apache-2.0 (LICENSE). Prose and data contributions
 (writeups/, data/, page text) are licensed under CC BY 4.0 (LICENSE-CC-BY-4.0). By
 contributing you agree to these terms.
+
+## Issues
+
+Use one of the forms under `.github/ISSUE_TEMPLATE/`. Never attach a real, confidential or personal document (bank, legal, medical, identity) to an issue or a pull request: a sample
+is synthetic or public, and anything you paste is redacted first. A vulnerability is reported privately, as `SECURITY.md` says, never in a public issue.

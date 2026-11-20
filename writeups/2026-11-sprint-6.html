@@ -1,36 +1,109 @@
-<!-- title: Sprint 6: write-up skeleton (draft) -->
+<!-- title: Sprint 6: less memory, a graph index, and a target we missed (draft) -->
 <!-- date: 2026-11-19 -->
-<!-- description: Draft skeleton of the Sprint 6 write-up of Airplane Mode Labs. No content until the product owner fills it from evidence at close-out. -->
+<!-- description: Draft write-up of Sprint 6 of Airplane Mode Labs, written from the saved Sprint 6 evidence, the committed benchmark files and the Sprint 6 report only. Unlisted: the owner decides when it goes public. -->
 <meta name="draft" content="true" />
-<h1>Sprint 6: write-up skeleton (draft)</h1>
+<h1>Sprint 6: less memory, a graph index, and a target we missed (draft)</h1>
 <p class="lede">
-  Sprint 6 (planned 18 January 2027 to 31 January 2027, build work started early on 19 November 2026
-  by the owner's choice). This page is a skeleton: the product owner finishes every section from the
-  saved evidence and from nothing else. It is not listed and asks search engines not to index it.
+  Sprint 6 (planned 18 January 2027 to 31 January 2027, build work started early on 19 November 2026 by the owner's choice). Finished on 20 November 2026 from the saved
+  evidence, the committed benchmark files and the Sprint 6 report, and from nothing else. This page is a draft for owner approval: it is not listed and asks search
+  engines not to index it.
 </p>
 <p class="muted">
-  Rules for finishing it: every figure is quoted with the command that produced it, the machine it
-  ran on and the evidence path; an Apple-silicon figure is not an 8 GB figure and says not measured
-  on 8 GB; neither the Sprint 5 nor the Sprint 6 done-when is claimed before the owner's 8 GB run
-  has been read; a dropped item is written as cut, never as half-landed.
+  Rules this page follows: every figure sits next to the file it was read from, and a build test recomputes it from that file. Sprint 6's done-when is NOT met, and
+  the Sprint 5 done-when is quoted only as: build done on Apple M5 Pro 48 GB; 8 GB Windows done-when NOT met (owner runbook step 5). Anything about the 8 GB laptop is not
+  measured on 8 GB.
 </p>
 
 <h2>What we tried</h2>
-<p data-slot="tried">[product owner to finish at close-out]</p>
+<ul>
+  <li>
+    Holding one model in memory at a time in dockit: the search model is unloaded before the answer model loads, and the workers that analyse and read a PDF end when their
+    stage ends (evidence/sprint-6/D5/B1-result.md).
+  </li>
+  <li>
+    An optional graph index behind localdata's Storage API, built in-house in Rust, with the flat scan kept as the default and the fallback (SPRINT-6-REPORT.md).
+  </li>
+  <li>
+    A check of every stream of a PDF before pdf.js opens it, so that a file that hides a very large compressed font or image is refused first
+    (evidence/sprint-6/architect/lockproof-logs/e2e.log).
+  </li>
+  <li>
+    A manifest verifier that refuses a weak Ed25519 key before it parses anything: the test vectors have 26 rows, 20 of them refused (SPRINT-6-REPORT.md).
+  </li>
+</ul>
 
 <h2>What held up</h2>
-<p data-slot="held-up">[product owner to finish at close-out]</p>
+<ul>
+  <li>
+    The fixed question set did not change: 24 of 36 answerable rows over all runs and 4 of 6 on the first run, in the set taken before the memory work and in the set
+    taken after it, with 0 requests after the network was blocked in every run of both sets (dockit/docs/benchmarks/e2e-s6-baseline.csv and
+    dockit/docs/benchmarks/e2e.csv).
+  </li>
+  <li>
+    A build from fresh clones at the locked sibling commits passed the browser end-to-end suite, 31 of 31, and the Devanagari gate test, 2 of 2, and measured 821,882,880
+    bytes against the size guard of 1,000,000,000 bytes (evidence/sprint-6/architect/lockproof-logs/e2e.log, evidence/sprint-6/architect/lockproof-logs/gate.log and
+    evidence/sprint-6/architect/lockproof-logs/size.txt).
+  </li>
+  <li>
+    The font bomb, a text page whose embedded font inflates to 1 GiB and a byte, was refused before pdf.js started: the Chrome process tree peaked at 3,077 MiB against
+    3,073 MiB idle, where Sprint 5 had accepted the same kind of file and peaked at 8,121 MiB (evidence/sprint-6/architect/lockproof-logs/e2e.log).
+  </li>
+  <li>
+    On clustered data at 100,000 vectors of 384 dimensions the graph index reached recall@10 of 0.9965 / 1 / 1 at ef 32 / 64 / 128, against a target of 0.90 at ef 128
+    (SPRINT-6-REPORT.md).
+  </li>
+</ul>
 
 <h2>What did not</h2>
-<p data-slot="did-not">[product owner to finish at close-out]</p>
+<ul>
+  <li>
+    The memory target of at most 5,120 MiB was missed. The peak of the Chrome process tree, as a median of five in-session runs, went from a median of 6,307 MiB to 5,440.8 MiB, a
+    cut of 866.7 MiB or 13.7 percent, in the run of Sprint 6 itself (evidence/sprint-6/D5/B1-result.md and dockit/docs/benchmarks/e2e-s6-baseline.csv). Measured again in Sprint 7
+    on a quiet machine, on the committed build, it was a median of 5,436 MiB, 316 MiB short of the 5,120 MiB target (dockit/docs/benchmarks/e2e.csv).
+  </li>
+  <li>
+    The price is time: the median per-question total went from 9,390.5 ms to 11,950 ms in the run of Sprint 6 (evidence/sprint-6/D5/B1-result.md), and a median per-question total of
+    11,304 ms in the quiet re-measure (dockit/docs/benchmarks/e2e-questions.csv). The guard of 12,500 ms held.
+  </li>
+  <li>
+    Two of the six answerable questions, q2 and q6, were wrong in every run of both sets, so the memory work changed no answer: q2 and q6 were wrong in every run of both sets
+    (evidence/sprint-6/D5/B1-result.md).
+  </li>
+  <li>
+    On uniform data the graph index has no recall floor: recall@10 was 0.045 / 0.0755 / 0.1375 at ef 32 / 64 / 128 (SPRINT-6-REPORT.md).
+  </li>
+  <li>
+    The team did not produce even the grant draft this sprint (SPRINT-6-REPORT.md).
+  </li>
+</ul>
 
 <h2>Numbers (Apple M5 Pro; not measured on 8 GB)</h2>
-<p data-slot="numbers">
-  [product owner to finish at close-out] The memory before and after and the flat against HNSW
-  rows are on the benchmarks page.
-</p>
+<ul>
+  <li>
+    Peak memory, the summed size of the Chrome process tree, median of five in-session runs: a median of 6,307 MiB before, 5,440.8 MiB after in Sprint 6's own run, and a median of
+    5,436 MiB in the quiet re-measure of Sprint 7 (evidence/sprint-6/D5/B1-result.md, dockit/docs/benchmarks/e2e-s6-baseline.csv and dockit/docs/benchmarks/e2e.csv). All three are
+    Apple M5 Pro 48 GB figures and none is an 8 GB figure.
+  </li>
+  <li>
+    Question set: 24 of 36 and 4 of 6 on the first run, before and after (dockit/docs/benchmarks/e2e.csv).
+  </li>
+  <li>
+    Every figure here is from one Apple M5 Pro 48 GB in installed Chrome (dockit/docs/benchmarks/e2e.csv). The benchmarks page lists the same tables, built from the same files.
+  </li>
+</ul>
 
 <h2>Limitations</h2>
-<p data-slot="limitations">
-  [product owner to finish at close-out] The 8 GB Windows no-GPU laptop is not measured on 8 GB.
-</p>
+<ul>
+  <li>
+    Not measured on 8 GB: whether dockit fits an 8 GB Windows laptop with the Wi-Fi off has not been measured, and nothing has run on Windows (SPRINT-6-REPORT.md).
+  </li>
+  <li>
+    The 5,120 MiB figure is a target that was set before measuring and was missed; it was not moved after the numbers were seen (evidence/sprint-6/D5/B1-result.md).
+  </li>
+  <li>
+    One machine, one document (a synthetic three-page English policy) and seven fixed questions: the figures say nothing about real documents or other machines.
+  </li>
+  <li>
+    Nothing was tagged and nothing went to a package registry: every package name is a placeholder, and the live pages changed only when the main session pushed.
+  </li>
+</ul>

@@ -1,0 +1,28 @@
+name: Bug report
+description: A page, a table or a build step does not do what the README says
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please redact before you paste. This repository holds no documents of anyone's, and this form must never hold one.
+        To report a vulnerability, do not open an issue: follow [SECURITY.md](https://github.com/AirplaneMode-Labs/site/blob/main/SECURITY.md) and report it privately.
+  - type: checkboxes
+    id: no-real-documents
+    attributes:
+      label: Documents
+      options:
+        - label: I have not attached any real, confidential or personal document (bank, legal, medical, identity). Any sample is synthetic or public.
+          required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: where
+    attributes:
+      label: Page or command
+      description: The address of the page, or the command you ran, and the footer line (Built from main at ..., or Local build ...).
+    validations:
+      required: true

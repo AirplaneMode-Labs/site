@@ -1,0 +1,13 @@
+name: Feature request
+description: Suggest a page, a table or a paper for the tracker
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The site has no scripts and no third-party resources, and every figure on it comes from a committed file. A paper is added only after its primary page was fetched.
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like to see, and why?
+    validations:
+      required: true

@@ -16,6 +16,7 @@ import {
 } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { RAW_PATH, REPOS_WITH_RAW, rawUrl } from './bench-sources.mjs';
 import { EMULATED_SPEC, FAILURE_REASONS as EMULATED_FAILURES, LIMIT_PROOFS, LIMIT_PROOF_TEXT, NOT_MEASURED_8GB, limitProof, proofRow, validateEnvironmentLabel } from './import-dockit-emulated.mjs';
 
 export const ALLOWED_RESOURCE_HOSTS = ['github.com', 'arxiv.org', 'doi.org'];
@@ -147,14 +148,33 @@ ${papers.map(paperRow).join('\n')}
 </div>`;
 }
 
+/**
+ * The evidence of a row as text, with every raw file of a sibling (`glyphsift/docs/benchmarks/x.json`) a link to that file on GitHub (the file the figure is
+ * checked against by test/bench-sources.test.mjs), and the date, commit and machine the file records after it when the row carries them. Everything is escaped.
+ */
+function renderEvidence(r) {
+  const text = String(r.evidence);
+  let out = '';
+  let last = 0;
+  for (const m of text.matchAll(RAW_PATH)) {
+    out += `${esc(text.slice(last, m.index))}<a href="${esc(rawUrl(m[0]))}" rel="noopener noreferrer">${esc(m[0])}</a>`;
+    last = m.index + m[0].length;
+  }
+  out += esc(text.slice(last));
+  const m = r.measured;
+  const measured = m ? ` Measured ${esc(m.date)}, commit ${esc(m.commit)}, ${esc(m.machine)}.` : '';
+  return `Evidence: ${out}.${measured}`;
+}
+
 function renderBenchmarks(data) {
   const head = data.columns.map((c) => `<th>${esc(c)}</th>`).join('');
   const rows = data.rows
     .map(
       (r) =>
-        `<tr><td>${esc(r.benchmark)}</td><td><span class="tag">${esc(r.repo)}</span></td><td><code>${esc(r.command)}</code></td><td>${esc(r.dev)}</td><td>${esc(r.laptop)}</td><td>${esc(r.notes)}${r.evidence ? `${r.notes ? ' ' : ''}Evidence: ${esc(r.evidence)}.` : ''}</td></tr>`,
+        `<tr><td>${esc(r.benchmark)}</td><td><span class="tag">${esc(r.repo)}</span></td><td><code>${esc(r.command)}</code></td><td>${esc(r.dev)}</td><td>${esc(r.laptop)}</td><td>${esc(r.notes)}${r.evidence ? `${r.notes ? ' ' : ''}${renderEvidence(r)}` : ''}</td></tr>`,
     )
     .join('\n');
+  const folders = REPOS_WITH_RAW.map((repo) => `<a href="https://github.com/AirplaneMode-Labs/${repo}/tree/main/docs/benchmarks" rel="noopener noreferrer">${repo}</a>`).join(', ');
   return `<p class="muted">${esc(data.note)}</p>
 <div class="table-wrap">
 <table class="benchmarks">
@@ -163,7 +183,8 @@ function renderBenchmarks(data) {
 ${rows}
 </tbody>
 </table>
-</div>`;
+</div>
+<p class="muted">Raw results, one folder per repository, each with an index saying what every file is: ${folders}.</p>`;
 }
 
 const fmtNum = (n) => Number(n).toLocaleString('en-US');

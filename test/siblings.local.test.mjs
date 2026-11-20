@@ -2,10 +2,14 @@
 // repository. It is not run by ci.yml or pages.yml, and `node --test` (what CI runs) finds this file but it does
 // nothing unless it is started with --live, so a hosted checkout is never affected.
 //
-//   1. It re-runs the whole site suite (test/build.test.mjs) with SITE_SIBLINGS=live, so every check that CI makes
-//      against a committed fixture is made again against the live sibling file.
+//   1. It re-runs the whole site suite (test/build.test.mjs) and the benchmark-figure suite (test/bench-sources.test.mjs)
+//      with SITE_SIBLINGS=live, so every check that CI makes against a committed fixture is made again against the live
+//      sibling file.
 //   2. It re-derives every fixture from its recorded source (the commit for a repository file; the evidence or
 //      workspace file otherwise) and fails if a fixture is stale or does not match SOURCE.json.
+//   3. It reads the raw benchmark files that data/benchmarks.json cites from each sibling's HEAD (git show, not the
+//      working tree) and fails if a figure, a date, a commit, a machine or a command in the page's data disagrees with
+//      the file the sibling has committed, or if the working tree holds a version of that file that is not committed.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
@@ -17,7 +21,8 @@ if (!process.argv.includes('--live')) {
   console.log('test/siblings.local.test.mjs is local-only: run `npm run test:siblings` in a workspace that has the sibling clones.');
 } else {
   process.env.SITE_SIBLINGS = 'live';
-  const { SOURCE_JSON, FIXTURE_ROOT, WORKSPACE_ROOT, cutText, siblingPath } = await import('../scripts/sibling-fixtures.mjs');
+  const { SOURCE_JSON, FIXTURE_ROOT, SITE_ROOT, WORKSPACE_ROOT, cutText, siblingPath } = await import('../scripts/sibling-fixtures.mjs');
+  const { checkRows, figureRows, rawPaths, splitRaw } = await import('../scripts/bench-sources.mjs');
   const sha256 = (b) => createHash('sha256').update(b).digest('hex');
   const src = JSON.parse(readFileSync(SOURCE_JSON, 'utf8'));
 
@@ -90,6 +95,36 @@ if (!process.argv.includes('--live')) {
     assert.throws(() => dockit.limitMessages(capped('1', '2')), /probe/);
   });
 
-  // The same suite, reading the live files.
+  // Owner decision, 20 Nov 2026: a figure on the benchmarks page is the figure of a raw file its repository has COMMITTED under docs/benchmarks/. Each file is read
+  // at the sibling's HEAD (git show), the page's data is checked against it exactly as CI checks it against the fixtures, and the working tree must hold no other version.
+  const atHead = (repo, path) => execFileSync('git', ['-C', join(WORKSPACE_ROOT, repo), 'show', `HEAD:${path}`], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  const benchmarks = () => JSON.parse(readFileSync(join(SITE_ROOT, 'data', 'benchmarks.json'), 'utf8'));
+
+  test('live siblings: every figure of data/benchmarks.json is the figure of the raw file its repository has committed at HEAD, with that file\'s date, commit, machine and command', () => {
+    const problems = checkRows(benchmarks().rows, atHead);
+    assert.deepEqual(problems, [], problems.join('\n'));
+  });
+
+  test('live siblings: a raw file a figure cites is the committed one: the working tree holds no other version of it, and the fixture is that file', () => {
+    const files = figureRows(benchmarks().rows).flatMap((r) => rawPaths(r.evidence));
+    assert.ok(files.length >= 7, 'the page cites at least seven raw files');
+    for (const p of new Set(files)) {
+      const [repo, rest] = splitRaw(p);
+      const committed = atHead(repo, rest);
+      assert.equal(readFileSync(join(WORKSPACE_ROOT, repo, ...rest.split('/')), 'utf8'), committed, `${p}: the working tree differs from HEAD; commit the file in ${repo} before a figure rests on it`);
+      assert.equal(readFileSync(join(FIXTURE_ROOT, repo, ...rest.split('/')), 'utf8'), committed, `${p}: the fixture is not the file at HEAD of ${repo}: run node scripts/make-sibling-fixtures.mjs`);
+    }
+  });
+
+  test('live siblings: a figure that disagrees with the file the sibling committed fails (the same check, against HEAD, with one figure changed)', () => {
+    const rows = structuredClone(benchmarks().rows);
+    const t = rows.find((r) => r.id === 'glyphsift-throughput');
+    t.dev = t.dev.replace('WASM validate(): 238 ms', 'WASM validate(): 232 ms');
+    assert.notEqual(t.dev, benchmarks().rows.find((r) => r.id === 'glyphsift-throughput').dev);
+    assert.match(checkRows(rows, atHead).join('\n'), /glyphsift-throughput: the figure is not the committed one/);
+  });
+
+  // The same suites, reading the live files.
   await import('./build.test.mjs');
+  await import('./bench-sources.test.mjs');
 }

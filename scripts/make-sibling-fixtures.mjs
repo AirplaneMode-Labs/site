@@ -55,7 +55,15 @@ for (const m of licensing.matchAll(/<!-- source: (.*?) \| (.*?) -->/g)) {
 }
 
 // Benchmark sources and demo status sources.
-whole('glyphsift', 'docs/score-vs-noise.csv');
+// Every figure data/benchmarks.json quotes is read from a raw file the sibling has COMMITTED under docs/benchmarks/ (owner decision, 20 Nov 2026), and
+// test/bench-sources.test.mjs checks each figure, and the date, commit and machine beside it, against these fixtures (CI) and against the live files
+// (npm run test:siblings). A glyphsift or runtime file is cut with git show, so one that is not committed fails here; a localdata CSV that is new or edited
+// in the working tree is cut from it and recorded with commit null (see readSource), and the test refuses a row whose raw file has no commit.
+whole('glyphsift', 'docs/benchmarks/throughput-m5pro-48gb.json');
+whole('glyphsift', 'docs/benchmarks/score-vs-noise.csv');
+whole('glyphsift', 'docs/benchmarks/score-vs-noise.provenance.json');
+whole('runtime', 'docs/benchmarks/model-answer-smollm2.json');
+whole('runtime', 'docs/benchmarks/devtools-load-phases.json');
 whole('localdata', 'docs/benchmarks/vector-index.csv');
 
 // evidence/sprint-3 files the Sprint 3 write-up tests compare figures against.

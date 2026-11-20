@@ -211,7 +211,8 @@ test('benchmarks page carries the 8 GB laptop columns; figures appear only in ro
   const main = html.split('<h2 id="dockit-e2e">')[0];
   for (const row of main.match(/<tr><td>.*?<\/tr>/gs) ?? []) {
     if (/\d+(\.\d+)?\s*(MB\/s|tok\/s|ms)\b/.test(row)) {
-      assert.match(row, /Evidence: (evidence\/sprint-\d\/|localdata\/docs\/benchmarks\/vector-index\.csv)/, `a figure appeared without its evidence: ${row}`);
+      assert.match(row, /Evidence: (<a href="https:\/\/github\.com\/AirplaneMode-Labs\/(pagetriage|glyphsift|localdata|runtime|dockit)\/blob\/main\/docs\/benchmarks\/|evidence\/sprint-\d\/)/, `a figure appeared without its evidence: ${row}`);
+      assert.match(row, /Measured \d{4}-\d{2}-\d{2}[^<]*, commit [^<]+, [^<]+\./, `a figure appeared without the date, commit and machine it was measured on: ${row}`);
     }
   }
 });
@@ -420,7 +421,7 @@ test('benchmarks.json: the two Sprint 2 slots carry their reproduce commands; a 
   assert.equal(gs.repo, 'glyphsift');
   assert.equal(
     gs.command,
-    'cargo run -p glyphsift-cli --release -- bench --corpus bench/corpus/clean.txt --seeds 1,2,3 --csv docs/score-vs-noise.csv --svg docs/score-vs-noise.svg',
+    'target/release/glyphsift bench --corpus bench/corpus/clean.txt --seeds 1,2,3 --csv docs/score-vs-noise.csv --svg docs/score-vs-noise.svg',
   );
   const rt = data.rows.find((r) => /WebGPU versus WASM/i.test(r.benchmark));
   assert.ok(rt, 'runtime WebGPU versus WASM row missing');
@@ -431,7 +432,7 @@ test('benchmarks.json: the two Sprint 2 slots carry their reproduce commands; a 
     // The 8 GB Windows no-GPU laptop has not been measured: no figure may appear in that column.
     assert.equal(r.laptop, 'not measured on 8 GB', `${r.benchmark}: laptop`);
     if (r.dev !== 'not measured') {
-      assert.match(r.evidence ?? '', /^(evidence\/sprint-\d\/|localdata\/docs\/benchmarks\/vector-index\.csv$)/, `${r.benchmark}: a figure without evidence`);
+      assert.match(r.evidence ?? '', /^(evidence\/sprint-\d\/|(pagetriage|glyphsift|localdata|runtime|dockit)\/docs\/benchmarks\/)/, `${r.benchmark}: a figure without evidence`);
       assert.ok(r.command, `${r.benchmark}: a figure without a command`);
     }
   }
@@ -1202,12 +1203,12 @@ test('every Sprint write-up draft is linked from no page and carries no scratch 
   }
 });
 
-// Sprint 4 (D5-05, droppable third): the two Sprint 3 slots are filled from the saved DevTools-panel figures.
-const D1_DEVTOOLS = 'sprint-3/D1/devtools/devtools-figures.json';
-const T1_DEVTOOLS = 'sprint-3/T1/r3/devtools/devtools-figures-t1.json';
+// Sprint 4 (D5-05, droppable third): the two Sprint 3 slots are filled from the saved DevTools-panel figures. Since 20 Nov 2026 the source is the raw file runtime commits
+// (runtime/docs/benchmarks/devtools-load-phases.json: one headed run), not the workspace evidence of two runs; test/bench-sources.test.mjs holds the exact figure check.
+const RT_DEVTOOLS = 'docs/benchmarks/devtools-load-phases.json';
 const fmtMs = (n) => `${Number(n.toFixed(1)).toLocaleString('en-US')} ms`;
 
-test('Sprint 3 slots are filled from the saved DevTools-panel figures, command RUNTIME_MODEL=1 npm run test:devtools (headed), labelled Apple silicon', () => {
+test('Sprint 3 slots are filled from the figures runtime commits (devtools-load-phases.json), command RUNTIME_MODEL=1 RUNTIME_DEVTOOLS_HEADED=1 npm run test:devtools, labelled Apple silicon', () => {
   const data = JSON.parse(readFileSync(join(root, 'data', 'benchmarks.json'), 'utf8'));
   const timing = data.rows.find((r) => /model-load timing per phase/i.test(r.benchmark));
   const mem = data.rows.find((r) => /memory at model load/i.test(r.benchmark));
@@ -1217,38 +1218,33 @@ test('Sprint 3 slots are filled from the saved DevTools-panel figures, command R
   assert.match(mem.benchmark, /page JS heap where Chrome exposes it; worker where exposed/);
   for (const r of [timing, mem]) {
     assert.equal(r.repo, 'runtime');
-    assert.equal(r.command, 'RUNTIME_MODEL=1 npm run test:devtools (headed)');
+    assert.equal(r.command, 'RUNTIME_MODEL=1 RUNTIME_DEVTOOLS_HEADED=1 npm run test:devtools');
     assert.equal(r.laptop, 'not measured on 8 GB', 'the 8 GB cell stays not measured on 8 GB');
-    assert.match(r.dev, /^Apple silicon, Chrome 157\.0\.8103\.79/);
-    assert.equal(r.evidence, 'evidence/sprint-3/D1/devtools/devtools-figures.json and evidence/sprint-3/T1/r3/devtools/devtools-figures-t1.json');
+    assert.match(r.dev, /^Apple silicon, Chrome\/157\.0\.8103\.79/);
+    assert.equal(r.evidence, `runtime/${RT_DEVTOOLS}`);
     assert.match(r.notes, /placeholder until the 8 GB laptop is measured/);
     assert.match(r.notes, /not measured on 8 GB/);
     assert.doesNotMatch(r.dev + r.notes, /not yet run/);
   }
   assert.match(timing.dev, /WebGPU not measured here/);
   assert.match(mem.dev, /worker heap and WebAssembly memory were not exposed/);
-  // Every figure equals the saved panel output (committed fixtures of the two saved files).
+  // Every figure equals the committed raw file (the committed fixture of runtime's file, or its live copy under test:siblings).
   {
-    const d1 = JSON.parse(readSibling('evidence', D1_DEVTOOLS));
-    const t1 = JSON.parse(readSibling('evidence', T1_DEVTOOLS));
-    assert.ok(timing.dev.includes(d1.chrome.replace('Chrome/', 'Chrome ')) || timing.dev.includes(d1.chrome.replace('Chrome/', '')), 'Chrome version');
-    for (const [label, run] of [['D1 run', d1], ['T1 run', t1]]) {
-      assert.ok(timing.dev.includes(label), `${label} missing from the timing cell`);
-      assert.ok(mem.dev.includes(label), `${label} missing from the memory cell`);
-      for (const phase of ['acquire', 'verify', 'handoff', 'session', 'first_token']) {
-        const want = fmtMs(run.panelPhaseDurationsMs[phase]);
-        assert.ok(timing.dev.includes(want), `${label}: ${phase} ${want} not in the timing cell`);
-      }
-      for (const m of run.panelMemory.filter((x) => (x.scope ?? 'page') === 'page' && x.api === 'performance.memory')) {
-        assert.ok(mem.dev.includes(m.used), `${label}: ${m.at} ${m.used} not in the memory cell`);
-      }
+    const run = JSON.parse(readSibling('runtime', RT_DEVTOOLS)).files[0].json;
+    assert.ok(timing.dev.includes(run.chrome), 'Chrome version');
+    for (const phase of ['acquire', 'verify', 'handoff', 'session', 'first_token']) {
+      const want = fmtMs(run.panelPhaseDurationsMs[phase]);
+      assert.ok(timing.dev.includes(want), `${phase} ${want} not in the timing cell`);
     }
+    const heap = run.panelMemory.filter((x) => (x.scope ?? 'page') === 'page' && x.api === 'performance.memory');
+    assert.equal(heap.length, 3);
+    for (const m of heap) assert.ok(mem.dev.includes(m.used), `${m.at} ${m.used} not in the memory cell`);
   }
   // WebLLM did not land and was cut from Sprint 4 (TD-08): no WebLLM row may exist.
   assert.equal(data.rows.some((r) => /WebLLM/.test(r.benchmark)), false, 'no WebLLM row: the rung is cut from Sprint 4');
 });
 
-test('glyphsift score-versus-noise row carries the mixed means recomputed from the regenerated CSV and its Sprint 3 evidence', () => {
+test('glyphsift score-versus-noise row carries the mixed means recomputed from the committed CSV and its provenance file', () => {
   const data = JSON.parse(readFileSync(join(root, 'data', 'benchmarks.json'), 'utf8'));
   const gs = data.rows.find((r) => /score versus noise/i.test(r.benchmark));
   const FIGURES = ['1,000,000', '998,476', '996,985', '991,696', '983,977', '967,538', '933,440'];
@@ -1256,15 +1252,15 @@ test('glyphsift score-versus-noise row carries the mixed means recomputed from t
     gs.dev,
     `Mixed-family mean, ppm, at p = 0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.4: ${FIGURES.join('; ')}. Falls at every step.`,
   );
-  assert.equal(gs.evidence, 'evidence/sprint-3/D3/bench-s3.log and docs/score-vs-noise.csv');
+  assert.equal(gs.evidence, 'glyphsift/docs/benchmarks/score-vs-noise.csv and glyphsift/docs/benchmarks/score-vs-noise.provenance.json');
   assert.equal(gs.laptop, 'not measured on 8 GB');
   for (const old of ['998,454', '996,931', '991,588', '983,739', '967,065', '932,405']) {
     assert.ok(!gs.dev.includes(old), `stale Sprint 2 figure ${old} still in the row`);
   }
 });
 
-test('the glyphsift row equals a fresh computation over glyphsift docs/score-vs-noise.csv (committed fixture)', () => {
-  const [head, ...lines] = readSibling('glyphsift', 'docs/score-vs-noise.csv').trim().split('\n');
+test('the glyphsift row equals a fresh computation over glyphsift docs/benchmarks/score-vs-noise.csv (committed fixture)', () => {
+  const [head, ...lines] = readSibling('glyphsift', 'docs/benchmarks/score-vs-noise.csv').trim().split('\n');
   const ix = Object.fromEntries(head.split(',').map((c, i) => [c, i]));
   const byP = new Map();
   for (const line of lines) {

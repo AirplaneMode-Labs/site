@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (every figure on the benchmarks page is a committed row, owner decision of 20 Nov 2026)
+
+- `data/benchmarks.json`: each figure row has a stable `id`, evidence that names raw files its repository has committed under `docs/benchmarks/`, and a `measured` block (date, commit, machine, and the file that records them). The page links each file on GitHub, prints
+  "Measured <date>, commit <commit>, <machine>." after it, and lists the five repositories' `docs/benchmarks` folders under the table.
+- glyphsift throughput now reads **native check 66 ms, WASM `validate()` 238 ms, `score_ppm()` 81 ms** (best of five, `glyphsift/docs/benchmarks/throughput-m5pro-48gb.json`, commit `3c0bb4dcc0a5`, 20 Nov 2026, Apple M5 Pro, 48 GB). The Sprint 2 figures it showed (232 ms, 75 ms, native 0.05
+  to 0.06 s with one cold run of 0.17 s) were read from a log that recorded no commit and are gone; the 0.17 s cold run has no committed row and is dropped. The glyphsift score-versus-noise row keeps its figures (the mixed-family means are the same in the committed CSV) and cites
+  `score-vs-noise.csv` and its provenance file; its command is the one the provenance file records (`target/release/glyphsift bench ...`).
+- runtime model-load timing and memory rows quote the one headed run that runtime commits (`devtools-load-phases.json`: acquire 1,260.9 ms, verify 663 ms, hand-off 7.6 ms, session create 481.2 ms, first token 655.1 ms; page heap 2,747,591, 79,554,898 and 79,611,170 B). The independent second run (T1: acquire
+  1,254 ms and so on, page heap 3,587,929, 33,865,195 and 33,954,615 B) has no committed row in runtime and is no longer shown. The runtime WebGPU versus WASM row is unchanged (every figure is in `model-answer-smollm2.json`); runtime recorded no commit hash for these files, so the row says "not recorded (base c2b6166)" and
+  "(base 15c6d58)".
+- The two localdata rows are unchanged (median 186 / worst 195 ms, and 181 / 183 ms: all in `vector-index.csv`); they now carry date 2026-11-14, commit `0390d65-dirty` and machine `Apple M5 Pro, 48 GB` as the CSV writes them, from `scripts/import-localdata-bench.mjs`.
+- `scripts/bench-sources.mjs` recomputes every figure row from its file; `test/bench-sources.test.mjs` runs it against the committed fixtures in CI and has mutation tests (a changed figure, date, commit, machine or command, a missing file, an altered sibling file, a provenance hash that is not the CSV's, a new figure with no
+  recomputation, the Sprint 2 figures coming back); `npm run test:siblings` runs the same checks against the live clones and against each sibling's HEAD (`git show`), and fails if the working tree holds an uncommitted version of a cited file.
+- Fixtures re-cut at the siblings' current heads (`node scripts/make-sibling-fixtures.mjs`): the glyphsift and runtime raw files are new, `glyphsift/docs/score-vs-noise.csv` is replaced by `glyphsift/docs/benchmarks/score-vs-noise.csv` (byte-identical), and dockit's and localdata's CSVs are now cut from a commit instead of the working tree.
+
+### Added (dockit's third dispatch, run 44666921454: the limit proven in force)
+
 ### Added (dockit's third dispatch, run 44666921454: the limit proven in force)
 
 - `data/e2e-emulated.json` is now built from dockit's third run of the manual `bench-windows` workflow (run 44666921454 on dockit `f6a71cab4ab1`, 20 Nov 2026): the first with the limit read back, probed and counted. Four benchmark legs

@@ -214,18 +214,28 @@ command, commit and `eight_gb` cell (the importer refuses a row that does not re
 and graph bytes, the JS heap and the WebAssembly memory, and computes whether the recall target was reached. Quantisation, compaction and encryption at rest are not yet.
 
 The 8 GB Windows no-GPU column reads `not measured` in every row, and prose says not measured on 8 GB. A
-figure appears only when a named command produced it on a named machine, with the saved output cited as
-`evidence/sprint-N/<lane>/...` or a committed CSV; Apple-silicon figures are labelled placeholders until
-the 8 GB laptop has been measured. Today the page carries:
+figure appears only when a named command produced it on a named machine and the raw output is committed by the
+repository that owns the benchmark, under its `docs/benchmarks/` (owner decision, 20 Nov 2026). The row's
+evidence links that file on GitHub and the row says when it was measured, on which commit and on which machine;
+`scripts/bench-sources.mjs` recomputes every figure from its file, `test/bench-sources.test.mjs` runs that in CI
+against the committed fixtures (`test/fixtures/siblings/`, each cut from a commit, never a working tree) and
+`npm run test:siblings` runs it against each sibling's HEAD, so a figure that differs from the committed file
+fails, and a new figure needs its recomputation added. A figure with no committed raw row is not shown.
+Apple-silicon figures are labelled placeholders until the 8 GB laptop has been measured. Today the page carries:
 
-- the Sprint 2 WebGPU versus WebAssembly row (evidence/sprint-2/D1/model-run.json);
-- the glyphsift throughput row (evidence/sprint-2/D3/throughput.log) and the glyphsift score-versus-noise
-  row, whose mixed-family means were recomputed in Sprint 3 from the regenerated
-  `glyphsift/docs/score-vs-noise.csv` (evidence/sprint-3/D3/bench-s3.log);
-- the model-load timing and memory rows, filled in Sprint 4 from the saved DevTools-panel output of two
-  headed runs with `RUNTIME_MODEL=1 npm run test:devtools` (evidence/sprint-3/D1/devtools/devtools-figures.json
-  and evidence/sprint-3/T1/r3/devtools/devtools-figures-t1.json), labelled Apple silicon, SmolLM2-135M test
-  model, WebAssembly engine only;
+- the Sprint 2 WebGPU versus WebAssembly row (`runtime/docs/benchmarks/model-answer-smollm2.json`, run on
+  9 Nov 2026; runtime recorded no commit hash for it, only its base, `c2b6166`);
+- the glyphsift throughput row (`glyphsift/docs/benchmarks/throughput-m5pro-48gb.json`: best of five at
+  commit `3c0bb4dcc0a5`, 20 Nov 2026, Apple M5 Pro, 48 GB; native check 66 ms, WASM `validate()` 238 ms,
+  `score_ppm()` 81 ms, which replace the Sprint 2 figures of 232 ms, 75 ms and 0.05 to 0.06 s that had no
+  commit) and the glyphsift score-versus-noise row, whose mixed-family means are the ones recomputed in
+  Sprint 3 and are the same in the committed `score-vs-noise.csv` (its provenance file names the date,
+  commit and machine);
+- the model-load timing and memory rows, from the one headed `RUNTIME_MODEL=1 RUNTIME_DEVTOOLS_HEADED=1 npm run
+  test:devtools` run that runtime commits as `runtime/docs/benchmarks/devtools-load-phases.json` (14 Nov 2026,
+  base `15c6d58`, no hash recorded), labelled Apple silicon, SmolLM2-135M test model, WebAssembly engine only.
+  The second, independent run (T1) that these rows quoted before is no longer shown: runtime does not commit its
+  raw output;
 - two localdata flat-index rows, `localdata flat index, 100,000 x 384 + 256-byte synthetic chunks, OPFS,
   cold open + first query (median / worst of N)` and the same for 2,048-byte chunks, written by
   `node scripts/import-localdata-bench.mjs` from `../localdata/docs/benchmarks/vector-index.csv`

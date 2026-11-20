@@ -31,7 +31,9 @@ export const COMMAND = 'npm run bench:vectors';
 const ROWS = 100000;
 const DIM = 384;
 const CHUNKS = [256, 2048];
-const REQUIRED = ['driver', 'rows', 'dim', 'chunk_bytes', 'run', 'cold_total_ms', 'match', 'precise_memory', 'machine', 'commit'];
+const REQUIRED = ['driver', 'rows', 'dim', 'chunk_bytes', 'run', 'cold_total_ms', 'match', 'precise_memory', 'machine', 'commit', 'date_utc'];
+/** The stable id of each row: test/bench-sources.test.mjs finds the row of a figure by it. */
+export const ROW_IDS = Object.freeze({ 256: 'localdata-flat-256', 2048: 'localdata-flat-2048' });
 const ALIASES = { chunk_size: 'chunk_bytes', chunkbytes: 'chunk_bytes', kind: 'run', run_kind: 'run', phase: 'run' };
 
 // The real CSV has a boolean `restart` column (run = 1..6). Only a CSV without that column falls back to the old
@@ -91,6 +93,7 @@ const median = (xs) => {
 const displayCommit = (c) => (c.endsWith('-dirty') ? `uncommitted working tree based on ${c.slice(0, -'-dirty'.length)}` : `commit ${c}`);
 
 const notMeasured = (chunk) => ({
+  id: ROW_IDS[chunk],
   benchmark: labelFor(chunk, 'N'),
   repo: 'localdata',
   command: COMMAND,
@@ -126,6 +129,8 @@ export function buildLocaldataRows(csvText) {
     const ms = cold.map((r) => Number(r.cold_total_ms));
     const restartMs = restart.map((r) => Number(r.cold_total_ms));
     const machine = [...new Set(mine.map((r) => r.machine))].join('; ');
+    // the date, commit and machine of the rows the figure is taken from, as the CSV writes them (never typed by hand)
+    const dates = [...new Set(mine.map((r) => r.date_utc.slice(0, 10)))].sort();
     const restartText =
       restartMs.length === 0
         ? 'no browser-restart run in the CSV'
@@ -136,8 +141,10 @@ export function buildLocaldataRows(csvText) {
       chunk,
       machine,
       commits: [...new Set(mine.map((r) => r.commit))],
+      dates,
       precise: mine.every((r) => r.precise_memory.toLowerCase() === 'true'),
       row: {
+        id: ROW_IDS[chunk],
         benchmark: labelFor(chunk, cold.length),
         repo: 'localdata',
         command: COMMAND,
@@ -146,7 +153,7 @@ export function buildLocaldataRows(csvText) {
       },
     };
   });
-  return rows.map(({ machine, commits, precise, row }) => ({
+  return rows.map(({ machine, commits, dates, precise, row }) => ({
     ...row,
     notes:
       `Sprint 4 done-when row: cold open plus the first query (k = 10) must stay under 2,000 ms on an 8 GB laptop; this machine has more memory, so the figure is not an 8 GB figure. ` +
@@ -154,6 +161,7 @@ export function buildLocaldataRows(csvText) {
       `${precise ? 'JS heap was read with precise memory info enabled.' : 'Precise memory info was not enabled on every run.'} ` +
       `The row is not measured on 8 GB: the 8 GB Windows laptop is the owner's step.`,
     evidence: CSV_CITE,
+    measured: { date: dates.join(', '), commit: commits.join(', '), machine, recordedIn: CSV_CITE },
   }));
 }
 

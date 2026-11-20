@@ -1,0 +1,225 @@
+{
+  "spec": "airplanemode.site.e2e-emulated/2",
+  "command": "bench-windows workflow: node scripts/bench-e2e.mjs --environment <label> inside scripts/win/run-capped.ps1",
+  "source": {
+    "csv": "docs/benchmarks/e2e-emulated-win-vm.csv",
+    "csvSha256": "9de595c37386cfdf7b92b9fb6d49fc99dd5f2be0b31a80e484f774faed87b8d1",
+    "questionsCsv": "docs/benchmarks/e2e-emulated-win-vm-questions.csv",
+    "questionsCsvSha256": "1215a8c226d632dc84362847a5e811261ea70a72a9bff2760250d86545170c75",
+    "commit": "5705baab8cdf",
+    "date": "2026-11-20T01:53:04.119Z",
+    "rows": 24
+  },
+  "lowestChromeCommitPeakBytes": 3942731776,
+  "legs": [
+    {
+      "environment": "emulated: GitHub-hosted Windows Server 2025 Datacenter VM, x64, 4 vCPU, 16 GB RAM, pwsh, node and Chrome process tree with no job limit; not a laptop",
+      "limitBytes": null,
+      "limitProof": "no_limit",
+      "limitReadBack": null,
+      "probeRefused": null,
+      "peakAfterProbeBytes": null,
+      "limitMessages": null,
+      "runs": 6,
+      "sessionRuns": 5,
+      "restartRuns": 1,
+      "chrome": "Chrome/157.0.8103.79",
+      "commit": "5705baab8cdf",
+      "first_token_ms": {
+        "median": 9835,
+        "worst": 10087
+      },
+      "total_ms": {
+        "median": 23862,
+        "worst": 24959
+      },
+      "process_rss_peak_bytes": {
+        "median": 3814856704,
+        "worst": 4032450560
+      },
+      "processCommitPeakBytes": {
+        "median": 4915740672,
+        "worst": 5565894656
+      },
+      "jobCommitPeakBytes": 6181113856,
+      "jobEscapes": 0,
+      "samplerMedianIntervalMs": {
+        "median": 548,
+        "worst": 551
+      },
+      "requestsAfterOffline": {
+        "max": 0
+      },
+      "failure": null,
+      "result": "pass",
+      "questions": {
+        "all": {
+          "correct": 24,
+          "of": 36
+        },
+        "firstRun": {
+          "correct": 4,
+          "of": 6
+        }
+      },
+      "laptop8gb": "not measured on 8 GB"
+    },
+    {
+      "environment": "emulated: GitHub-hosted Windows Server 2025 Datacenter VM, x64, 4 vCPU, 16 GB RAM, pwsh, node and Chrome process tree under a job commit limit of 8589934592 bytes; not a laptop",
+      "limitBytes": 8589934592,
+      "limitProof": "unproven",
+      "limitReadBack": null,
+      "probeRefused": null,
+      "peakAfterProbeBytes": null,
+      "limitMessages": null,
+      "runs": 6,
+      "sessionRuns": 5,
+      "restartRuns": 1,
+      "chrome": "Chrome/156.0.8078.80",
+      "commit": "5705baab8cdf",
+      "first_token_ms": {
+        "median": 7111,
+        "worst": 7224
+      },
+      "total_ms": {
+        "median": 14865,
+        "worst": 15212
+      },
+      "process_rss_peak_bytes": {
+        "median": 4150988800,
+        "worst": 4229697536
+      },
+      "processCommitPeakBytes": {
+        "median": 4988366848,
+        "worst": 5632290816
+      },
+      "jobCommitPeakBytes": 6071017472,
+      "jobEscapes": 0,
+      "samplerMedianIntervalMs": {
+        "median": 540,
+        "worst": 544
+      },
+      "requestsAfterOffline": {
+        "max": 0
+      },
+      "failure": null,
+      "result": "pass",
+      "questions": {
+        "all": {
+          "correct": 24,
+          "of": 36
+        },
+        "firstRun": {
+          "correct": 4,
+          "of": 6
+        }
+      },
+      "laptop8gb": "not measured on 8 GB"
+    },
+    {
+      "environment": "emulated: GitHub-hosted Windows Server 2025 Datacenter VM, x64, 4 vCPU, 16 GB RAM, pwsh, node and Chrome process tree under a job commit limit of 6442450944 bytes; not a laptop",
+      "limitBytes": 6442450944,
+      "limitProof": "unproven",
+      "limitReadBack": null,
+      "probeRefused": null,
+      "peakAfterProbeBytes": null,
+      "limitMessages": null,
+      "runs": 6,
+      "sessionRuns": 5,
+      "restartRuns": 1,
+      "chrome": "Chrome/156.0.8078.80",
+      "commit": "5705baab8cdf",
+      "first_token_ms": {
+        "median": 9856,
+        "worst": 9982
+      },
+      "total_ms": {
+        "median": 19071,
+        "worst": 19541
+      },
+      "process_rss_peak_bytes": {
+        "median": 3981281280,
+        "worst": 4307193856
+      },
+      "processCommitPeakBytes": {
+        "median": 4051505152,
+        "worst": 5595860992
+      },
+      "jobCommitPeakBytes": 6073286656,
+      "jobEscapes": 0,
+      "samplerMedianIntervalMs": {
+        "median": 547,
+        "worst": 548
+      },
+      "requestsAfterOffline": {
+        "max": 0
+      },
+      "failure": null,
+      "result": "pass",
+      "questions": {
+        "all": {
+          "correct": 24,
+          "of": 36
+        },
+        "firstRun": {
+          "correct": 4,
+          "of": 6
+        }
+      },
+      "laptop8gb": "not measured on 8 GB"
+    },
+    {
+      "environment": "emulated: GitHub-hosted Windows Server 2025 Datacenter VM, x64, 4 vCPU, 16 GB RAM, pwsh, node and Chrome process tree under a job commit limit of 5368709120 bytes; not a laptop",
+      "limitBytes": 5368709120,
+      "limitProof": "unproven",
+      "limitReadBack": null,
+      "probeRefused": null,
+      "peakAfterProbeBytes": null,
+      "limitMessages": null,
+      "runs": 6,
+      "sessionRuns": 5,
+      "restartRuns": 1,
+      "chrome": "Chrome/156.0.8078.80",
+      "commit": "5705baab8cdf",
+      "first_token_ms": {
+        "median": 11511,
+        "worst": 11572
+      },
+      "total_ms": {
+        "median": 23888,
+        "worst": 24141
+      },
+      "process_rss_peak_bytes": {
+        "median": 3961341952,
+        "worst": 4201312256
+      },
+      "processCommitPeakBytes": {
+        "median": 4020717568,
+        "worst": 4038189056
+      },
+      "jobCommitPeakBytes": 6074314752,
+      "jobEscapes": 0,
+      "samplerMedianIntervalMs": {
+        "median": 557,
+        "worst": 561
+      },
+      "requestsAfterOffline": {
+        "max": 0
+      },
+      "failure": null,
+      "result": "pass",
+      "questions": {
+        "all": {
+          "correct": 24,
+          "of": 36
+        },
+        "firstRun": {
+          "correct": 4,
+          "of": 6
+        }
+      },
+      "laptop8gb": "not measured on 8 GB"
+    }
+  ],
+  "controlLegs": []
+}

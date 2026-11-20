@@ -7,7 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Nothing yet.
+### Added
+
+- `data/e2e-emulated.json`, written by `scripts/import-dockit-emulated.mjs` from dockit's committed emulated CSVs (the first Windows run, bench-windows run 44656249868 on dockit `5705baab8cdf`, 20 Nov 2026): four
+  legs (no limit, 8, 6 and 5 GiB), six runs each, labelled "emulated: ...; not a laptop" verbatim, every 8 GB cell still "not measured on 8 GB". The benchmarks page now has its emulated section.
+- The emulated section says in words, computed from the data and never typed, when a leg's whole-tree peak is above its own limit ("not a result under this cap", also in its Result cell), when no leg failed (so no
+  capped leg shows its limit taking effect) and that each leg ran on its own VM. For the first run that is the 5 GiB leg, whose peak (6,074,314,752 bytes) is above its limit (5,368,709,120): the run does not show a
+  result under a cap. Tests build the sentences from invented legs and check them against the committed data.
+
+- The importer and the emulated section read dockit's limit evidence (the six columns after `failure_reason`: the read-back, the commit probe, the peak after it, the completion-port count and the control marker;
+  written by dockit's change after run 44656249868, not yet run on Windows). `data/e2e-emulated.json` is now spec `airplanemode.site.e2e-emulated/2`: each leg has `limitProof`, `limitReadBack`, `probeRefused`,
+  `peakAfterProbeBytes` and `limitMessages`, and a control leg (rows with `control_leg` true) is in `controlLegs` and never in `legs`. A leg reads "limit proven in force (probe refused, read-back equal)" only when the
+  read-back equals what was set AND the probe was refused, "cap NOT in force" when the probe committed, "limit unproven" otherwise (every capped leg of the committed first run); there is an evidence table, a
+  paragraph per control leg (failed as it must with the limit proven, failed with the limit unproven, completed: the cap does nothing, or incomplete), and the lowest Chrome-only commit peak the control is compared with
+  is computed from the rows. A CSV with the first header (no evidence columns) still imports. `checkEmulated` recomputes the reading from the evidence and the control outcome from the failure, the runs and the
+  evidence, and refuses a file that says more than its evidence does.
+- The sample fixtures are regenerated with evidence and one control leg (all invented); `test:siblings` also compares the six columns, the reading and its wording with dockit's.
+
+### Changed
+
+- The emulated section's introduction no longer says the whole-tree peak is "a little above" the Chrome-only peak (it is 1.9 GiB above it in the 5 GiB leg); it says the whole-tree peak counts pwsh and node as well as
+  Chrome. The README's Sprint 7 limitation about the emulated figure now describes the imported run. The status paragraph, `data/demos.json` and the status lines are the Sprint 7 snapshot and are refreshed with the demos.
 
 ## [0.1.0-dev] - 2026-11-20 (untagged)
 

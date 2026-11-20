@@ -14,7 +14,7 @@ Sprint 7 (20 Nov 2026): Working: a Start here page that links the six demos and 
 Live since the owner's push of 18 Nov 2026 (the site `pages` run 44335118288 was green and the footer read "Built from main at fe2b00b5f027"); Sprint 6 was pushed by the main session on 19 Nov 2026
 (head f151e04, `ci` run 44580229417 and `pages` run 44580229540 green), so the live site shows Sprint 6 until the main session pushes Sprint 7 (the live pages change only after that push). Sprint 7
 (an addition the owner asked for on 19 Nov 2026; the plan documents define six sprints, so it has no row in them) adds a Start here page, a section of the benchmarks page for an emulated Windows run
-that renders only when `data/e2e-emulated.json` exists (it does not exist yet: the first dispatch of dockit's `bench-windows` workflow has not run, and its results are imported in a follow-up), the
+that renders only when `data/e2e-emulated.json` exists (it exists since 20 Nov 2026, after the second dispatch of dockit's `bench-windows` workflow, run 44656249868, was imported; the status paragraph above is the Sprint 7 snapshot written before it), the
 Sprint 6 write-up finished from its evidence as an unlisted `noindex` draft, and a Sprint 7 skeleton. `data/e2e.json` is the Sprint 6 build of dockit re-measured on a quiet machine (TD-101). Gate 1
 (two paid pilots, 300 stars, five qualified conversations) reads 0, 0 and 0, and nothing on this site changes that. The earlier status text follows.
 
@@ -239,9 +239,14 @@ the 8 GB laptop has been measured. Today the page carries:
 
 ## Limitations
 
-- Sprint 7: there is no emulated Windows figure on the benchmarks page, and no section for one: dockit's manual `bench-windows` workflow is written and has not run, and the section renders only
-  when `data/e2e-emulated.json` exists (`node scripts/import-dockit-emulated.mjs` writes it only from a committed emulated CSV). When it exists it is a GitHub-hosted Windows VM with a job commit
-  limit, not a laptop, it quotes its environment label verbatim, and it fills no 8 GB cell; nothing on the site is, or will be, an 8 GB laptop figure until the owner's run exists.
+- Sprint 7: the emulated Windows section of the benchmarks page is dockit's first run of its manual `bench-windows` workflow (run 44656249868, 20 Nov 2026, four legs on four different GitHub-hosted VMs, six runs
+  each), imported by `node scripts/import-dockit-emulated.mjs` from dockit's committed CSV. It is a Windows VM with a job commit limit, not a laptop, it quotes each environment label verbatim, and it fills no
+  8 GB cell; nothing on the site is, or will be, an 8 GB laptop figure until the owner's run exists. **It is not a result under a memory cap:** the 5 GiB leg's own whole-tree peak is above its limit, no leg
+  failed, and the limit was never read back, so the page says, next to the figures and computed from the data, that the capped legs are the same run with the limit unproven. The legs' times differ because their
+  VMs differ, not because of the cap. dockit's `scripts/win/README.md` has the evidence and the change that will settle it. That change (a read-back of the limit, a commit probe from inside the job, a
+  completion-port count and a 2 GiB control leg that must fail) is written in dockit and has not run on Windows; the importer and the page already read what it will record. A capped leg reads "limit proven in force
+  (probe refused, read-back equal)" only when both hold, "cap NOT in force" when the probe committed over the limit and "limit unproven" otherwise, as it does for every leg of the committed run; a control leg is a
+  paragraph of its own and is in no table row, median or peak, and a data file whose reading does not follow from its evidence is refused at build time.
 - Sprint 7: the Start here page links the four "Try it in two minutes" sections of the library READMEs by their anchors (`#try-it-in-two-minutes`); a test checks the links on this page, not that
   the section still exists in another repository, so a renamed heading there breaks the link until this page is changed. dockit's download size on that page is read from the benchmark data.
 - Sprint 7: the Sprint 6 write-up is a draft from the team, unlisted and `noindex`; the Sprint 7 write-up is a skeleton. Neither is published; removing the draft marker is the owner's step.
